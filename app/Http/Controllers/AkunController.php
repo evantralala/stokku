@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EmailLaporanRequest;
+use App\Http\Requests\FotoProfilRequest;
+use App\Services\FotoService;
 use App\Services\LaporanHarianService;
 use App\Support\DaftarLaporanEmail;
 use DomainException;
@@ -23,6 +25,21 @@ class AkunController extends Controller
             'pilihanLaporan' => DaftarLaporanEmail::pilihan($request->user()->role),
             'jamKirim'       => str_replace(':', '.', DaftarLaporanEmail::JAM_KIRIM),
         ]);
+    }
+
+    /** Foto profil sendiri: ganti dengan foto baru atau hapus (kembali ke inisial). */
+    public function simpanFoto(FotoProfilRequest $request, FotoService $foto): RedirectResponse
+    {
+        $perubahan = $foto->perubahan($request->file('foto'), $request->boolean('hapus_foto'), FotoService::FOLDER_PROFIL);
+        $tujuan = redirect()->to(route('akun').'#foto-profil');
+
+        if ($perubahan === [] || ($perubahan['foto'] === null && $request->user()->foto === null)) {
+            return $tujuan->with('sukses', 'Tidak ada yang berubah.');
+        }
+
+        $request->user()->update($perubahan);
+
+        return $tujuan->with('sukses', $perubahan['foto'] === null ? 'Foto profil dihapus.' : 'Foto profil disimpan.');
     }
 
     public function simpanEmail(EmailLaporanRequest $request, LaporanHarianService $laporan): RedirectResponse

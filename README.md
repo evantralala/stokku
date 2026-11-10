@@ -8,7 +8,7 @@ Tampilan dirancang untuk HP lebih dulu (mobile-first) dan bisa dipasang sebagai 
 > **English summary.** Stokku is a mobile-first inventory system for multi-branch F&B businesses, built with
 > Laravel 12. It covers the whole flow from supplier purchases to central-warehouse approval, branch requests,
 > blind-count deliveries, stock opname, daily sales with recipe-based consumption, Excel import/export with typo
-> detection, PDF documents, dashboards, and a nightly email report. 543 automated tests.
+> detection, PDF documents, dashboards, and a nightly email report. 548 automated tests.
 
 Dikembangkan untuk usaha kuliner yang sedang berjalan. Repositori publik ini memakai nama, logo, dan data contoh;
 identitas usaha aslinya tidak disertakan.
@@ -35,6 +35,7 @@ identitas usaha aslinya tidak disertakan.
 - **Email laporan harian pukul 23.59** per akun: pilih isi laporan sesuai peran, banyak alamat tujuan, lampiran Excel.
 - **Dashboard dan grafik** pergerakan stok, kondisi stok, dan penjualan.
 - **Pembaruan otomatis** tanpa WebSocket (cocok untuk shared hosting) dan **PWA** yang bisa dipasang di HP.
+- **Foto profil** per akun, diatur sendiri di menu Akun; tanpa foto tampil inisial nama.
 - **Pengaturan** angka aturan, identitas usaha (nama dan logo bisa diganti), saklar fitur, hak akses per peran,
   periode buku, dan log perubahan.
 
@@ -43,7 +44,7 @@ identitas usaha aslinya tidak disertakan.
 - **Laravel 12**, PHP 8.2, MySQL / MariaDB
 - Blade, **Tailwind CSS v4**, Vite, JavaScript tanpa framework
 - **PhpSpreadsheet** untuk Excel; pembuat PDF sendiri (tanpa pustaka PDF eksternal)
-- PHPUnit: 543 pengujian otomatis (84 berkas pengujian fitur)
+- PHPUnit: 548 pengujian otomatis (85 berkas pengujian fitur)
 
 ## Arsitektur singkat
 

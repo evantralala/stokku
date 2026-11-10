@@ -109,7 +109,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (32, '2026_11_01_000002_tambah_pengaturan_jam_ganti_hari_penjualan', 1),
 (33, '2026_11_05_000001_tambah_nama_lain_bahan_baku', 1),
 (34, '2026_11_06_000001_ganti_sebab_rusak_jadi_alasan', 1),
-(35, '2026_11_09_000001_buat_tabel_email_laporan', 1);
+(35, '2026_11_09_000001_buat_tabel_email_laporan', 1),
+(36, '2026_11_10_000001_tambah_foto_pengguna', 1);
 
 -- --------------------------------------------------------
 -- Tabel `cache`
@@ -164,6 +165,7 @@ alter table `users` add `dihapus_pada` datetime null;
 alter table `users` add index `users_dihapus_pada_index`(`dihapus_pada`);
 alter table `users` add constraint `users_cabang_id_foreign` foreign key (`cabang_id`) references `cabang` (`id`) on delete restrict;
 alter table `users` add unique `users_email_unique`(`email`);
+alter table `users` add `foto` varchar(255) null after `nama`;
 
 -- --------------------------------------------------------
 -- Tabel `password_reset_tokens`

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\DataMaster;
+use App\Models\Concerns\PunyaFoto;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use DataMaster, HasFactory, Notifiable;
+    use DataMaster, HasFactory, Notifiable, PunyaFoto;
 
     public const ROLE_ADMIN_UTAMA = 'admin_utama';
     public const ROLE_ADMIN_PUSAT = 'admin_pusat';
@@ -47,11 +48,17 @@ class User extends Authenticatable
 
     protected $fillable = [
         'nama',
+        'foto',
         'email',
         'password',
         'role',
         'cabang_id',
         'aktif',
+    ];
+
+    /** Akun baru tanpa foto profil (tampil inisial). */
+    protected $attributes = [
+        'foto' => null,
     ];
 
     protected $hidden = [

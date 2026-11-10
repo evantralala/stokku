@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
- * Foto bahan baku dan menu. Foto dari HP diputar sesuai EXIF, diperkecil ke sisi terpanjang SISI_MAKS,
- * lalu disimpan sebagai WebP (atau JPEG bila WebP tidak tersedia) di disk public.
+ * Foto bahan baku, menu, dan profil pengguna. Foto dari HP diputar sesuai EXIF, diperkecil ke sisi terpanjang SISI_MAKS
+ * (foto profil dipotong persegi SISI_PROFIL), lalu disimpan sebagai WebP (atau JPEG bila WebP tidak tersedia) di disk public.
  * Tanpa ekstensi GD, file asli disimpan apa adanya. Foto dibaca lewat route foto (FotoController), tanpa storage:link.
  */
 class FotoService
@@ -20,10 +20,13 @@ class FotoService
 
     public const FOLDER_MENU = 'foto/menu';
 
+    public const FOLDER_PROFIL = 'foto/profil';
+
     /** Jenis di alamat foto => folder penyimpanan. */
     public const FOLDER = [
-        'bahan' => self::FOLDER_BAHAN,
-        'menu'  => self::FOLDER_MENU,
+        'bahan'  => self::FOLDER_BAHAN,
+        'menu'   => self::FOLDER_MENU,
+        'profil' => self::FOLDER_PROFIL,
     ];
 
     /** Pola nama file foto di alamat. */
@@ -32,6 +35,8 @@ class FotoService
     public const MAKS_KB = 8192;
 
     public const SISI_MAKS = 800;
+
+    public const SISI_PROFIL = 320;
 
     private const MUTU = 82;
 
@@ -57,7 +62,8 @@ class FotoService
             return $file->store($folder, self::DISK);
         }
 
-        $gambar = $this->perkecil($this->putarSesuaiExif($gambar, $file));
+        $gambar = $this->putarSesuaiExif($gambar, $file);
+        $gambar = $folder === self::FOLDER_PROFIL ? $this->potongPersegi($gambar, self::SISI_PROFIL) : $this->perkecil($gambar);
         [$isi, $ekstensi] = $this->tulis($gambar);
         imagedestroy($gambar);
 
@@ -75,7 +81,7 @@ class FotoService
     }
 
     /**
-     * Semua foto yang tersimpan: foto bahan dan foto menu.
+     * Semua foto yang tersimpan: foto bahan, menu, dan profil.
      *
      * @return Collection<int, string> path di disk public
      */
@@ -83,7 +89,7 @@ class FotoService
     {
         $disk = Storage::disk(self::DISK);
 
-        return collect([self::FOLDER_BAHAN, self::FOLDER_MENU])
+        return collect(self::FOLDER)
             ->flatMap(fn (string $folder) => $disk->allFiles($folder))
             ->reject(fn (string $path) => str_starts_with(basename($path), '.'))
             ->values();
@@ -163,6 +169,24 @@ class FotoService
             return $gambar;
         }
 
+        imagedestroy($gambar);
+
+        return $baru;
+    }
+
+    /** Potong bagian tengah menjadi persegi, lalu perkecil ke $sisi (tidak diperbesar). */
+    private function potongPersegi(\GdImage $gambar, int $sisi): \GdImage
+    {
+        $lebar = imagesx($gambar);
+        $tinggi = imagesy($gambar);
+        $potong = min($lebar, $tinggi);
+        $hasilSisi = min($sisi, $potong);
+
+        $baru = imagecreatetruecolor($hasilSisi, $hasilSisi);
+        imagealphablending($baru, false);
+        imagesavealpha($baru, true);
+        imagefill($baru, 0, 0, imagecolorallocatealpha($baru, 0, 0, 0, 127));
+        imagecopyresampled($baru, $gambar, 0, 0, intdiv($lebar - $potong, 2), intdiv($tinggi - $potong, 2), $hasilSisi, $hasilSisi, $potong, $potong);
         imagedestroy($gambar);
 
         return $baru;

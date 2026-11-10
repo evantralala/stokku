@@ -6,7 +6,7 @@ use App\Services\FotoService;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-/** Foto bahan baku dan menu dibaca lewat aplikasi (bukan symlink public/storage), supaya jalan di shared hosting. */
+/** Foto bahan baku, menu, dan profil pengguna dibaca lewat aplikasi (bukan symlink public/storage), supaya jalan di shared hosting. */
 class FotoController extends Controller
 {
     /** Nama file foto selalu baru setiap diganti, jadi browser boleh menyimpannya lama. */

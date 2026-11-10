@@ -88,6 +88,7 @@ Route::middleware(['auth', 'role:admin_utama,admin_pusat,admin_cabang'])
     ->group(function () {
         Route::get('/akun', 'index')->name('akun');
         Route::put('/akun/password', 'ubahPassword')->name('akun.password');
+        Route::put('/akun/foto', 'simpanFoto')->name('akun.foto');
         Route::put('/akun/email', 'simpanEmail')->name('akun.email');
         Route::post('/akun/email/kirim', 'kirimEmail')->middleware('throttle:3,1')->name('akun.email.kirim');
     });
@@ -107,7 +108,7 @@ Route::middleware(['auth', 'role:admin_utama,admin_pusat,admin_cabang'])
     ->get('/bantuan', BantuanController::class)
     ->name('bantuan');
 
-// Foto bahan baku dan menu (semua peran)
+// Foto bahan baku, menu, dan profil pengguna (semua peran)
 Route::middleware(['auth', 'role:admin_utama,admin_pusat,admin_cabang'])
     ->get('/foto/{jenis}/{berkas}', FotoController::class)
     ->whereIn('jenis', array_keys(FotoService::FOLDER))

@@ -8,16 +8,9 @@
 @section('sub', $pengguna->email)
 
 @section('content')
-    @php
-        $warnaAva = [
-            \App\Models\User::ROLE_ADMIN_PUSAT  => 'ava-pusat',
-            \App\Models\User::ROLE_ADMIN_CABANG => 'ava-cabang',
-        ][$pengguna->role] ?? '';
-    @endphp
-
     <section class="panel profil-akun">
         <div class="profil-akun-atas">
-            <span class="ava ava-besar {{ $warnaAva }}" aria-hidden="true">{{ $pengguna->inisial }}</span>
+            <x-ava :pengguna="$pengguna" class="ava-besar" />
             <div class="profil-akun-teks">
                 <h2>{{ $pengguna->nama }}</h2>
                 <div class="sub">{{ $pengguna->label_role }} · {{ $pengguna->cabang?->nama ?? 'Semua Lokasi' }}</div>
@@ -29,8 +22,33 @@
             <div><dt>Peran</dt><dd>{{ $pengguna->label_role }}</dd></div>
             <div><dt>Lokasi</dt><dd>{{ $pengguna->cabang?->nama ?? 'Semua Lokasi' }}</dd></div>
         </dl>
-        <p class="panduan">Data akun diatur Admin Utama.</p>
+        <p class="panduan">Nama, email, peran, dan lokasi diatur Admin Utama.</p>
     </section>
+
+    <form id="foto-profil" class="panel" method="POST" action="{{ route('akun.foto') }}" enctype="multipart/form-data" novalidate>
+        @csrf
+        @method('PUT')
+
+        <div class="panel-head">
+            <div>
+                <h2>Foto Profil</h2>
+                <div class="sub">Tampil di pojok kanan atas. Tanpa foto, yang tampil inisial nama.</div>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <x-form.foto :src="$pengguna->urlFoto()" :nama="$pengguna->nama" />
+        </div>
+
+        <div class="simpan-bar">
+            <div class="simpan-aksi">
+                <button type="submit" class="btn btn-merah">
+                    <x-ikon nama="ceklis" />
+                    Simpan Foto
+                </button>
+            </div>
+        </div>
+    </form>
 
     <section class="panel pasang-aplikasi" aria-labelledby="judul-pasang">
         <div class="panel-head">

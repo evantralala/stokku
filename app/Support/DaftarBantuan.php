@@ -54,9 +54,10 @@ final class DaftarBantuan
         'akun' => [
             'judul'   => 'Akun',
             'ikon'    => 'kunci',
-            'ringkas' => 'Ganti Password dan atur email laporan harian.',
+            'ringkas' => 'Ganti foto profil, password, dan atur email laporan harian.',
             'rute'    => 'akun',
             'langkah' => [
+                'Foto Profil: tekan Pilih Foto, pilih gambar, lalu Simpan Foto. Centang Hapus Foto untuk kembali ke inisial.',
                 'Buka Akun, isi password lama dan password baru, lalu simpan.',
                 'Lupa password? Minta Admin Utama mengatur ulang.',
                 'Email Laporan Harian: centang Kirim otomatis, isi email tujuan (satu per baris), pilih laporan, lalu Simpan. Laporan terkirim setiap hari pukul 23.59.',

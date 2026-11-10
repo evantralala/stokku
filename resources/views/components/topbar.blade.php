@@ -26,10 +26,6 @@
     $bantuan = $pengguna && ! request()->routeIs('bantuan')
         ? app(\App\Services\BantuanService::class)->topikUntukRute($pengguna, request()->route()?->getName())
         : null;
-    $warnaAva = [
-        \App\Models\User::ROLE_ADMIN_PUSAT  => 'ava-pusat',
-        \App\Models\User::ROLE_ADMIN_CABANG => 'ava-cabang',
-    ][$pengguna?->role] ?? '';
 @endphp
 
 <div class="bilah-atas">
@@ -75,7 +71,7 @@
 
     @if ($pengguna)
         <a class="kartu-pengguna" href="{{ route('akun') }}" aria-label="Akun: {{ $pengguna->nama }}, {{ $konteks }}">
-            <span class="ava {{ $warnaAva }}" aria-hidden="true">{{ $pengguna->inisial }}</span>
+            <x-ava :pengguna="$pengguna" />
             <span class="kartu-pengguna-teks">
                 <span class="kartu-pengguna-nama">{{ $pengguna->nama }}</span>
                 <span class="kartu-pengguna-peran">{{ $konteks }}</span>

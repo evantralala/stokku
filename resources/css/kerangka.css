@@ -357,6 +357,16 @@
     .ava.ava-cabang {
         background: linear-gradient(135deg, #f5a524, #c26a06);
     }
+    .ava.ava-foto {
+        background: var(--color-batu);
+        overflow: hidden;
+    }
+    .ava.ava-foto img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
     .kartu-pengguna-teks {
         display: none;
         min-width: 0;
