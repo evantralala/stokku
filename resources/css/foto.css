@@ -1,0 +1,121 @@
+/* Foto bahan baku dan menu, serta isian foto di form. */
+@layer components {
+    .foto {
+        flex: none;
+        display: inline-grid;
+        place-items: center;
+        overflow: hidden;
+        border-radius: var(--radius-kendali);
+        background: var(--color-pasir);
+        box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+        vertical-align: middle;
+    }
+    .foto img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .foto-kecil {
+        width: 40px;
+        height: 40px;
+        font-size: 13px;
+    }
+    .foto-sedang {
+        width: 88px;
+        height: 88px;
+        font-size: 24px;
+    }
+    .foto-besar {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: 0;
+        font-size: 40px;
+        box-shadow: none;
+    }
+    .foto-awal {
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        line-height: 1;
+    }
+    .foto-warna-0 {
+        background: var(--color-beni-soft);
+        color: var(--color-beni-teks);
+    }
+    .foto-warna-1 {
+        background: var(--color-miso-soft);
+        color: var(--color-miso);
+    }
+    .foto-warna-2 {
+        background: var(--color-matcha-soft);
+        color: var(--color-matcha);
+    }
+    .foto-warna-3 {
+        background: var(--color-biru-soft);
+        color: var(--color-biru);
+    }
+    .foto-warna-4 {
+        background: var(--color-pasir);
+        color: var(--color-sumi-2);
+    }
+    .foto.dihapus {
+        opacity: 0.3;
+    }
+
+    /* Nama bahan/menu dengan foto kecil di kiri. */
+    .dengan-foto {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+    }
+    .dengan-foto-teks {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .isian-foto .label-isian {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-sumi-2);
+    }
+    .isian-foto-baris {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .isian-foto-kendali {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    .isian-foto-kendali .btn {
+        min-height: var(--sentuh);
+    }
+    .isian-foto-file {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        overflow: hidden;
+    }
+    .isian-foto-file:focus-visible + .btn {
+        outline: 2px solid var(--color-sumi);
+        outline-offset: 2px;
+    }
+    .field .isian-foto-hapus {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: var(--sentuh);
+        font-weight: 500;
+        cursor: pointer;
+    }
+    .isian-foto-hapus input {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--color-beni);
+    }
+}

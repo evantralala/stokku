@@ -1,0 +1,62 @@
+/* Form dan detail dokumen transaksi (barang masuk, permintaan, barang keluar, dan modul berikutnya). */
+@layer components {
+    .baris-transaksi {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .baris-masuk-isi,
+    .baris-minta-isi,
+    .baris-keluar-isi { display: grid; grid-template-columns: 1fr; gap: 12px; }
+
+    .isian-foto { padding: 8px; }
+
+    /* Satu barang di form kirim: info di kiri, jumlah kirim di kanan. */
+    .baris-kirim {
+        display: grid;
+        grid-template-columns: 1fr minmax(0, 9.5rem);
+        align-items: end;
+        gap: 12px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .baris-kirim-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        align-self: center;
+    }
+
+    /* Isian terima barang: jumlah dan kondisi berdampingan, catatan selebar baris. */
+    .isian-terima {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+    @media (min-width: 768px) {
+        .isian-terima { grid-template-columns: minmax(200px, 16rem) minmax(0, 1fr); }
+        .isian-terima > .pilih-kotak-field { grid-column: 1 / -1; grid-row: 2; }
+        .isian-terima > .field.lebar:not(.pilih-kotak-field) { grid-column: 2; grid-row: 1; }
+    }
+
+    /* Keterangan stok cabang di bawah baris permintaan. */
+    .info-stok { grid-column: 1 / -1; font-size: 13.5px; color: var(--color-hai); }
+    .info-stok:empty { display: none; }
+    .info-stok.info-kurang { color: var(--color-beni-teks); font-weight: 600; }
+
+    .daftar-keputusan { padding: 4px 16px 12px; }
+    .daftar-keputusan li { padding: 10px 0; border-bottom: 1px solid var(--color-garis-2); font-size: 14px; }
+    .daftar-keputusan li:last-child { border-bottom: none; }
+
+    @media (min-width: 768px) {
+        .baris-transaksi { flex-direction: row; align-items: flex-start; }
+        .baris-masuk-isi { flex: 1; grid-template-columns: 2fr minmax(190px, 1.2fr) 1.5fr; }
+        .baris-minta-isi { flex: 1; grid-template-columns: 2fr minmax(190px, 1.2fr) 2fr; }
+        .baris-keluar-isi { flex: 1; grid-template-columns: 1.6fr minmax(220px, 1fr) 1.6fr; }
+        .baris-transaksi .baris-hapus { margin-top: 27px; }
+        .baris-transaksi .baris-hapus span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    }
+}

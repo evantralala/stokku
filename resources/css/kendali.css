@@ -1,0 +1,325 @@
+/*
+ * Kendali gaya kasir yang dipakai banyak halaman: tombol gelap, kotak cari, chip saring, isian jumlah −/+.
+ * Target sentuh ≥ 44px; di laptop dengan mouse sedikit lebih padat.
+ * Di kepala halaman (.topbar), chip saring tampil sebagai tombol bersegmen (lihat kerangka.css).
+ */
+@layer components {
+    .btn-gelap {
+        background: var(--color-batu);
+        border-color: var(--color-garis-3);
+        color: var(--color-putih);
+    }
+    .btn-gelap:hover {
+        background: var(--color-batu-2);
+        border-color: var(--color-batu-2);
+    }
+
+    .btn-garis {
+        border-color: var(--color-sumi);
+    }
+
+    .btn-hijau {
+        background: var(--color-matcha-isi);
+        border-color: var(--color-matcha-isi);
+        color: var(--color-putih);
+    }
+    .btn-hijau:hover {
+        background: #127a47;
+        border-color: #127a47;
+    }
+
+    /* ---------- kotak cari: ikon + isian ---------- */
+    .kotak-cari {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        height: var(--sentuh);
+        padding: 0 12px;
+        border-radius: 10px;
+        background: var(--color-kami-2);
+        box-shadow: inset 0 0 0 1px var(--color-garis-3);
+        color: var(--color-hai);
+        transition: box-shadow var(--gerak-cepat) ease;
+    }
+    .kotak-cari:hover {
+        box-shadow: inset 0 0 0 1px var(--color-hai-2);
+    }
+    .kotak-cari:focus-within {
+        box-shadow: inset 0 0 0 2px var(--color-beni), 0 0 0 3px rgb(221 42 35 / 0.2);
+    }
+    .kotak-cari-isian {
+        flex: 1;
+        min-width: 0;
+        height: 100%;
+        border: 0;
+        background: none;
+        font: inherit;
+        font-size: 16px;
+        color: var(--color-sumi);
+        outline: none;
+    }
+    .kotak-cari-isian::placeholder {
+        color: var(--color-hai);
+    }
+
+    /* ---------- chip saring: pilihan yang tinggal ditekan ---------- */
+    .chip-saring {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .chip {
+        --chip-teks: var(--color-sumi);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-height: var(--sentuh);
+        padding: 0 14px;
+        border-radius: 10px;
+        border: 1px solid var(--color-garis-3);
+        background: var(--color-shiro);
+        color: var(--chip-teks);
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+        transition:
+            transform var(--gerak-cepat) ease,
+            background-color var(--gerak-cepat) ease,
+            color var(--gerak-cepat) ease;
+    }
+    .chip.lampu-merah,
+    .chip.lampu-kuning,
+    .chip.lampu-hijau {
+        --chip-teks: var(--lampu-teks);
+    }
+    .chip .num {
+        font-weight: 700;
+    }
+    .chip:hover {
+        background: var(--color-batu);
+        border-color: var(--color-hai-2);
+    }
+    .chip:active {
+        transform: scale(0.97);
+    }
+    .chip[aria-current='true'] {
+        background: linear-gradient(135deg, #f0453e, #b5160f);
+        border-color: var(--color-beni);
+        color: #fff;
+    }
+    .chip[aria-current='true'] .lampu-titik {
+        box-shadow: 0 0 0 2px #fff;
+    }
+    .chip-saring.chip-geser {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .chip-geser .chip {
+        flex: none;
+    }
+    .chip-hapus {
+        font-size: 16px;
+        line-height: 1;
+    }
+
+    /* ---------- isian jumlah −/+ ---------- */
+    .field.label-tersembunyi > label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+    .isian-jumlah {
+        display: grid;
+        grid-template-columns: 52px minmax(0, 1fr) 52px;
+        gap: 8px;
+        align-items: stretch;
+    }
+    .isian-jumlah:not([data-terpasang]) {
+        display: block;
+    }
+    .isian-jumlah-tombol {
+        min-height: 52px;
+        border-radius: var(--radius-kendali);
+        border: 1px solid var(--color-garis-3);
+        background: var(--color-shiro);
+        color: var(--color-sumi);
+        font-size: 26px;
+        font-weight: 600;
+        line-height: 1;
+        display: grid;
+        place-items: center;
+        transition:
+            transform var(--gerak-cepat) ease,
+            background-color var(--gerak-cepat) ease;
+    }
+    .isian-jumlah-tombol[data-tambah] {
+        background: var(--color-batu);
+        border-color: var(--color-batu-2);
+        color: var(--color-putih);
+    }
+    .isian-jumlah-tombol:active:not(:disabled) {
+        transform: scale(0.94);
+    }
+    .isian-jumlah-tombol:disabled {
+        opacity: 0.4;
+        cursor: default;
+    }
+    .isian-jumlah-kotak {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-width: 0;
+        padding: 0 10px;
+        border: 1px solid var(--color-garis-3);
+        border-radius: var(--radius-kendali);
+        background: var(--color-shiro);
+    }
+    .isian-jumlah-kotak:focus-within {
+        border-color: var(--color-sumi);
+        box-shadow: 0 0 0 1px var(--color-sumi);
+    }
+    .isian-jumlah-isian {
+        width: 100%;
+        min-width: 0;
+        max-width: 8ch;
+        border: 0;
+        background: none;
+        text-align: right;
+        font: inherit;
+        font-family: var(--font-mono);
+        font-size: 21px;
+        font-weight: 600;
+        color: var(--color-sumi);
+        outline: none;
+    }
+    .isian-jumlah-isian.galat {
+        color: var(--color-beni-teks);
+    }
+    .isian-jumlah-kotak:has([inputmode="text"]) .isian-jumlah-isian {
+        max-width: 14ch;
+    }
+    /* Ganti keyboard angka/huruf untuk jumlah bebas (2x10, 500 ml); hanya di layar sentuh. */
+    .isian-jumlah-ganti {
+        flex: none;
+        min-height: 28px;
+        padding: 2px 8px;
+        border: 1px solid var(--color-garis);
+        border-radius: 999px;
+        background: var(--color-kami-2);
+        color: var(--color-hai);
+        font-size: 12px;
+        font-weight: 700;
+    }
+    @media (pointer: fine) {
+        .isian-jumlah-ganti { display: none; }
+    }
+    .isian-jumlah-satuan {
+        font-size: 15px;
+        color: var(--color-hai);
+        white-space: nowrap;
+    }
+    .isian-jumlah.ringkas {
+        grid-template-columns: 44px minmax(0, 1fr) 44px;
+        gap: 6px;
+    }
+    .isian-jumlah.ringkas .isian-jumlah-tombol {
+        min-height: 44px;
+        font-size: 22px;
+    }
+    .isian-jumlah.ringkas .isian-jumlah-isian {
+        font-size: 18px;
+    }
+
+    @media (pointer: fine) and (min-width: 1024px) {
+        .chip {
+            min-height: 38px;
+        }
+    }
+
+    /* ---------- pilih kotak: radio berupa kotak besar ---------- */
+    .pilih-kotak-field {
+        border: 0;
+        margin: 0;
+        padding: 0;
+        min-width: 0;
+    }
+    .field.pilih-kotak-field > legend {
+        float: none;
+        width: auto;
+        padding: 0;
+        margin-bottom: 6px;
+        font-family: var(--font-sans);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-sumi-2);
+    }
+    .pilih-kotak {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+    .pilih-kotak-opsi {
+        position: relative;
+        display: flex;
+    }
+    .pilih-kotak-opsi input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        margin: 0;
+        cursor: pointer;
+    }
+    .pilih-kotak-opsi span {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 6px 10px;
+        border: 1px solid var(--color-garis-3);
+        border-radius: var(--radius-kendali);
+        background: var(--color-shiro);
+        font-weight: 600;
+        line-height: 1.25;
+        text-align: center;
+        transition:
+            transform var(--gerak-cepat) ease,
+            background-color var(--gerak-cepat) ease,
+            border-color var(--gerak-cepat) ease;
+    }
+    .pilih-kotak-opsi:hover span {
+        background: var(--color-batu);
+        border-color: var(--color-hai-2);
+    }
+    .pilih-kotak-opsi:active span {
+        transform: scale(0.97);
+    }
+    .pilih-kotak-opsi input:checked + span {
+        border-color: var(--color-beni);
+        background: linear-gradient(135deg, #f0453e, #b5160f);
+        box-shadow: 0 6px 16px rgb(221 42 35 / 0.3);
+        color: #fff;
+    }
+    .pilih-kotak-opsi input:focus-visible + span {
+        outline: 2px solid var(--color-sumi);
+        outline-offset: 2px;
+    }
+    .pilih-kotak.galat .pilih-kotak-opsi span {
+        border-color: var(--color-beni);
+    }
+    @media (min-width: 640px) {
+        .pilih-kotak.kolom-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .pilih-kotak.kolom-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+}

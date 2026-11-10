@@ -1,0 +1,93 @@
+@layer components {
+    .panduan-resep {
+        grid-column: 1 / -1;
+        font-size: 14px;
+        color: var(--color-sumi-2);
+    }
+
+    .daftar-baris { display: flex; flex-direction: column; }
+
+    .baris-resep {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .baris-resep-isi { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .baris-hapus { align-self: flex-start; }
+    .baris-galat { padding: 8px 16px 0; }
+    .baris-tambah { padding: 14px 16px; }
+    /* Tempel Daftar: tulisan bebas satu bahan per baris diubah menjadi baris form. */
+    .tempel-daftar { border-top: 1px solid var(--color-garis-2); }
+    .tempel-daftar > summary {
+        display: flex;
+        align-items: center;
+        min-height: var(--sentuh);
+        padding: 10px 16px;
+        color: var(--color-sumi-2);
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .tempel-daftar-isi { display: flex; flex-direction: column; gap: 8px; padding: 0 16px 14px; }
+    .tempel-daftar-isi textarea { min-height: 120px; resize: vertical; }
+    .tempel-daftar-isi .btn { align-self: flex-start; }
+    .tempel-daftar-isi p:empty { display: none; }
+    .baris-tambah .btn { width: 100%; }
+    .baris-tambah .btn:not(.btn-merah) {
+        border: 1.5px dashed rgb(221 42 35 / 0.6);
+        background: rgb(221 42 35 / 0.08);
+        color: var(--color-beni-teks);
+        font-weight: 700;
+    }
+    .baris-tambah .btn:not(.btn-merah):hover {
+        border-style: solid;
+        border-color: var(--color-beni);
+        background: var(--color-beni);
+        color: var(--color-putih);
+        box-shadow: var(--shadow-nyala);
+    }
+
+    .aksi-baris { display: flex; gap: 8px; }
+    .aksi-baris > * { flex: 1; }
+
+    .takaran { list-style: none; margin: 0; padding: 0; }
+    .takaran li {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 12px;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .takaran li:last-child { border-bottom: none; }
+    .takaran-nilai { white-space: nowrap; font-weight: 600; }
+
+    .salin-resep { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+    .salin-resep label { font-size: 14px; font-weight: 600; color: var(--color-sumi-2); }
+    .salin-resep-isi { display: flex; gap: 8px; }
+    .salin-resep-isi .isian { flex: 1; min-width: 0; }
+
+    .riwayat { border-top: 1px solid var(--color-garis-2); }
+    .riwayat summary {
+        min-height: var(--sentuh);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    @media (min-width: 768px) {
+        .baris-resep { flex-direction: row; align-items: flex-start; }
+        .baris-resep-isi { flex: 1; grid-template-columns: 2fr 1fr; }
+        .baris-hapus { margin-top: 27px; }
+        .baris-hapus span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+        .baris-tambah .btn { width: auto; }
+        .salin-resep { flex-direction: row; align-items: center; gap: 12px; }
+        .salin-resep-isi { flex: 1; max-width: 420px; }
+        .aksi-baris { justify-content: flex-end; }
+        .aksi-baris > * { flex: none; }
+    }
+}

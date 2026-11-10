@@ -1,0 +1,134 @@
+/* Keadaan kosong bergambar (<x-kosong>) dan ikon di kartu, tombol cepat, serta judul panel. */
+@layer components {
+    .kosong-gambar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 28px 16px 32px;
+    }
+    .kosong-gambar[hidden] {
+        display: none;
+    }
+    td.kosong > .kosong-gambar:not([hidden]),
+    .tabel-kartu td.kosong > div.kosong-gambar:not([hidden]) {
+        display: flex;
+        width: 100%;
+        padding: 12px 0;
+    }
+    @media (max-width: 767.98px) {
+        .tabel-kartu td.kosong:has(> .kosong-gambar) {
+            display: block;
+        }
+    }
+    .kosong-ilustrasi {
+        width: 150px;
+        height: auto;
+        margin-bottom: 8px;
+    }
+    .kosong-kecil {
+        padding: 20px 16px 24px;
+    }
+    .kosong-kecil .kosong-ilustrasi {
+        width: 104px;
+        margin-bottom: 4px;
+    }
+    .kosong-judul {
+        font-weight: 600;
+        color: var(--color-sumi-2);
+        max-width: 36ch;
+        text-wrap: balance;
+    }
+    .kosong-judul .link {
+        margin-top: 0;
+    }
+    .kosong-ket {
+        font-size: 13.5px;
+        color: var(--color-hai);
+        max-width: 42ch;
+        text-wrap: balance;
+    }
+
+    .il-latar {
+        fill: var(--color-pasir);
+    }
+    .il-bayang {
+        fill: rgb(0 0 0 / 0.25);
+    }
+    .il-isi {
+        fill: var(--color-shiro);
+    }
+    .il-dalam {
+        fill: var(--color-garis);
+    }
+    .il-garis {
+        stroke: var(--color-sumi-2);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    path.il-garis:not(.il-isi):not(.il-dalam) {
+        fill: none;
+    }
+    .il-tebal {
+        stroke-width: 3.5;
+    }
+    .il-gagang {
+        stroke-width: 6;
+    }
+    .il-tipis {
+        fill: none;
+        stroke: var(--color-hai-2);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+    }
+    .il-putus {
+        stroke-dasharray: 4 5;
+    }
+    .il-aksen {
+        fill: var(--color-beni);
+    }
+    .il-aksen-garis {
+        fill: none;
+        stroke: var(--color-beni);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .il-hijau {
+        fill: var(--color-matcha);
+    }
+    .il-centang {
+        fill: none;
+        stroke: #fff;
+        stroke-width: 3.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    /* Ikon di judul panel. */
+    .panel-head h2 .ikon-judul {
+        display: inline-grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        margin-right: 10px;
+        border-radius: var(--radius-kendali);
+        background: linear-gradient(135deg, #f0453e, #b5160f);
+        box-shadow: 0 4px 12px rgb(221 42 35 / 0.3);
+        color: #fff;
+        vertical-align: middle;
+    }
+    .panel-head h2 .ikon-judul svg {
+        width: 16px;
+        height: 16px;
+    }
+    .panel-head h2:has(.ikon-judul) {
+        display: flex;
+        align-items: center;
+        gap: 0;
+    }
+    .panel-head h2:has(.ikon-judul) .num {
+        margin-left: 6px;
+    }
+}

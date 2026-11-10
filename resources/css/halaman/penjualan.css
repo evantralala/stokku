@@ -1,0 +1,66 @@
+/* Form penjualan harian gaya kasir: kartu menu dengan tombol −/+ besar, cari menu, total porsi, perkiraan stok. */
+@layer components {
+    .penjualan-kepala { flex-direction: column; align-items: stretch; gap: 10px; }
+    .penjualan-total { font-size: 15px; color: var(--color-sumi-2); white-space: nowrap; }
+    .penjualan-total strong { font-size: 22px; color: var(--color-sumi); }
+
+    .kelompok-menu { padding-bottom: 6px; }
+    .grid-menu {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 8px;
+        padding: 0 12px 6px;
+    }
+    .kartu-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
+        border: 1px solid var(--color-garis);
+        border-radius: 12px;
+        background: var(--color-shiro);
+        transition: border-color var(--gerak-cepat) ease;
+    }
+    .kartu-menu:has(.isian-jumlah-isian:not(:placeholder-shown)) { border-color: var(--color-beni); box-shadow: 0 0 0 1px rgb(221 42 35 / 0.4), 0 8px 20px rgb(221 42 35 / 0.18); }
+    .kartu-menu-kepala { display: flex; align-items: flex-start; gap: 8px; min-width: 0; }
+    .kartu-menu-nama { font-weight: 600; line-height: 1.3; min-height: 2.6em; min-width: 0; overflow-wrap: anywhere; }
+    .kartu-menu-ket { margin-top: -6px; font-size: 12px; font-weight: 600; color: var(--color-miso); }
+    .kartu-menu.tanpa-resep { background: var(--color-miso-soft); border-color: rgb(245 165 36 / 0.35); }
+    .kartu-menu .field { gap: 0; }
+    .kartu-menu .isian-jumlah.ringkas { grid-template-columns: 40px minmax(0, 1fr) 40px; gap: 4px; }
+    .kartu-menu .isian-jumlah.ringkas .isian-jumlah-tombol { min-height: 44px; }
+    .kartu-menu .isian-jumlah-kotak { padding: 0 4px; }
+    .kartu-menu .isian-jumlah-isian { text-align: center; max-width: none; }
+
+    @media (min-width: 768px) {
+        .penjualan-kepala { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+        .penjualan-kepala .kotak-cari { flex: 1; max-width: 320px; }
+        .grid-menu { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); padding: 0 16px 8px; }
+    }
+
+    /* ---------- perkiraan stok setelah disimpan (form penjualan & cek impor penjualan) ---------- */
+    .perkiraan-wadah { margin: 8px 16px 12px; transition: opacity var(--gerak-cepat) ease; }
+    .perkiraan-wadah[aria-busy='true'] { opacity: .55; }
+    .perkiraan-stok { border: 1px solid var(--color-garis); border-radius: 12px; background: var(--color-shiro); overflow: hidden; }
+    .perkiraan-kosong { margin: 0; padding: 12px 16px; }
+    .perkiraan-rinci > summary {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 4px 12px;
+        min-height: var(--sentuh);
+        padding: 10px 16px;
+        cursor: pointer;
+        list-style: none;
+    }
+    .perkiraan-rinci > summary::-webkit-details-marker { display: none; }
+    .perkiraan-rinci > summary::after { content: '▾'; color: var(--color-hai); transition: transform var(--gerak-cepat) ease; }
+    .perkiraan-rinci[open] > summary::after { transform: rotate(180deg); }
+    .perkiraan-rinci[open] > summary { border-bottom: 1px solid var(--color-garis); }
+    .perkiraan-judul { font-weight: 700; }
+    .perkiraan-ringkas { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-left: auto; font-size: 13px; }
+    .perkiraan-stok .daftar-ringkas { max-height: 360px; overflow-y: auto; }
+    .impor-perkiraan { padding: 12px 16px 0; }
+    .impor-perkiraan .perkiraan-wadah { margin: 0 0 12px; }
+}

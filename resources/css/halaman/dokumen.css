@@ -1,0 +1,408 @@
+/*
+ * Halaman detail dokumen (permintaan, kiriman, barang masuk, barang rusak, opname, penjualan).
+ * Kiri: daftar barang & form. Kanan (laptop): keputusan, berkas PDF, keterangan.
+ */
+@layer components {
+    .tata-dokumen {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    .tata-dokumen-utama,
+    .tata-dokumen-samping {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        min-width: 0;
+    }
+
+    @media (min-width: 1024px) {
+        .tata-dokumen {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 320px;
+            align-items: start;
+            gap: 24px;
+        }
+        .tata-dokumen-samping {
+            position: sticky;
+            top: 76px;
+        }
+    }
+
+    /* ---------- status di kepala halaman ---------- */
+    .kepala-status {
+        display: inline-flex;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+
+    /* ---------- tabel barang ---------- */
+    .panel-head h2 .num {
+        margin-left: 4px;
+        font-weight: 500;
+        color: var(--color-hai);
+    }
+    .barang-ket {
+        display: block;
+        margin-top: 2px;
+        font-size: 12.5px;
+        color: var(--color-hai);
+        font-weight: 400;
+    }
+    .barang-ket.teks-kurang {
+        color: var(--color-beni-teks);
+    }
+    /* ---------- langkah singkat di kolom samping (mis. setelah kirim) ---------- */
+    .langkah-ringkas {
+        margin: 0;
+        padding: 14px 18px 16px 36px;
+        list-style: decimal;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 13.5px;
+        color: var(--color-sumi-2);
+    }
+
+    .tabel-barang td.kosong {
+        text-align: center;
+    }
+    .tabel-barang tr.subjudul-baris td {
+        padding: 14px 16px 6px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-hai);
+        background: var(--color-kami-2);
+    }
+
+    @media (max-width: 767.98px) {
+        .tabel-barang tr.subjudul-baris {
+            display: block;
+            padding: 0;
+        }
+        .tabel-barang tr.subjudul-baris::before {
+            content: none;
+        }
+        .tabel-barang tr.subjudul-baris td {
+            display: block;
+            width: 100%;
+            padding: 14px 16px 6px;
+        }
+        .tabel-barang tr.subjudul-baris td::before {
+            content: none;
+        }
+        .tabel-kartu.tabel-ringkas td.kartu-judul .barang-ket {
+            display: block;
+        }
+    }
+
+    /* ---------- kotak berkas PDF ---------- */
+    .daftar-berkas {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .daftar-berkas > li + li {
+        border-top: 1px solid var(--color-garis-2);
+    }
+    .berkas {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 60px;
+        padding: 10px 16px;
+        transition: background-color var(--gerak-cepat) ease;
+    }
+    .berkas:hover {
+        background: rgb(255 255 255 / 0.045);
+        box-shadow: inset 3px 0 0 var(--color-beni);
+    }
+    .berkas-tanda {
+        flex: none;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        width: 32px;
+        height: 40px;
+        padding-bottom: 5px;
+        border: 1px solid var(--color-garis-3);
+        border-radius: 3px 9px 3px 3px;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: var(--color-beni-teks);
+        background: var(--color-shiro);
+    }
+    .berkas-teks {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+    .berkas-judul {
+        font-weight: 600;
+        font-size: 14px;
+    }
+    .berkas-ket {
+        font-size: 12.5px;
+        color: var(--color-hai);
+    }
+    .berkas-unduh {
+        flex: none;
+        color: var(--color-sumi);
+    }
+
+    /* ---------- kotak keputusan & tindakan di kolom samping ---------- */
+    .kotak-tindakan {
+        display: flex;
+        flex-direction: column;
+    }
+    .kotak-tindakan-isi {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 16px 16px;
+    }
+    .kotak-tindakan-isi > p {
+        margin: 0;
+        font-size: 13.5px;
+        color: var(--color-sumi-2);
+    }
+    .kotak-tindakan-isi .btn {
+        width: 100%;
+    }
+    .kotak-tindakan .lipat-tolak {
+        border-top: 1px solid var(--color-garis-2);
+    }
+    .kotak-tindakan .lipat-tolak .form-grid {
+        grid-template-columns: 1fr;
+        padding: 14px 16px;
+    }
+    .kotak-tindakan .lipat-tolak .simpan-bar {
+        background: none;
+        border-top: 0;
+        padding: 0 16px 16px;
+    }
+    .kotak-tindakan .lipat-tolak .simpan-aksi,
+    .kotak-tindakan .lipat-tolak .simpan-aksi .btn {
+        width: 100%;
+    }
+    .kotak-tindakan .daftar-keputusan {
+        padding: 10px 16px 12px;
+    }
+}
+
+/* Daftar dokumen sebagai tabel (barang masuk, kiriman, permintaan, persetujuan, dst.). */
+@layer components {
+    .tabel-dokumen tbody tr {
+        position: relative;
+    }
+    .tabel-dokumen .tautan-baris::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+    }
+    .tabel-dokumen .kartu-aksi,
+    .tabel-dokumen .kartu-aksi * {
+        position: relative;
+        z-index: 1;
+    }
+    .tabel-dokumen .nomor-dokumen {
+        font-weight: 600;
+    }
+    .tabel-dokumen td.kartu-judul .badge {
+        margin-top: 4px;
+    }
+    @media (min-width: 768px) {
+        .tabel-dokumen td.kartu-utama {
+            width: 1%;
+            white-space: nowrap;
+        }
+        .tabel-dokumen td.kartu-aksi {
+            width: 1%;
+            white-space: nowrap;
+        }
+    }
+
+    /* ---------- antrean persetujuan ---------- */
+    .tabel-antrean .antrean-batas {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--color-miso);
+    }
+    .tabel-antrean .antrean-batas.mendesak {
+        color: var(--color-beni-teks);
+    }
+    .tabel-antrean .cek-wajar {
+        margin-top: 0;
+        font-size: 13px;
+        font-weight: 600;
+    }
+    .tabel-antrean .antrean-aksi .btn {
+        min-width: 88px;
+    }
+    @media (max-width: 767.98px) {
+        .tabel-antrean .kartu-aksi > *,
+        .tabel-siap-kirim .kartu-aksi > * {
+            flex: 1;
+        }
+        .tabel-antrean .kartu-aksi .btn,
+        .tabel-siap-kirim .kartu-aksi .btn {
+            width: 100%;
+        }
+    }
+}
+
+@layer components {
+    .tabel-antrean .barang-ket .antrean-batas {
+        font-size: inherit;
+    }
+}
+
+/* Kepala detail dokumen (ikon jenis, nomor, status, strip info) dan kotak dampak terhadap persediaan. */
+@layer components {
+    .kepala-dokumen { --kepala-ikon: var(--color-sumi); --kepala-latar: var(--color-batu); }
+    .kepala-dokumen.nada-masuk { --kepala-ikon: #fff; --kepala-latar: var(--color-matcha-isi); }
+    .kepala-dokumen.nada-keluar { --kepala-ikon: #fff; --kepala-latar: var(--color-beni); }
+    .kepala-dokumen-atas {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 18px;
+        background: linear-gradient(90deg, color-mix(in srgb, var(--kepala-latar) 9%, var(--color-shiro)), var(--color-shiro) 70%);
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .kepala-dokumen-ikon {
+        flex: none;
+        display: grid;
+        place-items: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 13px;
+        background: var(--kepala-latar);
+        color: var(--kepala-ikon);
+    }
+    .kepala-dokumen-teks { flex: 1; min-width: 0; }
+    .kepala-dokumen-nomor {
+        font-family: var(--font-mono);
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--color-sumi);
+        overflow-wrap: anywhere;
+    }
+    .kepala-dokumen-ket { margin-top: 2px; font-size: 13px; color: var(--color-hai); }
+    .kepala-dokumen-status { flex: none; }
+    .kepala-dokumen-info {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin: 0;
+    }
+    .kepala-dokumen-info > div {
+        min-width: 0;
+        padding: 12px 18px;
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .kepala-dokumen-info > div:nth-child(odd) { border-right: 1px solid var(--color-garis-2); }
+    .kepala-dokumen-info dt {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--color-hai);
+    }
+    .kepala-dokumen-info dd {
+        margin: 4px 0 0;
+        font-size: 14.5px;
+        font-weight: 600;
+        color: var(--color-sumi);
+        overflow-wrap: anywhere;
+    }
+    .kepala-dokumen-info dd .link { font-size: inherit; }
+
+    .dampak-dokumen {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 14px 18px;
+        border: 1px solid rgb(52 199 123 / 0.3);
+        border-radius: var(--radius-panel);
+        background: var(--color-matcha-soft);
+        color: var(--color-matcha);
+    }
+    .dampak-dokumen > svg { flex: none; margin-top: 2px; }
+    .dampak-dokumen-judul { font-size: 14px; font-weight: 700; }
+    .dampak-dokumen p { margin: 2px 0 0; font-size: 13.5px; color: var(--color-sumi-2); }
+
+    @media (max-width: 479.98px) {
+        .kepala-dokumen-atas { flex-wrap: wrap; }
+        .kepala-dokumen-status { width: 100%; padding-left: 62px; }
+    }
+
+    @media (min-width: 900px) {
+        .kepala-dokumen-info { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+        .kepala-dokumen-info > div { border-bottom: none; border-right: 1px solid var(--color-garis-2); }
+        .kepala-dokumen-info > div:last-child { border-right: none; }
+    }
+}
+
+/* Daftar bercentang: kotak centang di kanan baris (di atas tautan baris) dan bilah bawah x-pilih.bilah. */
+@layer components {
+    .sel-pilih {
+        width: 56px;
+        position: relative;
+        z-index: 1;
+    }
+    .tabel-kartu tr:has([data-pilih-baris]:checked) {
+        background: var(--color-beni-soft);
+    }
+    .bilah-pilih {
+        justify-content: space-between;
+    }
+    .bilah-pilih-teks {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-sumi);
+    }
+    .bilah-pilih-aksi {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .bilah-pilih-aksi .btn {
+        min-height: var(--sentuh);
+    }
+
+    @media (max-width: 767.98px) {
+        .tabel-kartu td.sel-pilih {
+            position: absolute;
+            right: 6px;
+            bottom: 4px;
+            width: auto;
+            z-index: 2;
+        }
+        .tabel-kartu tr:has(> td.sel-pilih .pilih-isi) {
+            padding-right: 56px;
+        }
+        .bilah-pilih-aksi {
+            width: 100%;
+        }
+        .tabel-antrean td.sel-pilih,
+        .tabel-siap-kirim td.sel-pilih {
+            top: 6px;
+            bottom: auto;
+        }
+        .bilah-pilih-aksi .btn {
+            flex: 1 1 0;
+            min-width: 0;
+            justify-content: center;
+            text-align: center;
+            white-space: normal;
+        }
+        .bilah-pilih-aksi .btn svg {
+            display: none;
+        }
+    }
+}

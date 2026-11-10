@@ -1,0 +1,118 @@
+/*
+ * Transisi antarhalaman (View Transitions lintas dokumen) dan popup.
+ * Isi halaman bergeser: maju = masuk dari kanan, mundur = masuk dari kiri, sama = hanya memudar (arah ditentukan resources/views/layouts/_transisi.blade.php).
+ * Tombol aksi halaman (.topbar) ikut bergeser bersama isi. Sidebar, bilah atas, dan navigasi bawah tetap diam di atas isi yang bergeser.
+ * Browser tanpa dukungan langsung berpindah halaman seperti biasa. Mati bila pengguna memilih kurangi gerakan.
+ */
+@media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+        navigation: auto;
+    }
+
+    .content {
+        view-transition-name: isi;
+    }
+    .bilah-atas {
+        view-transition-name: bilah-atas;
+    }
+    .topbar {
+        view-transition-name: aksi;
+    }
+    .sidebar {
+        view-transition-name: sidebar;
+    }
+    .navbawah {
+        view-transition-name: nav-bawah;
+    }
+
+    ::view-transition-group(bilah-atas),
+    ::view-transition-group(sidebar),
+    ::view-transition-group(nav-bawah) {
+        z-index: 2;
+        animation: none;
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root),
+    ::view-transition-old(bilah-atas),
+    ::view-transition-new(bilah-atas),
+    ::view-transition-old(sidebar),
+    ::view-transition-new(sidebar),
+    ::view-transition-old(nav-bawah),
+    ::view-transition-new(nav-bawah) {
+        animation-duration: 0.2s;
+    }
+
+    ::view-transition-group(isi),
+    ::view-transition-group(aksi) {
+        overflow: clip;
+        animation-duration: 0.28s;
+    }
+    ::view-transition-old(isi),
+    ::view-transition-old(aksi) {
+        animation: 0.18s cubic-bezier(0.4, 0, 1, 1) both geser-keluar-kiri;
+    }
+    ::view-transition-new(isi),
+    ::view-transition-new(aksi) {
+        animation: 0.28s cubic-bezier(0, 0, 0.2, 1) 0.04s both geser-masuk-kanan;
+    }
+    html:active-view-transition-type(mundur)::view-transition-old(isi),
+    html:active-view-transition-type(mundur)::view-transition-old(aksi) {
+        animation-name: geser-keluar-kanan;
+    }
+    html:active-view-transition-type(mundur)::view-transition-new(isi),
+    html:active-view-transition-type(mundur)::view-transition-new(aksi) {
+        animation-name: geser-masuk-kiri;
+    }
+    html:active-view-transition-type(sama)::view-transition-old(isi),
+    html:active-view-transition-type(sama)::view-transition-old(aksi) {
+        animation: 0.16s ease-in both pudar-keluar;
+    }
+    html:active-view-transition-type(sama)::view-transition-new(isi),
+    html:active-view-transition-type(sama)::view-transition-new(aksi) {
+        animation: 0.2s ease-out both pudar-masuk-isi;
+    }
+
+    @keyframes geser-keluar-kiri {
+        to { opacity: 0; transform: translateX(-36px); }
+    }
+    @keyframes geser-keluar-kanan {
+        to { opacity: 0; transform: translateX(36px); }
+    }
+    @keyframes geser-masuk-kanan {
+        from { opacity: 0; transform: translateX(36px); }
+    }
+    @keyframes geser-masuk-kiri {
+        from { opacity: 0; transform: translateX(-36px); }
+    }
+    @keyframes pudar-masuk-isi {
+        from { opacity: 0; }
+    }
+
+    /* ---------- popup: masuk dari kanan, keluar ke kanan; isi baru muncul halus ---------- */
+    .popup[open] {
+        animation: popup-masuk 0.26s cubic-bezier(0, 0, 0.2, 1);
+    }
+    .popup[open].menutup {
+        animation: popup-keluar 0.18s cubic-bezier(0.4, 0, 1, 1) forwards;
+    }
+    .popup[open].menutup::backdrop {
+        animation: pudar-keluar 0.18s ease-in forwards;
+    }
+    .popup-badan > * {
+        animation: pudar-geser-masuk 0.22s ease-out;
+    }
+
+    @keyframes popup-masuk {
+        from { opacity: 0; transform: translateX(40px); }
+    }
+    @keyframes popup-keluar {
+        to { opacity: 0; transform: translateX(40px); }
+    }
+    @keyframes pudar-keluar {
+        to { opacity: 0; }
+    }
+    @keyframes pudar-geser-masuk {
+        from { opacity: 0; transform: translateX(12px); }
+    }
+}

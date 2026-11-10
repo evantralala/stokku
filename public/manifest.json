@@ -1,0 +1,17 @@
+{
+    "name": "Stokku",
+    "short_name": "Stokku",
+    "description": "Manajemen stok gudang pusat dan cabang usaha kuliner.",
+    "lang": "id",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#0a1020",
+    "theme_color": "#0a1020",
+    "icons": [
+        { "src": "img/ikon/ikon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "img/ikon/ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+        { "src": "img/ikon/ikon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    ]
+}

@@ -1,0 +1,50 @@
+@layer components {
+    .alat-penuh { width: 100%; }
+    .pilih-lokasi { flex-basis: 100%; font-weight: 600; }
+
+    .panduan {
+        padding: 12px 16px;
+        font-size: 14px;
+        color: var(--color-sumi-2);
+        background: var(--color-kami-2);
+        border-bottom: 1px solid var(--color-garis);
+    }
+
+    .grup-judul {
+        padding: 14px 16px 0;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--color-beni-teks);
+        letter-spacing: 0.02em;
+    }
+
+    .daftar-minimum { padding-top: 10px; gap: 0; }
+    .daftar-minimum .field {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(190px, 13rem);
+        align-items: center;
+        gap: 4px 12px;
+        padding: 6px 0;
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .daftar-minimum .field:last-child { border-bottom: none; }
+    .daftar-minimum .field > .bantu,
+    .daftar-minimum .field > .pesan-galat { grid-column: 1 / -1; }
+
+    .alat-penuh .kotak-cari { flex: 1 1 200px; }
+    .salin-dari { flex: 1 1 200px; }
+
+    @media (min-width: 768px) {
+        .alat-penuh { margin-left: 0; }
+        .pilih-lokasi { flex-basis: auto; min-width: 220px; }
+        .daftar-minimum { grid-template-columns: repeat(2, 1fr); column-gap: 24px; }
+    }
+
+    @media (min-width: 1100px) {
+        .panel-head > .alat-penuh { width: auto; flex: 1 1 0; }
+    }
+
+    @media (min-width: 1280px) {
+        .daftar-minimum { grid-template-columns: repeat(3, 1fr); }
+    }
+}

@@ -1,0 +1,26 @@
+/* Daftar notifikasi. Lonceng di kepala halaman ada di kerangka.css. */
+@layer components {
+    .notif {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .notif { transition: background-color var(--gerak-cepat) ease, box-shadow var(--gerak-cepat) ease; }
+    .notif:hover { background: rgb(255 255 255 / 0.045); box-shadow: inset 3px 0 0 var(--color-beni); }
+    .notif-titik {
+        flex: none;
+        width: 8px;
+        height: 8px;
+        margin-top: 7px;
+        border-radius: 50%;
+        background: transparent;
+    }
+    .notif-baru .notif-titik { background: var(--color-beni); }
+    .notif-isi { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .notif-judul { font-size: 15px; color: var(--color-sumi-2); }
+    .notif-baru .notif-judul { font-weight: 700; color: var(--color-sumi); }
+    .notif-ket { font-size: 14px; color: var(--color-sumi-2); }
+    .notif-waktu { font-size: 12.5px; color: var(--color-hai); }
+}

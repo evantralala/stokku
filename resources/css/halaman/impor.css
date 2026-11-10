@@ -1,0 +1,212 @@
+/* Impor Excel: kotak pilih file dan pratinjau (data master, barang masuk, perbarui stok), serta popup periode unduh. */
+@layer components {
+    /* Popup pilih periode Unduh Excel (views/unduh/periode). */
+    .unduh-ket {
+        padding: 14px 16px 0;
+    }
+    .unduh-cepat {
+        padding: 10px 16px 0;
+    }
+
+    .impor-unggah {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 12px;
+        border-top: 1px solid var(--color-garis-2);
+    }
+    /* Pilihan cara simpan (mis. Tambah ke stok / Samakan stok). */
+    .impor-mode {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        min-width: 0;
+    }
+    .impor-mode-pilih {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 12px;
+        border: 1px solid var(--color-garis);
+        border-radius: 12px;
+        cursor: pointer;
+    }
+    .impor-mode-pilih > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .impor-mode-pilih input { width: 20px; height: 20px; margin: 2px 0 0; flex: none; accent-color: var(--color-beni); }
+    .impor-mode-pilih:has(input:checked) { border-color: var(--color-beni); background: var(--color-beni-soft); }
+    .impor-mode-terpilih { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 8px; }
+    .impor-kosong { font-weight: 600; }
+    @media (min-width: 640px) {
+        .impor-mode { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .impor-mode > legend { grid-column: 1 / -1; }
+    }
+
+    .impor-file {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 56px;
+        padding: 12px 14px;
+        border: 1.5px dashed var(--color-garis);
+        border-radius: 12px;
+        background: var(--color-kami-2);
+        color: var(--color-hai);
+        font-size: 16px;
+        cursor: pointer;
+        transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+    }
+    .impor-file:hover,
+    .impor-file:focus-within {
+        border-color: var(--color-sumi);
+        color: var(--color-sumi);
+    }
+    .impor-file.terisi {
+        border-style: solid;
+        border-color: var(--color-matcha);
+        background: var(--color-matcha-soft);
+        color: var(--color-sumi);
+    }
+    .impor-file.galat { border-color: var(--color-beni); }
+    .impor-file-teks {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .impor-unggah > .btn { align-self: stretch; justify-content: center; }
+
+    .impor-pratinjau .panel-head .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .impor-baris[data-status="salah"] { background: var(--color-beni-soft); }
+    .impor-baris[data-status="salah"]:hover { background: var(--color-beni-soft); }
+    .impor-baris[data-status="dilewati"] .antrean-judul { color: var(--color-hai); }
+    .impor-lipat > summary {
+        display: flex;
+        align-items: center;
+        min-height: var(--sentuh);
+        padding: 10px 16px;
+        border-top: 1px solid var(--color-garis-2);
+        color: var(--color-hai);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .impor-baris[data-status="cek"] { background: var(--color-miso-soft); }
+    /* Satu bagian per lembar di Impor Sekaligus. */
+    .impor-lembar-kepala {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 10px;
+        padding: 14px 16px 10px;
+        border-top: 1px solid var(--color-garis);
+        background: var(--color-kami-2);
+    }
+    .impor-lembar-kepala h2 { font-size: 16px; font-weight: 700; }
+    .impor-lembar-kepala .chips { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; }
+    .impor-lembar > .pesan-galat { margin: 0; padding-top: 10px; padding-bottom: 10px; }
+    .impor-betul { font-size: 13px; color: var(--color-matcha); overflow-wrap: anywhere; }
+    .impor-tanya { font-size: 13.5px; font-weight: 600; color: var(--color-miso); overflow-wrap: anywhere; }
+
+    /* Pertanyaan "Maksudnya …?" di pratinjau impor. */
+    .impor-tebakan {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--color-garis);
+        background: var(--color-kami-2);
+    }
+    .impor-tebakan-kepala {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+    .impor-tebakan-kepala h2 { font-size: 15px; font-weight: 700; }
+    .impor-tebakan > .satuan { margin: -4px 0 0; }
+    .tebakan {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 0;
+        margin: 0;
+        padding: 12px;
+        border: 1px solid var(--color-miso);
+        border-radius: 12px;
+        background: var(--color-shiro);
+    }
+    .tebakan.terjawab { border-color: var(--color-garis); }
+    .tebakan-tanya { float: left; width: 100%; padding: 0; font-size: 14.5px; overflow-wrap: anywhere; }
+    .tebakan-tanya + * { clear: both; }
+    .tebakan-tanya q { font-style: italic; }
+    .tebakan-pilih { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tebakan-opsi {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: var(--sentuh);
+        padding: 6px 14px;
+        border: 1px solid var(--color-garis);
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 14px;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+    .tebakan-opsi:has(input:checked) { border-color: var(--color-beni); background: var(--color-beni-soft); font-weight: 600; }
+    .tebakan-opsi input { flex: none; }
+
+    @media (min-width: 768px) {
+        .impor-unggah > .btn { align-self: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .impor-file { transition: none; }
+    }
+}
+
+/* Impor/ekspor Excel data master. */
+@layer components {
+    .impor-urutan {
+        margin: 0;
+        padding-left: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .impor-urutan .btn { margin-top: 6px; display: flex; width: fit-content; }
+    .impor-kolom summary {
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--color-sumi-2);
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    .impor-kolom dl { margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+    .impor-kolom dt { font-family: var(--font-mono, monospace); font-weight: 600; }
+    .impor-kolom dd { margin: 0; color: var(--color-hai); }
+    .popup-badan > .impor-excel { border: none; box-shadow: none; }
+
+    .baris-excel {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px 16px;
+        padding: 12px 16px 12px 18px;
+        border: 1px dashed var(--color-garis-3);
+        background: var(--color-kami-2);
+        border-radius: var(--radius-panel);
+    }
+    .baris-excel p { margin: 0; font-size: 14px; color: var(--color-hai); }
+    .baris-excel-aksi { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    @media (max-width: 639.98px) {
+        .top-act > .tombol-excel { flex: none; width: var(--sentuh); padding: 0; justify-content: center; }
+        .top-act > .tombol-excel > span { display: none; }
+    }
+}

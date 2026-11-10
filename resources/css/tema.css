@@ -1,0 +1,62 @@
+/*
+ * Warna, huruf, dan ukuran bersama. Dipakai app.css dan login.css.
+ * Tema gelap biru malam dengan aksen merah persis dari logo Stokku (#DD2A23).
+ * Nama token lama dipertahankan: shiro = permukaan kartu, kami = latar halaman, sumi = teks utama.
+ */
+
+@theme static {
+    /* Merah logo: aksi utama, penanda kritis, aksen merek. */
+    --color-beni: #dd2a23;
+    --color-beni-dark: #b81f19; /* hover tombol merah */
+    --color-beni-soft: rgb(221 42 35 / 0.16); /* latar lembut merah di atas permukaan gelap */
+    --color-beni-2: #f0605a; /* merah terang: grafik, garis aksen */
+    --color-beni-teks: #ff7a72; /* teks merah yang tetap terbaca di latar gelap */
+
+    --color-sumi: #e8edf6; /* teks utama */
+    --color-sumi-2: #c2cbdb; /* label dan teks penting kedua */
+    --color-shiro: #121b2f; /* permukaan kartu dan panel */
+    --color-kami: #0a1020; /* latar halaman */
+    --color-kami-2: #0f172a; /* latar kepala tabel dan kaki panel */
+    --color-pasir: #1a2540; /* latar lembut: ikon kartu, kode */
+    --color-batu: #22304d; /* tombol netral yang ditinggikan */
+    --color-batu-2: #2c3c5e; /* hover tombol netral */
+    --color-putih: #ffffff; /* teks di atas warna penuh */
+
+    /* Sidebar biru malam paling gelap. */
+    --color-malam: #0b1222;
+    --color-malam-2: #18233b; /* hover di atas latar malam */
+    --color-malam-3: #070c18; /* bagian paling gelap: kepala merek */
+    --color-malam-teks: #c9d2e3;
+    --color-malam-redup: #7d89a3; /* judul grup dan keterangan di atas latar malam */
+    --color-malam-garis: rgb(255 255 255 / 0.07);
+    --color-kunyit: #f5b13d; /* aksen kuning: seri grafik kedua */
+    --color-kunyit-teks: #2a1a05;
+
+    --color-hai: #95a1b9; /* teks sekunder */
+    --color-hai-2: #7d89a3; /* teks redup, placeholder */
+    --color-garis: #1f2a42;
+    --color-garis-2: #1a2439;
+    --color-garis-3: #2b3854; /* tepi isian dan tombol */
+    --color-miso: #f5a524; /* peringatan */
+    --color-miso-soft: rgb(245 165 36 / 0.15);
+    --color-yuzu: #f2b627; /* kuning lampu stok */
+    --color-matcha: #34c77b; /* aman */
+    --color-matcha-isi: #18995a; /* latar hijau penuh dengan teks putih */
+    --color-matcha-soft: rgb(52 199 123 / 0.15);
+    --color-biru: #5b9bff; /* sedang berjalan, tombol ubah */
+    --color-biru-isi: #2f6fe0; /* latar biru penuh dengan teks putih */
+    --color-biru-soft: rgb(91 155 255 / 0.15);
+    --color-ungu: #a78bfa;
+
+    --font-sans: "Plus Jakarta Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+    --font-judul: "Plus Jakarta Sans", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", Consolas, ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+    --radius-panel: 16px;
+    --radius-kendali: 10px;
+
+    --shadow-kartu: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 6px 20px rgb(0 0 0 / 0.28);
+    --shadow-angkat: 0 18px 44px rgb(0 0 0 / 0.5);
+    --shadow-timbul: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 16px 34px rgb(0 0 0 / 0.42);
+    --shadow-nyala: 0 0 0 1px rgb(221 42 35 / 0.55), 0 12px 30px rgb(221 42 35 / 0.32);
+}

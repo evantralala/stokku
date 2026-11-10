@@ -1,0 +1,462 @@
+/* Pantauan stok, intip bahan, dan riwayat mutasi. */
+@layer components {
+    /* ---------- alat: lokasi, cari, chip lampu (di kepala halaman) ---------- */
+    .alat-stok {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 16px;
+        overflow: visible;
+    }
+    .alat-stok-form {
+        display: flex;
+        gap: 8px;
+    }
+    .alat-stok-form .kotak-cari {
+        flex: 1;
+    }
+    .alat-stok-form .pilih-lokasi {
+        flex: 0 1 42%;
+        width: auto;
+        min-width: 0;
+    }
+
+    /* ---------- tata letak: rel kategori (laptop) + daftar ---------- */
+    .tata-stok {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+    .rel-kategori {
+        display: none;
+    }
+
+    .kondisi-bahan:last-child { border-bottom: none; }
+    .kondisi-bahan {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px 12px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--color-garis);
+    }
+
+    .kondisi-bahan .status-stok { flex-direction: row; align-items: center; gap: 8px; }
+    .teks-masuk { color: var(--color-matcha); }
+    .baris-menunggu { opacity: .7; }
+    .stok-menunggu { color: var(--color-miso); font-weight: 600; }
+    .tabel-stok .stok-menunggu { font-family: var(--font-sans); font-size: 12px; white-space: normal; line-height: 1.3; }
+
+    /* ---------- kelompok per kategori (accordion) ---------- */
+    .kelompok-stok { border-bottom: 1px solid var(--color-garis); }
+    .kelompok-stok:last-of-type { border-bottom: none; }
+    .kelompok-stok > summary {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px 12px;
+        min-height: 48px;
+        padding: 8px 16px;
+        background: var(--color-kami-2);
+        cursor: pointer;
+        list-style: none;
+        transition: background-color var(--gerak-cepat) ease;
+    }
+    .kelompok-stok > summary:hover { background: rgb(255 255 255 / 0.045); }
+    .kelompok-stok > summary::-webkit-details-marker { display: none; }
+    .kelompok-stok > summary::after {
+        content: "";
+        flex: none;
+        width: 8px;
+        height: 8px;
+        margin-left: auto;
+        border-right: 2px solid var(--color-hai);
+        border-bottom: 2px solid var(--color-hai);
+        transform: rotate(45deg) translate(-2px, -2px);
+        transition: transform var(--gerak-cepat) ease;
+    }
+    .kelompok-stok[open] > summary::after { transform: rotate(-135deg) translate(-2px, -2px); }
+    .kelompok-stok[open] > summary { border-bottom: 1px solid var(--color-garis); }
+    .kelompok-stok[open] > .tabel-bungkus { animation: buka-kelompok var(--gerak) ease-out; }
+    .kelompok-nama {
+        flex: 1;
+        min-width: 0;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-sumi-2);
+    }
+    .kelompok-lampu { font-size: 13px; color: var(--color-hai); }
+
+    @keyframes buka-kelompok {
+        from { opacity: 0; transform: translateY(-4px); }
+    }
+
+    .tabel-stok .nama-barang { font-weight: 600; }
+    .tabel-stok thead th { padding-top: 8px; padding-bottom: 8px; font-size: 12px; background: var(--color-shiro); }
+
+    .stok-min-sempit { display: none; }
+    .kosongkan-semua { margin: 0 16px; padding: 12px 0; border-bottom: 1px solid var(--color-garis); }
+    .kosongkan-satu {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 4px 12px;
+        margin: 16px 18px 0;
+        padding: 12px 14px;
+        border: 1px solid var(--color-garis);
+        border-radius: 12px;
+    }
+    .kosongkan-satu .nama-barang { min-width: 0; overflow-wrap: anywhere; }
+    .kosongkan-satu-angka { font-weight: 700; white-space: nowrap; }
+
+    /*
+     * Laptop/tablet: satu tabel per kategori dengan lebar kolom tetap supaya kolom sejajar antarkategori.
+     * Lebar kolom mengikuti lebar daftar (container "stok"), bukan lebar layar, karena menu samping dan
+     * rel kategori ikut memakan tempat. Angka boleh turun baris dan tidak pernah meluber ke kolom Bahan.
+     */
+    @media (min-width: 768px) {
+        .kelompok-stok > .tabel-bungkus { container: stok / inline-size; }
+        .kelompok-stok .tabel-stok { table-layout: fixed; }
+        .kelompok-stok .tabel-stok th:nth-child(2) { width: 19%; }
+        .kelompok-stok .tabel-stok th:nth-child(3) { width: 17%; }
+        .kelompok-stok .tabel-stok th:nth-child(4) { width: 144px; }
+        .kelompok-stok .tabel-stok th:nth-child(5) { width: 64px; }
+        .kelompok-stok .tabel-stok th:nth-child(6) { width: 104px; }
+        .kelompok-stok .tabel-stok.ada-kosongkan th:nth-child(5) { width: 104px; }
+        .kelompok-stok .tabel-stok.tanpa-ubah :is(th:nth-child(5), td.stok-ubah),
+        .kelompok-stok .tabel-stok.tanpa-pilih :is(th:nth-child(6), td.stok-pilih) { display: none; }
+        .tabel-stok td.num {
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+        .tabel-stok .nama-barang { overflow-wrap: break-word; hyphens: auto; }
+        .tabel-stok .dengan-foto-teks { flex: 1; }
+        .tabel-stok td.stok-pilih .badge { white-space: normal; text-align: center; font-size: 11px; }
+        .tabel-stok .status-stok-rinci { white-space: normal; }
+        .tabel-stok .stok-nilai { font-weight: 700; }
+        .tabel-stok tbody tr { transition: background-color var(--gerak-cepat) ease, box-shadow var(--gerak-cepat) ease; }
+        .tabel-stok tbody tr:hover { background: rgb(255 255 255 / 0.045); box-shadow: inset 3px 0 0 var(--color-beni); }
+        .tabel-stok .tautan-baris:hover { color: var(--color-beni-teks); }
+    }
+
+    /* Daftar sedang (mis. laptop dengan jendela tidak penuh): kolom diperkecil. */
+    @container stok (max-width: 819.98px) {
+        .kelompok-stok .tabel-stok :is(th, td) { padding-left: 12px; padding-right: 12px; }
+        .kelompok-stok .tabel-stok th:nth-child(4) { width: 128px; }
+        .kelompok-stok .tabel-stok th:nth-child(5) { width: 56px; }
+        .kelompok-stok .tabel-stok.ada-kosongkan th:nth-child(5) { width: 100px; }
+        .kelompok-stok .tabel-stok th:nth-child(6) { width: 84px; }
+        .kelompok-stok .tabel-stok .dengan-foto { gap: 10px; }
+    }
+
+    /* Daftar sempit: kolom Minimum pindah ke bawah nama bahan, nama bahan dapat tempat paling lebar. */
+    @container stok (max-width: 639.98px) {
+        .kelompok-stok .tabel-stok th:nth-child(2) { width: 26%; }
+        .kelompok-stok .tabel-stok :is(th:nth-child(3), td:nth-child(3)) { display: none; }
+        .kelompok-stok .tabel-stok .stok-min-sempit { display: block; font-size: 12.5px; }
+        .kelompok-stok .tabel-stok th:nth-child(4) { width: 120px; }
+        .kelompok-stok .tabel-stok th:nth-child(6) { width: 64px; }
+    }
+
+    @media (max-width: 767.98px) {
+        .kelompok-lampu { order: 3; flex-basis: 100%; }
+        .tabel-stok tr {
+            position: relative;
+            grid-template-columns: minmax(0, 1fr) auto auto auto;
+            gap: 2px 12px;
+        }
+        .tabel-stok td.stok-ubah { grid-column: 3; grid-row: 1 / 3; align-self: center; }
+        .tabel-stok td.stok-pilih { grid-column: 4; grid-row: 1 / 3; align-self: center; min-width: var(--sentuh); margin-right: -8px; }
+        .tabel-stok td.kartu-judul { grid-column: 1 / 3; grid-row: 1; }
+        .tabel-stok .stok-min-sempit { display: block; font-size: 12.5px; }
+        .tabel-stok td.stok-nilai { grid-column: 1; grid-row: 2; align-self: center; align-items: flex-start; text-align: left; font-weight: 700; }
+        .tabel-stok td.stok-meta { display: none; }
+        .tabel-stok td.stok-status { grid-column: 2; grid-row: 2; align-items: flex-end; }
+        .tabel-stok .tautan-baris::after { content: ""; position: absolute; inset: 0; }
+        .tabel-stok tr:active { background: var(--color-kami-2); }
+    }
+
+    /* ---------- tablet & laptop: alat sebaris ---------- */
+    @media (min-width: 640px) {
+        .alat-stok {
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .alat-stok-form {
+            flex: 1 1 280px;
+            max-width: 480px;
+        }
+        .alat-stok-form .pilih-lokasi {
+            flex: 0 1 190px;
+        }
+    }
+
+    /* Rel kategori baru muncul di layar lebar supaya daftar stok tidak terjepit saat jendela laptop tidak penuh. */
+    @media (min-width: 1200px) {
+        .tata-stok {
+            display: grid;
+            grid-template-columns: 200px minmax(0, 1fr);
+            align-items: start;
+        }
+        .rel-kategori {
+            position: sticky;
+            top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 6px;
+            background: var(--color-shiro);
+            border: 1px solid var(--color-garis);
+            border-radius: var(--radius-panel);
+        }
+        .rel-kategori-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            min-height: 40px;
+            padding: 0 10px;
+            border-radius: var(--radius-kendali);
+            font-size: 14px;
+            transition: background-color var(--gerak-cepat) ease;
+        }
+        .rel-kategori-item { transition: background-color var(--gerak-cepat) ease, box-shadow var(--gerak-cepat) ease; }
+    .rel-kategori-item:hover { background: rgb(255 255 255 / 0.045); box-shadow: inset 3px 0 0 var(--color-beni); }
+        .rel-kategori-item[aria-current='true'] { background: var(--color-beni); color: #fff; font-weight: 600; }
+        .rel-kategori-item[aria-current='true'] .num,
+        .rel-kategori-item[aria-current='true'] .rel-kategori-lampu > span { color: #fff; }
+        .rel-kategori-nama { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .rel-kategori-lampu {
+            display: inline-flex;
+            gap: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--color-hai);
+        }
+        .rel-kategori-lampu > span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--lampu-teks, var(--color-hai));
+        }
+    }
+
+    /* ---------- detail bahan (intip): kartu angka, data bahan, status, mutasi terakhir ---------- */
+    .intip-bahan { max-width: 880px; width: 100%; }
+    .popup .intip-bahan { max-width: none; }
+    .detail-isi {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 18px 16px;
+    }
+    .detail-isi > .foto { align-self: center; }
+    .detail-angka {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin: 0;
+    }
+    .detail-angka-kotak {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 14px 10px 12px;
+        border: 1px solid var(--color-garis);
+        border-radius: 12px;
+        text-align: center;
+        background: var(--color-shiro);
+    }
+    .detail-angka dt {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--color-hai);
+    }
+    .detail-angka dd {
+        margin: 0;
+        font-size: 21px;
+        font-weight: 800;
+        line-height: 1.3;
+        color: var(--color-sumi);
+    }
+    .detail-angka dd.lampu-angka { color: var(--lampu-teks); }
+    .detail-angka-ket { font-size: 11.5px; color: var(--color-hai-2); }
+    .detail-data {
+        display: grid;
+        grid-template-columns: 1fr;
+        margin: 0;
+        border: 1px solid var(--color-garis);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .detail-data > div {
+        display: grid;
+        grid-template-columns: minmax(110px, 40%) minmax(0, 1fr);
+        gap: 12px;
+        padding: 11px 16px;
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .detail-data > div:nth-child(odd) { background: var(--color-kami-2); }
+    .detail-data > div:last-child { border-bottom: none; }
+    .detail-data dt { font-size: 13.5px; color: var(--color-hai); }
+    .detail-data dd { margin: 0; font-size: 14.5px; font-weight: 600; color: var(--color-sumi); min-width: 0; overflow-wrap: anywhere; }
+    .detail-status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .detail-status-label { font-size: 13.5px; font-weight: 600; color: var(--color-hai); }
+    .detail-status .status-stok { flex-direction: row; align-items: center; gap: 6px; }
+    .detail-catatan { margin: 0; font-size: 13.5px; }
+    .detail-subjudul {
+        margin: 4px 0 -6px;
+        font-size: 14.5px;
+        font-weight: 700;
+        color: var(--color-sumi);
+    }
+    .detail-tabel { border: 1px solid var(--color-garis); border-radius: 12px; }
+    .detail-tabel thead th { padding: 10px 14px; }
+    .detail-tabel tbody td { padding: 11px 14px; font-size: 14px; }
+    .intip-catatan { padding: 12px 18px 0; font-size: 13.5px; }
+    @media (max-width: 767.98px) {
+        .detail-tabel .tabel-ringkas .hp-saja-teks { display: block; font-size: 12.5px; }
+        .detail-tabel .tabel-kartu.tabel-ringkas tr { padding: 10px 14px; align-items: center; }
+    }
+    /* ---------- kotak centang isi stok & tombol Ubah di baris stok (di atas tautan baris) ---------- */
+    .stok-pilih .pilih-isi,
+    .stok-pilih .badge,
+    .stok-ubah .btn { position: relative; z-index: 1; }
+    .stok-pilih .badge { width: fit-content; align-self: flex-end; white-space: nowrap; }
+    .pilih-isi {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--sentuh);
+        height: var(--sentuh);
+        cursor: pointer;
+        border-radius: var(--radius-kendali);
+    }
+    .pilih-isi:hover { background: rgb(255 255 255 / 0.045); }
+    .pilih-isi input { width: 22px; height: 22px; margin: 0; accent-color: var(--color-beni); cursor: pointer; }
+    .kolom-pilih .pilih-isi { width: 36px; height: 36px; }
+    .tabel-stok tr:has([data-pilih-isi]:checked) { background: var(--color-beni-soft); }
+
+    /* ---------- bilah isi stok (menempel di bawah daftar) ---------- */
+    .bilah-isi-stok { justify-content: space-between; }
+    .bilah-isi-stok-teks { font-size: 14px; color: var(--color-hai); }
+    .bilah-isi-stok.ada-pilihan .bilah-isi-stok-teks { color: var(--color-sumi); font-weight: 600; }
+    .bilah-isi-stok-aksi { display: flex; gap: 10px; flex-wrap: wrap; }
+    .bilah-isi-stok-aksi .btn { min-height: var(--sentuh); }
+    .bilah-isi-stok-aksi .btn.nonaktif { opacity: 0.5; pointer-events: none; }
+    @media (max-width: 639.98px) {
+        .bilah-isi-stok-teks { width: 100%; }
+        .bilah-isi-stok-aksi { width: 100%; }
+        .bilah-isi-stok-aksi .btn { flex: 1 1 auto; justify-content: center; }
+        .bilah-isi-stok-aksi .btn-merah { flex-basis: 60%; }
+    }
+
+    /* ---------- popup isi stok ---------- */
+    .isi-stok-galat { padding: 10px 16px 0; }
+    .isi-stok-daftar { margin-top: 8px; border-top: 1px solid var(--color-garis-2); }
+    .isi-stok-baris {
+        display: grid;
+        gap: 8px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .isi-stok-pilih {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: var(--sentuh);
+        cursor: pointer;
+    }
+    .isi-stok-pilih > input { width: 22px; height: 22px; flex: none; margin: 0; accent-color: var(--color-beni); }
+    .isi-stok-teks { display: flex; flex-direction: column; flex: 1; min-width: 0; font-size: 13px; }
+    .isi-stok-teks .nama-barang { font-size: 15px; }
+    .isi-stok-isian {
+        display: grid;
+        gap: 8px;
+        padding-left: 34px;
+    }
+    .isi-stok-baris:has(.isi-stok-pilih > input:not(:checked)) .isi-stok-isian { opacity: 0.45; }
+    .isi-stok-baris:has(.isi-stok-pilih > input:not(:checked)) .nama-barang { text-decoration: line-through; }
+    .isi-stok-keterangan { padding: 12px 16px 16px; }
+    @media (min-width: 640px) {
+        .isi-stok-isian { max-width: 360px; }
+    }
+
+    /* ---------- tombol kepala halaman (stok, riwayat): ikon saja di HP, tablet, dan laptop kecil ---------- */
+    @media (max-width: 1199.98px) {
+        .top-act > .tombol-ikon-hp { flex: none; width: var(--sentuh); padding: 0; justify-content: center; }
+        .top-act > .tombol-ikon-hp > span { display: none; }
+    }
+
+    /* ---------- riwayat stok ---------- */
+    /* ---------- riwayat per hari: geser tanggal, tabel awal/masuk/keluar/akhir ---------- */
+    .pilih-hari-geser {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--color-garis);
+    }
+    .pilih-hari-label {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        line-height: 1.3;
+    }
+    .pilih-hari-label strong { font-size: 17px; }
+    .tombol-hari {
+        flex: none;
+        width: var(--sentuh);
+        min-height: var(--sentuh);
+        padding: 0;
+        justify-content: center;
+    }
+    .tombol-hari[aria-disabled='true'] { opacity: .35; pointer-events: none; }
+    .ikon-balik { transform: scaleX(-1); }
+    .pilih-hari-form .chip-saring { padding: 12px 16px 0; }
+    .tabel-per-hari .stok-akhir { font-weight: 700; }
+    .tabel-per-hari .baris-diam { color: var(--color-hai); }
+    .rincian-hari {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px 10px;
+        margin-top: 2px;
+    }
+
+    .tab-riwayat {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        overflow-x: auto;
+    }
+
+    .intip-aksi .simpan-aksi { flex-wrap: wrap; }
+    .intip-aksi .simpan-aksi > .btn { flex: 1 1 140px; }
+
+    @media (min-width: 640px) {
+        .detail-isi { padding: 20px 22px; gap: 18px; }
+        .detail-angka { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+        .detail-data { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .detail-data > div { border-right: 1px solid var(--color-garis-2); }
+        .detail-data > div:nth-child(odd) { background: none; }
+        .detail-data > div:nth-child(4n + 1),
+        .detail-data > div:nth-child(4n + 2) { background: var(--color-kami-2); }
+        .detail-data > div:nth-last-child(-n + 2):nth-child(odd),
+        .detail-data > div:nth-last-child(-n + 2):nth-child(odd) + div { border-bottom: none; }
+        .intip-aksi .simpan-aksi { flex-wrap: nowrap; }
+        .intip-aksi .simpan-aksi > .btn { flex: none; }
+    }
+
+    /* ---------- kartu stok: masuk/keluar di kolom terpisah ---------- */
+    .tabel-kartu-stok td.teks-masuk,
+    .tabel-kartu-stok td.teks-kurang { font-weight: 600; }
+}

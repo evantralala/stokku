@@ -1,0 +1,290 @@
+/* Pola halaman data master: form tambah/ubah, isian khusus, dan daftar kartu. */
+@layer components {
+    /* Isian angka dengan teks satuan di sisi kanan, mis. "3  hari". */
+    .isian-satuan { position: relative; }
+    .isian-satuan .isian { padding-right: 64px; }
+    .isian-satuan-teks {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        color: var(--color-hai);
+        pointer-events: none;
+    }
+
+    /* Isian yang selalu ditulis huruf besar, mis. kode lokasi. */
+    .huruf-besar { text-transform: uppercase; }
+    .huruf-besar::placeholder { text-transform: none; }
+
+    /* Nilai yang tidak bisa diubah (komponen form.tetap). */
+    .label-tetap { font-size: 14px; font-weight: 600; color: var(--color-sumi-2); }
+    .nilai-tetap {
+        min-height: var(--sentuh);
+        padding: 10px 12px;
+        border: 1px dashed var(--color-garis);
+        border-radius: var(--radius-kendali);
+        background: var(--color-kami-2);
+        font-size: 16px;
+    }
+
+    /* Kelompok isian dalam satu form, mis. "Satuan" pada bahan baku. */
+    .kelompok-isian { border-top: 1px solid var(--color-garis); }
+    .kelompok-isian legend {
+        float: left;
+        width: 100%;
+        padding: 14px 16px 0;
+        font-family: var(--font-judul);
+        font-size: 15px;
+        font-weight: 700;
+    }
+    .kelompok-isian legend + * { clear: both; }
+
+    /* Kalimat pratinjau hasil isian, mis. "Artinya: 1 kg = 1000 gram". */
+    .pratinjau-isi {
+        grid-column: 1 / -1;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--color-matcha);
+    }
+    .pratinjau-isi:empty { display: none; }
+
+    /* Panel yang berisi daftar pilihan melayang (mis. pilih bahan) tidak boleh memotong isinya. */
+    .panel.tanpa-potong { overflow: visible; }
+    .panel.tanpa-potong > :last-child { border-radius: 0 0 var(--radius-panel) var(--radius-panel); }
+
+    /* Pilih bahan yang bisa diketik (komponen form.pilih-bahan). */
+    .pilih-bahan { position: relative; }
+    .pilih-daftar {
+        position: absolute;
+        z-index: 15;
+        left: 0;
+        right: 0;
+        top: calc(100% + 4px);
+        max-height: min(320px, 50vh);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        background: var(--color-shiro);
+        border: 1px solid var(--color-garis);
+        border-radius: var(--radius-panel);
+        box-shadow: var(--shadow-angkat);
+    }
+    .pilih-daftar [role="option"] {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: var(--sentuh);
+        padding: 8px 12px;
+        cursor: pointer;
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .pilih-daftar [role="option"]:last-child { border-bottom: none; }
+    .pilih-daftar [role="option"] small { font-size: 12.5px; color: var(--color-hai); }
+    .pilih-daftar [role="option"]:hover,
+    .pilih-daftar [aria-selected="true"] { background: var(--color-beni-soft); }
+    .pilih-kosong { padding: 12px; font-size: 14px; color: var(--color-hai); }
+
+    /* Pesan informasi (bukan kesalahan) di atas daftar. */
+    .kilat-info {
+        background: var(--color-miso-soft);
+        color: var(--color-miso);
+        border-color: rgb(245 165 36 / 0.32);
+        padding-right: 14px;
+    }
+
+    /* Di HP, bila ada tiga tombol, tombol simpan utama penuh di baris atas. */
+    .simpan-bar.lekat .simpan-aksi:has(> :nth-child(3)) { flex-wrap: wrap; }
+    .simpan-bar.lekat .simpan-aksi:has(> :nth-child(3)) .btn-merah { order: -1; flex-basis: 100%; }
+
+    @media (min-width: 768px) {
+        .simpan-bar.lekat .simpan-aksi:has(> :nth-child(3)) { flex-wrap: nowrap; }
+        .simpan-bar.lekat .simpan-aksi:has(> :nth-child(3)) .btn-merah { order: 0; flex-basis: auto; }
+    }
+}
+
+/*
+ * Kartu alat daftar master (ala referensi): kotak cari (+ saringan tambahan), chip status, tombol hapus saringan,
+ * dan tombol aksi halaman di kanan. Di HP tombol riwayat/impor/ekspor jadi ikon dan tombol tambah memenuhi sisa baris.
+ */
+@layer components {
+    .panel-head:has(> .alat-master) { padding: 16px 18px; }
+    .alat.alat-master {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        margin-left: 0;
+    }
+    .alat.alat-master > * { flex: initial; }
+    .alat-master-form { display: flex; flex-wrap: wrap; gap: 10px; flex: 1 1 100%; min-width: 0; }
+    .alat-master-form .kotak-cari { flex: 1 1 260px; }
+    .alat-master-form > select.isian { flex: 1 1 150px; width: auto; }
+    .alat-master .chip-saring { flex: 1 1 auto; min-width: 0; }
+    .tombol-reset {
+        flex: none;
+        width: var(--sentuh);
+        padding: 0;
+        color: var(--color-hai);
+    }
+    .tombol-reset:hover { color: var(--color-beni-teks); }
+    .alat-master-aksi {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        width: 100%;
+    }
+    .alat-master-aksi > .btn-merah { flex: 1; }
+    .alat-master-aksi > .tombol-excel,
+    .alat-master-aksi > .tombol-ikon-hp { flex: none; width: var(--sentuh); padding: 0; }
+    .alat-master-aksi > .tombol-excel > span,
+    .alat-master-aksi > .tombol-ikon-hp > span { display: none; }
+
+    /* Kolom nomor urut dan tombol ikon aksi per baris. */
+    th.kolom-no,
+    td.kolom-no { width: 56px; color: var(--color-hai); }
+    @media (max-width: 1023.98px) {
+        th.kolom-no,
+        td.kolom-no { display: none; }
+    }
+    /* Tombol ikon per baris: biru = Ubah, ungu = tautan lain (mis. Resep), merah = Hapus. */
+    .tombol-ikon-aksi {
+        width: 38px;
+        min-height: 38px;
+        padding: 0;
+        border-radius: 10px;
+        box-shadow: none;
+    }
+    .tombol-ikon-ubah {
+        border-color: rgb(91 155 255 / 0.4);
+        background: var(--color-biru-soft);
+        color: #9cc2ff;
+    }
+    .tombol-ikon-ubah:hover {
+        border-color: var(--color-biru);
+        background: var(--color-biru-isi);
+        color: var(--color-putih);
+        transform: translateY(-2px) scale(1.08);
+        box-shadow: 0 0 0 1px rgb(91 155 255 / 0.5), 0 8px 20px rgb(47 111 224 / 0.45);
+    }
+    .tombol-ikon-lain {
+        border-color: rgb(167 139 250 / 0.4);
+        background: rgb(167 139 250 / 0.14);
+        color: #c4b5fd;
+    }
+    .tombol-ikon-lain:hover {
+        border-color: var(--color-ungu);
+        background: #7c3aed;
+        color: var(--color-putih);
+        transform: translateY(-2px) scale(1.08);
+        box-shadow: 0 0 0 1px rgb(167 139 250 / 0.5), 0 8px 20px rgb(124 58 237 / 0.45);
+    }
+    .tombol-ikon-hapus {
+        border-color: rgb(240 69 62 / 0.4);
+        background: var(--color-beni-soft);
+        color: #ff8a84;
+    }
+    .tombol-ikon-hapus:hover {
+        border-color: var(--color-beni);
+        background: var(--color-beni);
+        color: var(--color-putih);
+        transform: translateY(-2px) scale(1.08);
+        box-shadow: 0 0 0 1px rgb(240 69 62 / 0.5), 0 8px 20px rgb(221 42 35 / 0.45);
+    }
+    .form-ikon { display: inline-flex; margin: 0; }
+    .aksi-baris:has(.tombol-ikon-aksi) { display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; white-space: nowrap; }
+    .aksi-baris:has(.tombol-ikon-aksi) > * { flex: none; }
+    .tabel-kartu td.kartu-aksi:has(> .tombol-ikon-aksi),
+    .aksi-baris:has(> .tombol-ikon-aksi) { white-space: nowrap; }
+    .aksi-baris:has(> .tombol-ikon-aksi) { gap: 6px; justify-content: flex-end; }
+    .aksi-baris:has(> .tombol-ikon-aksi) > * { flex: none; }
+    @media (max-width: 639.98px) {
+        .kartu-grid-master .kartu-angka { padding: 12px 12px 12px 14px; }
+        .kartu-grid-master .kartu-ket { display: none; }
+        .kartu-grid-master .kartu-nilai { font-size: 22px; }
+        .kartu-grid-master .kartu-ikon { width: 34px; height: 34px; }
+    }
+    @media (max-width: 767.98px) {
+        .tombol-ikon-aksi { width: var(--sentuh); min-height: var(--sentuh); }
+        .tabel-kartu.tabel-ringkas td.kartu-aksi.kartu-aksi-hp:has(.aksi-baris) { display: block; order: -1; flex: none; align-self: center; position: relative; z-index: 1; }
+    }
+
+    @media (min-width: 768px) {
+        .alat-master-aksi { width: auto; margin-left: auto; }
+        .alat-master-aksi > .btn-merah { flex: none; }
+    }
+
+    @media (min-width: 1100px) {
+        .alat-master-form { flex: 1 1 360px; max-width: 620px; flex-wrap: nowrap; }
+        .alat-master-form > select.isian { flex: 0 1 190px; }
+        .alat-master .chip-saring { flex: none; }
+    }
+
+    @media (min-width: 1500px) {
+        .alat-master-aksi > .tombol-excel,
+        .alat-master-aksi > .tombol-ikon-hp { width: auto; padding: 9px 16px; }
+        .alat-master-aksi > .tombol-excel > span,
+        .alat-master-aksi > .tombol-ikon-hp > span { display: inline; }
+    }
+}
+
+/* Halaman tambah/ubah master: form + panel status dalam satu wadah (juga isi popup). */
+@layer components {
+    .isi-master { display: flex; flex-direction: column; gap: 14px; }
+    .popup-badan > .isi-master { gap: 0; }
+    .popup-badan > .isi-master > .panel {
+        border: none;
+        border-radius: 0;
+        overflow: visible;
+    }
+    .popup-badan > .isi-master > .panel + .panel { border-top: 8px solid var(--color-kami); }
+}
+
+/* Kartu profil di Akun saya: inisial besar, nama, peran, status, lalu strip info. */
+@layer components {
+    .profil-akun-atas {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px;
+        border-bottom: 1px solid var(--color-garis-2);
+        background: linear-gradient(90deg, var(--color-beni-soft), var(--color-shiro) 70%);
+    }
+    .ava.ava-besar { width: 56px; height: 56px; font-size: 18px; }
+    .profil-akun-teks { flex: 1; min-width: 0; }
+    .profil-akun-teks h2 { font-size: 18px; font-weight: 800; }
+    .profil-akun-teks .sub { font-size: 13.5px; color: var(--color-hai); }
+    .profil-akun .panduan { border-top: 1px solid var(--color-garis-2); border-bottom: none; }
+
+    /* ---------- pindah gudang pusat ---------- */
+    .pindah-peringatan { margin: 0; flex-direction: row; }
+    .pindah-judul { font-size: 13.5px; font-weight: 600; margin-bottom: 6px; }
+    .pindah-daftar {
+        margin: 0;
+        padding-left: 18px;
+        list-style: disc;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 14px;
+        color: var(--color-sumi-2);
+    }
+    .pindah-daftar strong { color: var(--color-sumi); font-weight: 600; }
+    .pindah-ket { margin-top: 8px; font-size: 13px; color: var(--color-hai); }
+
+    /* ---------- pasang aplikasi (PWA) di Akun saya ---------- */
+    .pasang-isi { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .pasang-status { margin: 0; color: var(--color-matcha); font-weight: 600; font-size: 14px; }
+    .pasang-langkah {
+        margin: 0;
+        padding-left: 18px;
+        list-style: disc;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 14px;
+        color: var(--color-sumi-2);
+    }
+    .pasang-langkah strong { color: var(--color-sumi); font-weight: 600; }
+    .pasang-langkah li[hidden], .pasang-aplikasi [hidden] { display: none; }
+}
