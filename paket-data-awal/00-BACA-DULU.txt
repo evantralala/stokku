@@ -1,0 +1,108 @@
+PAKET DATA AWAL STOKKU
+======================
+
+Isi paket ini adalah data awal untuk usaha kuliner rekaan dengan satu gudang pusat dan dua cabang,
+supaya sistem langsung bisa dipakai dan dicoba. Semua isi boleh diubah dulu di Excel sebelum diimpor
+(nama bahan, jumlah, stok minimum, resep, porsi).
+
+Isi: 3 lokasi, 6 satuan, 5 kategori bahan, 22 bahan, 3 kategori menu, 8 menu, 52 baris resep,
+65 stok minimum, stok awal 3 lokasi, dan penjualan satu hari untuk 2 cabang.
+
+Setiap bahan punya satu satuan (kg, liter, pcs, butir). Stok, kiriman, dan opname memakai satuan itu.
+Resep memakai satuan kecilnya: kg ditulis gram, liter ditulis ml.
+Jumlah boleh ditulis 2x19, 10 liter, atau 500 gram; sistem menghitungnya ke satuan bahan.
+Bahan yang sama ditulis di beberapa baris dijumlahkan (mis. stok rak A dan rak B).
+File 08 sampai 12 berformat sama dengan file "Unduh Excel" di sistem.
+
+Setiap file dicek dulu sebelum disimpan. Setelah unggah, layar "Cek ..." menampilkan:
+  Siap         baris benar, akan disimpan
+  Dibetulkan   isian dirapikan otomatis (huruf besar-kecil, spasi, angka 2,5 / 2.5, satuan "Kilo" -> kg)
+  Perlu Dicek  ada nama yang mirip tapi tidak sama, mis. "Ayam Filet" -> "Maksudnya Ayam Fillet?"
+               Pilih Ya atau Bukan. Baris yang belum dijawab tidak disimpan.
+  Dilewati     sudah ada / porsi kosong
+  Tidak berubah  (khusus stok) angka sama dengan stok sekarang
+  Salah Isi    perlu dibetulkan di file lalu diunggah ulang
+Tekan Simpan bila sudah sesuai.
+
+
+ADA DUA CARA. Pilih salah satu.
+
+CARA CEPAT - satu file: 00-data-awal-sekaligus.xlsx  ATAU  00-data-awal-satu-lembar.xlsx
+  Isinya sama dengan file 01 sampai 10 (lokasi, satuan, bahan, menu, resep, stok minimum,
+  stok awal ketiga lokasi), dijadikan satu file. Pilih salah satu saja:
+    00-data-awal-sekaligus.xlsx   satu lembar per jenis data (Lokasi, Satuan, Bahan, ...)
+    00-data-awal-satu-lembar.xlsx semua tabel ditumpuk dalam satu lembar, tiap tabel
+                                  diawali judul (LOKASI, BAHAN, ...) dan baris judul kolomnya
+  1. Login Admin Utama, buka Dashboard, tekan "Impor Sekaligus".
+  2. Pilih "Ganti", pilih salah satu file di atas, tekan "Cek Isi File".
+  3. Cek hasil tiap lembar, lalu tekan Simpan.
+  Lokasi GP, JTI, dan KNG ikut dibuat, jadi Langkah 1 dan 3-4 di bawah tidak perlu.
+  Setelah itu lanjut ke Langkah 2 (akun) dan Langkah 5 (penjualan).
+  Diunggah ulang aman: data yang sudah ada dilewati dan stok tidak dobel (selama memilih "Ganti").
+
+CARA BERTAHAP - file 01 sampai 12, ikuti Langkah 1 sampai 5 di bawah.
+
+
+LANGKAH 1 - Lokasi (login Admin Utama, menu Lokasi, tombol + Tambah Lokasi)
+  Kode GP  : Gudang Pusat    (jenis: Gudang Pusat)
+  Kode JTI : Cabang Jati     (jenis: Cabang)
+  Kode KNG : Cabang Kenanga  (jenis: Cabang)
+  Kode lokasi sebaiknya sama persis, karena file 07 memakai kode tersebut.
+
+
+LANGKAH 2 - Akun (login Admin Utama, menu Pengguna, tombol + Tambah Pengguna)
+  Buat satu Admin Cabang untuk Cabang Jati dan satu untuk Cabang Kenanga
+  (dipakai di Langkah 5). Admin Pusat untuk Gudang Pusat boleh dibuat sekarang atau nanti.
+
+
+LANGKAH 3 - Data master (login Admin Utama), harus urut:
+  File                     Menu di sistem          Tombol
+  01-satuan.xlsx           Satuan                  Impor
+  02-kategori-bahan.xlsx   Kategori Bahan          Impor
+  03-bahan-baku.xlsx       Bahan Baku              Impor
+  04-kategori-menu.xlsx    Kategori Menu           Impor
+  05-menu.xlsx             Menu & Resep            Impor
+  06-resep.xlsx            Menu & Resep            Impor Resep
+                           (resep berlaku mulai hari impor)
+  07-stok-minimum.xlsx     Stok Minimum            Impor
+
+
+LANGKAH 4 - Stok awal tiap lokasi (tetap login Admin Utama, menu Stok)
+  Pilih lokasinya dulu di halaman Stok, lalu tekan "Perbarui Lewat Excel", pilih "Ganti",
+  dan unggah file lokasi itu:
+  08-stok-awal-gp.xlsx     lokasi Gudang Pusat
+  09-stok-awal-jti.xlsx    lokasi Cabang Jati
+  10-stok-awal-kng.xlsx    lokasi Cabang Kenanga
+  Kolom Stok berisi jumlah yang ada sekarang (dalam satuan bahan, mis. kg, liter, pcs). Setelah disimpan,
+  stok masuk ke kartu stok (Riwayat) sebagai penyesuaian.
+  Dengan "Ganti", diunggah dua kali tidak dobel: baris yang sama dengan stok sekarang ditandai
+  "Tidak berubah". JANGAN pilih "Tambah" untuk stok awal yang sudah pernah diunggah, karena angkanya
+  akan ditambahkan lagi (stok jadi dua kali).
+  Untuk memperbarui stok berikutnya: tekan "Unduh Excel" di halaman Stok, ubah angka di kolom Stok,
+  lalu unggah lewat "Perbarui Lewat Excel":
+    Ganti  = stok menjadi angka di file (mis. hasil hitung ulang gudang)
+    Tambah = angka di file ditambahkan ke stok sekarang (mis. barang datang)
+  Tabel buatan sendiri juga bisa, asal ada kolom nama bahan dan kolom stok.
+
+
+LANGKAH 5 - Penjualan harian (login Admin Cabang, menu Penjualan, tombol Impor Excel)
+  11-penjualan-harian-jti.xlsx   login Admin Cabang Jati
+  12-penjualan-harian-kng.xlsx   login Admin Cabang Kenanga
+  Kolom Tanggal sengaja kosong, jadi penjualan dicatat untuk HARI INI. Porsi kosong = menu tidak terjual.
+  Setelah disimpan, bahan dari resep langsung berkurang dari stok cabang itu (lihat menu Stok).
+  Bila hari ini sudah dicatat, pilih cara simpan:
+    Ganti  = porsi menu di file menggantikan porsi yang sudah dicatat
+    Tambah = porsi di file ditambahkan ke porsi yang sudah dicatat (mis. unggah per shift)
+  Templat berisi semua menu bisa diunduh dari tombol yang sama (Unduh Templat).
+
+
+Catatan
+  - Beberapa bahan di cabang sengaja di bawah stok minimum (Teh Tubruk di Cabang Jati, Daging Sapi di
+    Cabang Kenanga) dan ada yang belum ada stoknya (Jeruk Peras di Cabang Jati, Tempe di Cabang Kenanga),
+    jadi status Menipis dan Habis langsung terlihat di halaman Stok.
+  - Es Batu hanya ada di cabang, tidak disimpan di Gudang Pusat.
+  - Impor ulang file 01-07 aman, tidak dobel: nama yang sudah ada dilewati.
+  - File 11 dan 12 sengaja dibuat supaya tidak ada stok bahan yang menjadi minus.
+  - Paket ini sudah dicoba diimpor dari awal sampai akhir di database kosong, dengan kedua cara:
+    semua baris siap (tanpa salah dan tanpa Perlu Dicek), 63 stok awal masuk kartu stok, dan
+    2 penjualan harian tercatat atas nama Admin Cabang.

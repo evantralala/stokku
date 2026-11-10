@@ -88,6 +88,13 @@ php artisan serve
 Buka `http://localhost:8000` dan masuk dengan `ADMIN_UTAMA_EMAIL` dari `.env`. Seeder hanya membuat akun Admin Utama
 dan pengaturan bawaan; lokasi, bahan, menu, dan pengguna lain diisi lewat aplikasi atau templat Excel.
 
+### Paket data awal
+
+Folder [`paket-data-awal/`](paket-data-awal) berisi data untuk usaha kuliner rekaan: 3 lokasi, 22 bahan, 8 menu dengan
+resep, stok minimum, stok awal, dan penjualan satu hari. Cara tercepat: login Admin Utama, **Dashboard → Impor
+Sekaligus**, pilih **Ganti**, unggah `00-data-awal-sekaligus.xlsx`, lalu Simpan. Cara bertahap per file ada di
+[`00-BACA-DULU.txt`](paket-data-awal/00-BACA-DULU.txt).
+
 Tugas terjadwal (permintaan otomatis, tolak otomatis, email laporan) berjalan lewat `php artisan schedule:work`
 di lokal atau cron `schedule:run` tiap menit di server.
 
