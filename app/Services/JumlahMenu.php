@@ -57,18 +57,18 @@ class JumlahMenu
         return $jumlah;
     }
 
-    /** Permintaan dihitung per barang (diputuskan per barang), dokumen lain per dokumen. */
+    /** Jumlah dokumen yang menunggu keputusan, sama dengan antrean di halaman Persetujuan. */
     private function persetujuanMenunggu(): int
     {
-        $barangPermintaan = PermintaanDetail::where('status', 'menunggu')
-            ->whereIn('permintaan_id', Permintaan::where('status', 'menunggu')->select('id'))
+        $permintaan = Permintaan::where('status', Permintaan::STATUS_MENUNGGU)
+            ->whereHas('detail', fn ($q) => $q->where('status', PermintaanDetail::STATUS_MENUNGGU))
             ->count();
 
-        $barangMasuk = BarangMasuk::where('status', 'menunggu')->count();
-        $barangKeluar = BarangKeluar::where('status', 'menunggu')->count();
-        $opname = Opname::where('status', 'dikirim')->count();
+        $barangMasuk = BarangMasuk::where('status', BarangMasuk::STATUS_MENUNGGU)->count();
+        $barangKeluar = BarangKeluar::where('status', BarangKeluar::STATUS_MENUNGGU)->count();
+        $opname = Opname::where('status', Opname::STATUS_DIKIRIM)->count();
 
-        return $barangPermintaan + $barangMasuk + $barangKeluar + $opname;
+        return $permintaan + $barangMasuk + $barangKeluar + $opname;
     }
 
     /** Dokumen permintaan yang minimal satu barangnya belum terkirim penuh. */

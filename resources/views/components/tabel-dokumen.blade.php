@@ -8,6 +8,9 @@
 
 @php $lebar = 2 + count($kolom) + ($jumlah !== null ? 1 : 0) + ($pilih ? 1 : 0); @endphp
 
+@if ($pilih)
+    <x-pilih.semua-hp :form="$pilih" />
+@endif
 <div class="tabel-bungkus">
     <table {{ $attributes->class('tabel-kartu tabel-ringkas tabel-dokumen') }}>
         <thead>

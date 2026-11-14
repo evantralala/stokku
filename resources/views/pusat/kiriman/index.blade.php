@@ -34,6 +34,7 @@
         @if ($siapKirim->isEmpty())
             <x-kosong gambar="selesai">Semua sudah dikirim.</x-kosong>
         @else
+            <x-pilih.semua-hp form="pilih-kirim" />
             <div class="tabel-bungkus">
                 <table class="tabel-kartu tabel-dokumen tabel-siap-kirim">
                     <thead>

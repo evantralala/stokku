@@ -84,6 +84,11 @@ class JumlahPintarTest extends TestCase
         $this->assertSame(3.0, JumlahPintar::keSatuanBahan('3', $this->beras)[0]);
         $this->assertNull(JumlahPintar::keSatuanBahan('2 galon', $this->galon)[0]);
         $this->assertStringContainsString('tidak cocok', JumlahPintar::keSatuanBahan('2 galon', $this->galon)[1]);
+
+        $this->assertNull(JumlahPintar::keSatuanBahan('12 kg', $this->beras)[2], 'satuan sudah sama: tidak dicatat');
+        $this->assertNull(JumlahPintar::keSatuanBahan('2,5 Kg', $this->beras)[2]);
+        $this->assertSame('500 gram = 0,5 kg', JumlahPintar::keSatuanBahan('500 gram', $this->beras)[2]);
+        $this->assertSame('2 x 10 liter = 20 liter', JumlahPintar::keSatuanBahan('2 x 10 liter', $this->galon)[2]);
     }
 
     public function test_tabel_tanpa_judul_jumlah_kali_isi_bersatuan(): void

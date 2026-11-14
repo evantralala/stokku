@@ -145,6 +145,8 @@ class PersetujuanWajarTest extends TestCase
             ->assertOk()
             ->assertSee('Cek: Mie ramen melebihi kebutuhan')
             ->assertSee('Setujui yang Dicentang')
+            ->assertSee('<span>Pilih Semua Wajar</span>', false)
+            ->assertSee('data-pilih-semua="pilih-setujui"', false)
             ->assertSee('form="pilih-setujui" name="dokumen[]" value="permintaan:'.$wajar->id.'"', false)
             ->assertDontSee('value="permintaan:'.$lebih->id.'" data-pilih-baris', false);
     }

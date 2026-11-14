@@ -59,7 +59,8 @@ class JumlahPintar
     }
 
     /**
-     * Jumlah dalam satuan bahan.
+     * Jumlah dalam satuan bahan. Catatan hanya dibuat bila angka dihitung (perkalian) atau satuannya dikonversi;
+     * angka tunggal yang satuannya sudah sama dengan satuan bahan ("12 kg" untuk bahan kg) tidak dicatat.
      *
      * @return array{0: ?float, 1: ?string, 2: ?string} [jumlah, pesan salah, catatan bila dihitung/dikonversi]
      */
@@ -89,7 +90,8 @@ class JumlahPintar
 
         $hasil = round($hasil, 3);
         $teks = is_string($nilai) ? PembersihExcel::teks($nilai) : null;
-        $catatan = $teks !== null && ! is_numeric(str_replace(',', '.', $teks))
+        $tanpaUbah = ($satuan === null || $satuan === $beli) && $teks !== null && preg_match('/^[\d.,]+\s*\D*$/u', $teks);
+        $catatan = $teks !== null && ! $tanpaUbah && ! is_numeric(str_replace(',', '.', $teks))
             ? $teks.' = '.Angka::tampil($hasil).' '.$bahan->satuanBeli->nama
             : null;
 

@@ -277,6 +277,8 @@ class ExcelTransaksiTest extends TestCase
         ])])->assertOk();
 
         $this->assertSame([2 => 'siap', 3 => 'siap', 4 => 'salah', 5 => 'salah', 6 => 'dilewati'], $this->statusBaris($pratinjau));
+        $this->assertSame([[], []], $pratinjau->viewData('baris')->whereIn('baris', [2, 3])->sortBy('baris')->pluck('betul')->values()->all(),
+            'satuan sama dengan satuan bahan tidak ditandai Dibetulkan');
 
         $this->post(route('pusat.barang-masuk.impor.simpan'), ['kunci' => $pratinjau->viewData('kunci')])
             ->assertRedirect(route('pusat.barang-masuk'))

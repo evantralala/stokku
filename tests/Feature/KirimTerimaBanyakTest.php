@@ -92,6 +92,7 @@ class KirimTerimaBanyakTest extends TestCase
             ->assertOk()
             ->assertSee('form="pilih-kirim" name="permintaan[]" value="'.$jati->id.'" data-pilih-baris', false)
             ->assertSee('data-pilih-semua="pilih-kirim"', false)
+            ->assertSee('<label class="pilih-semua-hp">', false)
             ->assertSee('id="pilih-kirim" method="POST" action="'.route('pusat.kiriman.banyak.simpan').'"', false)
             ->assertSee('Stok kurang: Mie ramen. Dikirim sebagian.')
             ->assertSee('Kirim yang Dicentang');
@@ -137,6 +138,8 @@ class KirimTerimaBanyakTest extends TestCase
             ->get(route('cabang.terima-barang'))
             ->assertOk()
             ->assertSee('form="pilih-terima" name="kiriman[]" value="'.$milikJati[0].'" data-pilih-baris', false)
+            ->assertSee('<label class="pilih-semua-hp">', false)
+            ->assertSee('data-pilih-semua="pilih-terima"', false)
             ->assertSee('Terima yang Dicentang')
             ->assertDontSee('value="'.$kirimanLain->id.'" data-pilih-baris', false);
 

@@ -4,6 +4,9 @@
     $pilih (opsional, id x-pilih.bilah: dokumen wajar bisa dicentang lalu disetujui sekaligus).
 --}}
 @php $ringkas ??= false; $pilih ??= null; @endphp
+@if ($pilih)
+    <x-pilih.semua-hp :form="$pilih" label="Pilih Semua Wajar" />
+@endif
 <div class="tabel-bungkus">
     <table class="tabel-kartu tabel-dokumen tabel-antrean">
         <thead>

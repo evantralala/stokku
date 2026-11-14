@@ -91,7 +91,7 @@ class PersetujuanTest extends TestCase
             ->assertOk()
             ->assertSee($permintaan->nomor)
             ->assertSee($masuk->nomor)
-            ->assertSee('<span class="pill">3</span>', false);
+            ->assertSee('<span class="pill">2</span>', false);
     }
 
     public function test_putuskan_permintaan_per_barang_dengan_jumlah_diubah(): void
