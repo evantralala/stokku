@@ -17,7 +17,7 @@ return [
     | Pembaruan otomatis halaman (resources/js/segar.js): setiap sekian detik halaman menanyakan penanda perubahan
     | data dan memuat ulang isinya bila ada yang berubah. 0 = mati.
     */
-    'jeda_segar_detik' => (int) env('JEDA_SEGAR_DETIK', 3),
+    'jeda_segar_detik' => (int) env('JEDA_SEGAR_DETIK', 10),
 
     /*
     | Alamat http:// dialihkan ke https:// dan semua tautan dibuat https. Nyalakan di hosting yang sudah ber-SSL.
