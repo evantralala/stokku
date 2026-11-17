@@ -13,6 +13,7 @@ use App\Models\StokMutasi;
 use App\Models\User;
 use App\Support\NomorDokumen;
 use DomainException;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -55,6 +56,61 @@ class KirimanService
             }
 
             return $jumlah->all();
+        });
+    }
+
+    /**
+     * Barang permintaan siap kirim yang stok lokasi pengirimnya tidak cukup untuk sisa yang disetujui,
+     * diurutkan menurut nama. Jumlah dalam satuan dasar; stok minus dihitung nol.
+     *
+     * @param  Collection<int, Permintaan>  $permintaan  detail.bahanBaku.satuanBeli sudah dimuat
+     * @return array<int, list<array{bahan: BahanBaku, perlu: float, stok: float, kurang: float}>>  per id permintaan
+     */
+    public function kekuranganStok(Collection $permintaan, int $lokasiId): array
+    {
+        $saldo = DB::table('stok_saldo')->where('cabang_id', $lokasiId)->pluck('saldo', 'bahan_baku_id');
+
+        return $permintaan->mapWithKeys(fn (Permintaan $p) => [$p->id => $p->detail
+            ->map(function (PermintaanDetail $d) use ($saldo) {
+                $perlu = (float) $d->utang_kiriman;
+                $stok = max(0, (float) ($saldo[$d->bahan_baku_id] ?? 0));
+
+                return ['bahan' => $d->bahanBaku, 'perlu' => $perlu, 'stok' => $stok, 'kurang' => round($perlu - $stok, 3)];
+            })
+            ->filter(fn (array $b) => $b['perlu'] > 0 && $b['kurang'] > 0.0005)
+            ->sortBy(fn (array $b) => mb_strtolower($b['bahan']->nama))
+            ->values()
+            ->all()])->all();
+    }
+
+    /**
+     * Admin Utama menutup sisa permintaan yang belum terkirim penuh: permintaan dianggap selesai dan
+     * sisa yang disetujui tidak dikirim lagi. Jumlah disetujui dan dikirim tetap tercatat apa adanya.
+     *
+     * @throws DomainException bila permintaan sudah selesai, tidak punya sisa, atau masih ada barang menunggu keputusan
+     */
+    public function tutupSisa(Permintaan $permintaan, User $oleh): Permintaan
+    {
+        return DB::transaction(function () use ($permintaan, $oleh) {
+            $permintaan = Permintaan::whereKey($permintaan->id)->lockForUpdate()->firstOrFail();
+
+            if ($permintaan->status !== Permintaan::STATUS_MENUNGGU || ! $permintaan->detail()->masihUtang()->exists()) {
+                throw new DomainException("Permintaan {$permintaan->nomor} sudah tidak punya sisa untuk dikirim.");
+            }
+
+            if ($permintaan->detail()->where('status', PermintaanDetail::STATUS_MENUNGGU)->exists()) {
+                throw new DomainException("Permintaan {$permintaan->nomor} masih punya barang yang menunggu persetujuan. Putuskan dulu di Persetujuan.");
+            }
+
+            $permintaan->update([
+                'status'            => Permintaan::STATUS_SELESAI,
+                'sisa_ditutup_pada' => now(),
+                'sisa_ditutup_oleh' => $oleh->id,
+            ]);
+
+            $this->notifikasi->selesaikan(route('pusat.kiriman.buat', $permintaan, false));
+
+            return $permintaan;
         });
     }
 

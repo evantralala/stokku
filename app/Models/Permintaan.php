@@ -36,6 +36,8 @@ class Permintaan extends Model
         'batas_keputusan',
         'sumber',
         'status',
+        'sisa_ditutup_pada',
+        'sisa_ditutup_oleh',
     ];
 
     protected function casts(): array
@@ -43,6 +45,7 @@ class Permintaan extends Model
         return [
             'diajukan_pada' => 'datetime',
             'batas_keputusan' => 'datetime',
+            'sisa_ditutup_pada' => 'datetime',
         ];
     }
 
@@ -54,6 +57,11 @@ class Permintaan extends Model
     public function pengaju(): BelongsTo
     {
         return $this->belongsTo(User::class, 'diajukan_oleh');
+    }
+
+    public function penutupSisa(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'sisa_ditutup_oleh');
     }
 
     public function detail(): HasMany
@@ -96,7 +104,7 @@ class Permintaan extends Model
     {
         return match ($this->status) {
             self::STATUS_BATAL   => ['Dibatalkan', 'b-pasif'],
-            self::STATUS_SELESAI => ['Selesai', 'b-selesai'],
+            self::STATUS_SELESAI => $this->sisa_ditutup_pada ? ['Sisa Ditutup', 'b-selesai'] : ['Selesai', 'b-selesai'],
             default              => $this->jumlahMenunggu() > 0
                 ? ['Menunggu Persetujuan', 'b-tunggu']
                 : ['Diproses Gudang Pusat', 'b-jalan'],

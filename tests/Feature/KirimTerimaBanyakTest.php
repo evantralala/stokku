@@ -94,7 +94,9 @@ class KirimTerimaBanyakTest extends TestCase
             ->assertSee('data-pilih-semua="pilih-kirim"', false)
             ->assertSee('<label class="pilih-semua-hp">', false)
             ->assertSee('id="pilih-kirim" method="POST" action="'.route('pusat.kiriman.banyak.simpan').'"', false)
-            ->assertSee('Stok kurang: Mie ramen. Dikirim sebagian.')
+            ->assertSee('id="stok-kurang-'.$kenanga->id.'"', false)
+            ->assertDontSee('id="stok-kurang-'.$jati->id.'"', false)
+            ->assertSeeInOrder(['Stok kurang', '1', 'barang', 'Mie ramen', 'Kurang 1 kg', 'Perlu 2 kg · Stok 1 kg'])
             ->assertSee('Kirim yang Dicentang');
 
         $this->post(route('pusat.kiriman.banyak.simpan'), ['permintaan' => [$jati->id, $kenanga->id]])

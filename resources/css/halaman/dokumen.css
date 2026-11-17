@@ -254,6 +254,97 @@
             width: 100%;
         }
     }
+    .stok-kurang {
+        margin-top: 8px;
+    }
+    .stok-kurang > summary {
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 10px;
+        min-height: var(--sentuh);
+        cursor: pointer;
+        list-style: none;
+    }
+    .stok-kurang > summary::-webkit-details-marker {
+        display: none;
+    }
+    .stok-kurang-buka {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--color-hai);
+    }
+    .stok-kurang-buka::after {
+        content: '▾';
+        transition: transform var(--gerak-cepat) ease;
+    }
+    .stok-kurang[open] .stok-kurang-buka::after {
+        transform: rotate(180deg);
+    }
+    .stok-kurang > summary:hover .stok-kurang-buka {
+        color: inherit;
+    }
+    .stok-kurang .saat-buka,
+    .stok-kurang[open] .saat-tutup {
+        display: none;
+    }
+    .stok-kurang[open] .saat-buka {
+        display: inline;
+    }
+    .stok-kurang-daftar {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        column-gap: 20px;
+        max-height: min(420px, 60vh);
+        margin: 6px 0 0;
+        padding: 0 12px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        list-style: none;
+        border: 1px solid var(--color-garis-2);
+        border-radius: 10px;
+        background: rgb(255 255 255 / 0.025);
+    }
+    .stok-kurang-daftar > li {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 2px 12px;
+        align-items: baseline;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--color-garis-2);
+    }
+    .stok-kurang-nama {
+        font-size: 14px;
+        font-weight: 600;
+        overflow-wrap: break-word;
+    }
+    .stok-kurang-jumlah {
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+    .stok-kurang-ket {
+        grid-column: 1 / -1;
+        font-size: 12.5px;
+        color: var(--color-hai);
+    }
+    @media (min-width: 768px) {
+        .tabel-siap-kirim tr:has(.stok-kurang[open]) > td {
+            vertical-align: top;
+        }
+    }
+    @media (min-width: 768px) {
+        .tabel-siap-kirim td.kartu-aksi {
+            white-space: nowrap;
+        }
+        .tabel-siap-kirim td.kartu-aksi form {
+            display: inline-block;
+            margin-right: 8px;
+        }
+    }
 }
 
 @layer components {

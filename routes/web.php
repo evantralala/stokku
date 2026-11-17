@@ -196,6 +196,7 @@ Route::middleware(['auth', 'role:admin_utama,admin_pusat', 'akses'])
                 Route::post('/banyak', 'simpanKirimBanyak')->name('kiriman.banyak.simpan');
                 Route::get('/permintaan/{permintaan}', 'create')->whereNumber('permintaan')->name('kiriman.buat');
                 Route::post('/permintaan/{permintaan}', 'store')->whereNumber('permintaan')->name('kiriman.simpan');
+                Route::patch('/permintaan/{permintaan}/tutup-sisa', 'tutupSisa')->whereNumber('permintaan')->name('kiriman.tutup-sisa');
                 Route::get('/{kiriman}', 'show')->whereNumber('kiriman')->name('kiriman.lihat');
                 Route::get('/permintaan/{permintaan}/pdf', 'pdfPermintaan')->whereNumber('permintaan')->name('kiriman.permintaan-pdf');
                 Route::get('/siap-kirim/pdf', 'pdfSiapKirim')->name('kiriman.siap-kirim-pdf');

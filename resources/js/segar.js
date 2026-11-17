@@ -10,6 +10,7 @@
  *   data-segar                                 ganti seluruh elemen
  *   data-segar="baris"                         ganti, tetapi pertahankan atribut hidden (saringan di halaman)
  *
+ * Lipatan <details> ber-id tetap terbuka atau tertutup seperti sebelum diganti.
  * Dilewati selama tab tidak terlihat, popup/dialog terbuka, pengguna sedang mengisi isian, atau ada form yang diubah.
  * Setelah elemen diganti, event "segar:dimuat" (detail.akar) memberi tahu pemasang lain.
  */
@@ -118,6 +119,8 @@ async function segarkan() {
                 node.hidden = lama.hidden;
             }
 
+            pertahankanLipatan(lama, node);
+
             lama.replaceWith(node);
             document.dispatchEvent(new CustomEvent('segar:dimuat', { detail: { akar: node } }));
         });
@@ -131,4 +134,15 @@ async function segarkan() {
     } finally {
         berjalan = false;
     }
+}
+
+/** Samakan buka-tutup lipatan <details> ber-id di elemen baru dengan yang sedang dilihat pengguna. */
+function pertahankanLipatan(lama, baru) {
+    const terbuka = new Map([...lama.querySelectorAll('details[id]')].map((d) => [d.id, d.open]));
+
+    baru.querySelectorAll('details[id]').forEach((d) => {
+        if (terbuka.has(d.id)) {
+            d.open = terbuka.get(d.id);
+        }
+    });
 }

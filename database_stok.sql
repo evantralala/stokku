@@ -110,7 +110,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (33, '2026_11_05_000001_tambah_nama_lain_bahan_baku', 1),
 (34, '2026_11_06_000001_ganti_sebab_rusak_jadi_alasan', 1),
 (35, '2026_11_09_000001_buat_tabel_email_laporan', 1),
-(36, '2026_11_10_000001_tambah_foto_pengguna', 1);
+(36, '2026_11_10_000001_tambah_foto_pengguna', 1),
+(37, '2026_11_16_000001_tambah_sisa_ditutup_permintaan', 1);
 
 -- --------------------------------------------------------
 -- Tabel `cache`
@@ -271,9 +272,10 @@ alter table `stok_saldo` add constraint `stok_saldo_bahan_baku_id_foreign` forei
 -- Tabel `permintaan`
 -- --------------------------------------------------------
 
-create table `permintaan` (`id` bigint unsigned not null auto_increment primary key, `nomor` varchar(30) not null, `cabang_id` bigint unsigned not null, `diajukan_oleh` bigint unsigned null, `diajukan_pada` datetime null, `batas_keputusan` datetime null, `sumber` enum('manual', 'otomatis') not null default 'manual', `status` enum('draf', 'menunggu', 'selesai', 'batal') not null default 'draf', `created_at` timestamp null, `updated_at` timestamp null, `deleted_at` timestamp null) ENGINE=InnoDB default character set utf8mb4 collate 'utf8mb4_unicode_ci';
+create table `permintaan` (`id` bigint unsigned not null auto_increment primary key, `nomor` varchar(30) not null, `cabang_id` bigint unsigned not null, `diajukan_oleh` bigint unsigned null, `diajukan_pada` datetime null, `batas_keputusan` datetime null, `sumber` enum('manual', 'otomatis') not null default 'manual', `status` enum('draf', 'menunggu', 'selesai', 'batal') not null default 'draf', `sisa_ditutup_pada` datetime null, `sisa_ditutup_oleh` bigint unsigned null, `created_at` timestamp null, `updated_at` timestamp null, `deleted_at` timestamp null) ENGINE=InnoDB default character set utf8mb4 collate 'utf8mb4_unicode_ci';
 alter table `permintaan` add constraint `permintaan_cabang_id_foreign` foreign key (`cabang_id`) references `cabang` (`id`) on delete restrict;
 alter table `permintaan` add constraint `permintaan_diajukan_oleh_foreign` foreign key (`diajukan_oleh`) references `users` (`id`) on delete restrict;
+alter table `permintaan` add constraint `permintaan_sisa_ditutup_oleh_foreign` foreign key (`sisa_ditutup_oleh`) references `users` (`id`) on delete restrict;
 alter table `permintaan` add index `permintaan_cabang_id_status_batas_keputusan_index`(`cabang_id`, `status`, `batas_keputusan`);
 alter table `permintaan` add unique `permintaan_nomor_unique`(`nomor`);
 

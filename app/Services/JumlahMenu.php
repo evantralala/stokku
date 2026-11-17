@@ -74,7 +74,7 @@ class JumlahMenu
     /** Dokumen permintaan yang minimal satu barangnya belum terkirim penuh. */
     private function permintaanBelumDikirim(): int
     {
-        return Permintaan::whereNotIn('status', ['draf', 'batal'])
+        return Permintaan::where('status', Permintaan::STATUS_MENUNGGU)
             ->whereHas('detail', fn ($q) => $q->masihUtang())
             ->count();
     }

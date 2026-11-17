@@ -21,7 +21,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -39,7 +38,6 @@ class KirimanController extends PusatController
     ) {
     }
 
-    /** Permintaan yang siap dikirim, dan riwayat kiriman. */
     /** Excel kiriman keluar Gudang Pusat per periode, satu baris per barang. */
     public function unduh(Request $request, EksporDaftarService $ekspor): View|StreamedResponse
     {
@@ -49,17 +47,13 @@ class KirimanController extends PusatController
             fn (Periode $periode) => $ekspor->kiriman($lokasi, $periode, masuk: false));
     }
 
-    public function index(Request $request): View
+    /** Permintaan yang siap dikirim beserta barang yang stoknya kurang, dan riwayat kiriman. */
+    public function index(Request $request, KirimanService $layanan): View
     {
         $lokasi = $this->lokasi($request);
 
-        $siapKirim = $this->siapKirim()->load('detail.bahanBaku:id,nama');
-        $saldo = DB::table('stok_saldo')->where('cabang_id', $lokasi->id)->pluck('saldo', 'bahan_baku_id');
-        $kurang = $siapKirim->mapWithKeys(fn (Permintaan $p) => [$p->id => $p->detail
-            ->filter(fn (PermintaanDetail $d) => $d->utang_kiriman > 0 && $d->utang_kiriman > (float) ($saldo[$d->bahan_baku_id] ?? 0) + 0.0005)
-            ->map(fn (PermintaanDetail $d) => $d->bahanBaku->nama)
-            ->values()
-            ->all()]);
+        $siapKirim = $this->siapKirim()->load('detail.bahanBaku.satuanBeli');
+        $kurang = $layanan->kekuranganStok($siapKirim, $lokasi->id);
 
         $kiriman = Kiriman::query()
             ->dari($lokasi->id)

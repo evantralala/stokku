@@ -1,7 +1,10 @@
 {{--
     Kiriman Gudang Pusat. Variabel dari Pusat\KirimanController@index (juga Admin Utama):
-      $siapKirim, $kurang ([permintaan id => nama bahan yang stoknya kurang]), $kiriman, $lokasi, $rute (awalan route).
+      $siapKirim, $kurang ([permintaan id => barang yang stoknya kurang: bahan, perlu, stok, kurang], KirimanService::kekuranganStok),
+      $kiriman, $lokasi, $rute (awalan route).
+    Barang yang stoknya kurang dilipat per permintaan; status buka-tutupnya dipertahankan saat halaman disegarkan.
     Permintaan siap kirim bisa dicentang lalu dikirim sekaligus lewat bilah bawah, atau dibuka satu per satu.
+    Tombol Tutup Sisa hanya muncul bila route $rute.tutup-sisa ada (Admin Utama).
 --}}
 @extends('layouts.app')
 
@@ -11,6 +14,10 @@
 @section('aksi')
     <x-tombol-unduh :href="route($rute.'.unduh')" periode />
 @endsection
+
+@php
+    $keBeli = fn ($bahan, $qty) => \App\Support\Angka::tampil($bahan->keSatuanBeli($qty)).' '.$bahan->satuanBeli->nama;
+@endphp
 
 @section('content')
     <div class="kartu-grid kartu-grid-master">
@@ -53,12 +60,36 @@
                                     <span class="nama-barang">{{ $p->cabang->nama }}</span>
                                     <span class="barang-ket num">{{ $p->nomor }}</span>
                                     @if ($kurang[$p->id] ?? [])
-                                        <span class="barang-ket teks-kurang">Stok kurang: {{ implode(', ', $kurang[$p->id]) }}. Dikirim sebagian.</span>
+                                        <details class="stok-kurang" id="stok-kurang-{{ $p->id }}">
+                                            <summary>
+                                                <span class="badge b-lewat">Stok kurang <span class="num">{{ count($kurang[$p->id]) }}</span> barang</span>
+                                                <span class="stok-kurang-buka"><span class="saat-tutup">Rincian</span><span class="saat-buka">Sembunyikan</span></span>
+                                            </summary>
+                                            <ul class="stok-kurang-daftar">
+                                                @foreach ($kurang[$p->id] as $b)
+                                                    <li>
+                                                        <span class="stok-kurang-nama">{{ $b['bahan']->nama }}</span>
+                                                        <span class="stok-kurang-jumlah num teks-kurang">Kurang {{ $keBeli($b['bahan'], $b['kurang']) }}</span>
+                                                        <span class="stok-kurang-ket num">Perlu {{ $keBeli($b['bahan'], $b['perlu']) }} · Stok {{ $keBeli($b['bahan'], $b['stok']) }}</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </details>
                                     @endif
                                 </td>
                                 <td data-label="Diajukan">{{ $p->diajukan_pada->diffForHumans() }}</td>
                                 <td class="ka num" data-label="Barang">{{ $p->utang_count }} barang</td>
                                 <td class="ka kartu-aksi" data-label="">
+                                    @if (Route::has($rute.'.tutup-sisa'))
+                                        <form method="POST" action="{{ route($rute.'.tutup-sisa', $p) }}"
+                                              data-konfirmasi="Sisa {{ $p->nomor }} untuk {{ $p->cabang->nama }} tidak dikirim lagi dan permintaan dianggap selesai."
+                                              data-konfirmasi-judul="Tutup Sisa?"
+                                              data-konfirmasi-tombol="Ya, Tutup">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-sm btn-garis">Tutup Sisa</button>
+                                        </form>
+                                    @endif
                                     <a class="btn btn-sm btn-garis" href="{{ route($rute.'.buat', $p) }}">Kirim</a>
                                 </td>
                                 <td class="ka sel-pilih" data-label="">

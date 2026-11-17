@@ -112,6 +112,7 @@ final class DaftarBantuan
                 'langkah' => [
                     'Angka di menu Kiriman = permintaan disetujui yang belum dikirim.',
                     'Tekan permintaan, cek daftar barangnya, lalu "Kirim Sekarang". Jumlah mengikuti persetujuan; bila stok gudang kurang, dikirim sebanyak yang ada dan sisanya tetap di Siap Dikirim. Stok Gudang langsung berkurang.',
+                    'Sisa yang tidak akan dikirim: tekan "Tutup Sisa" di Siap Dikirim. Permintaan dianggap selesai dan hilang dari Siap Dikirim.',
                     'Cabang mencocokkan barang yang tiba. Stok Cabang bertambah setelah cabang menyimpan penerimaan.',
                     '"Unduh PDF" di bagian Siap Dikirim mencetak permintaan yang belum terkirim penuh, lengkap dengan status tiap barang; "Surat Jalan" di detail kiriman dicetak untuk dibawa bersama barang.',
                 ],
