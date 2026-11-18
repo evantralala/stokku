@@ -7,7 +7,6 @@ use App\Models\Cabang;
 use App\Models\Kategori;
 use App\Models\Kiriman;
 use App\Models\KirimanDetail;
-use App\Models\LogPerubahan;
 use App\Models\Menu;
 use App\Models\Opname;
 use App\Models\OpnameDetail;

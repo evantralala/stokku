@@ -138,15 +138,21 @@ Untuk database dari nol (`db:seed` hanya membuat akun Admin Utama):
 
    ```bash
    php artisan down
-   unzip -o stokku-rilis.zip -x "storage/*" ".env"
+   rm -rf public/build
+   unzip -o -q stokku-rilis.zip -x "storage/*" ".env"
    rm -rf ../public_html/build
    cp -r public/build ../public_html/
+   cp public/sw.js ../public_html/sw.js
    php artisan migrate --force
+   php artisan push:buat-kunci
    php artisan optimize
    php artisan up
    rm stokku-rilis.zip
    ```
 
+   `rm -rf public/build` sebelum ekstrak supaya file build lama tidak menumpuk. `sw.js` disalin ke `public_html`
+   karena browser memakai service worker dari sana (notifikasi HP ikut di dalamnya). `push:buat-kunci` hanya membuat
+   kunci notifikasi HP bila belum ada; bila sudah ada tidak diubah.
    `-x "storage/*" ".env"` menjaga `.env` dan data unggahan di server. File yang dihapus dari aplikasi tidak ikut
    terhapus oleh `unzip`; hapus manual sesuai catatan rilis (`rm path/file.php`). Salin juga `index.php` dari
    `deploy/public_html` bila catatan rilis menyebutnya berubah.

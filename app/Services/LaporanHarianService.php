@@ -4,13 +4,11 @@ namespace App\Services;
 
 use App\Mail\LaporanHarianMail;
 use App\Models\BarangKeluar;
-use App\Models\BarangMasuk;
 use App\Models\BarangMasukDetail;
 use App\Models\Cabang;
 use App\Models\EmailLaporan;
 use App\Models\Kiriman;
 use App\Models\User;
-use App\Support\Angka;
 use App\Support\BukuExcel;
 use App\Support\DaftarLaporanEmail as Daftar;
 use App\Support\Identitas;

@@ -11,7 +11,6 @@ use App\Models\Opname;
 use App\Models\Pengaturan;
 use App\Models\Satuan;
 use App\Models\User;
-use App\Services\FotoService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
