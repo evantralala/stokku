@@ -1,7 +1,7 @@
 /* Laporan: saringan periode dan tabel lebar yang tetap terbaca di HP. */
 @layer components {
     .saring-laporan .simpan-bar { flex-wrap: wrap; gap: 10px; }
-    .saring-periode { padding: 12px 16px 0; }
+    .saring-periode { margin: 12px 16px 0; max-width: calc(100% - 32px); }
     .saring-laporan .simpan-aksi { margin-left: auto; }
     .laporan-grid .tombol-cepat { min-height: 96px; }
     .laporan-grid .tombol-cepat-ket { margin-top: 0; }

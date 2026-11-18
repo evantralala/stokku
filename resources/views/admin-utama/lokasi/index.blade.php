@@ -64,15 +64,16 @@
                                         @if ($lokasi->alamat)
                                             <div class="cabang-sub">{{ $lokasi->alamat }}</div>
                                         @endif
+                                        <div class="cabang-sub hp-saja-teks">{{ $lokasi->label_jenis }} · {{ $lokasi->jumlah_pengguna }} pengguna</div>
                                     </div>
                                 </div>
                             </td>
 
-                            <td class="kartu-utama" data-label="Jenis">
+                            <td class="kartu-utama hp-sembunyi" data-label="Jenis">
                                 <span class="badge {{ $lokasi->isPusat() ? 'b-pusat' : 'b-draf' }}">{{ $lokasi->label_jenis }}</span>
                             </td>
 
-                            <td class="ka num" data-label="Pengguna">{{ $lokasi->jumlah_pengguna }}</td>
+                            <td class="ka num hp-sembunyi" data-label="Pengguna">{{ $lokasi->jumlah_pengguna }}</td>
                             <td @class(['tg', 'hp-sembunyi' => $lokasi->aktif]) data-label=""><x-master.status :aktif="$lokasi->aktif" /></td>
 
                             <td class="ka kartu-aksi kartu-aksi-hp">

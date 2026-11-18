@@ -25,6 +25,22 @@
         letter-spacing: -0.01em;
         color: var(--color-sumi);
     }
+    /* Jumlah di judul panel (mis. Siap Dikirim 3, Penjualan 120 porsi) sebagai lencana kecil. */
+    .panel-head h2 .num {
+        display: inline-flex;
+        align-items: center;
+        min-height: 22px;
+        margin-left: 2px;
+        padding: 0 9px;
+        border-radius: 999px;
+        background: var(--color-batu);
+        color: var(--color-sumi-2);
+        font-size: 12.5px;
+        font-weight: 700;
+        line-height: 1;
+        vertical-align: 2px;
+        white-space: nowrap;
+    }
     .panel-head .sub {
         font-size: 13px;
         color: var(--color-hai);
@@ -854,6 +870,9 @@
         }
         .tabel-ringkas .hp-saja-teks {
             display: inline;
+        }
+        .tabel-ringkas div.hp-saja-teks {
+            display: block;
         }
     }
 

@@ -47,26 +47,25 @@
                 <tbody>
                     @forelse ($daftar as $bahan)
                         <tr>
+                            @php
+                                $teksSatuan = match (true) {
+                                    (int) $bahan->satuan_beli_id === (int) $bahan->satuan_dasar_id => $bahan->satuanDasar->nama,
+                                    \App\Support\SatuanTunggal::turunan($bahan->satuanBeli->nama) === [$bahan->satuanDasar->nama, (float) $bahan->isi_per_satuan_beli] => $bahan->satuanBeli->nama,
+                                    default => '1 '.$bahan->satuanBeli->nama.' = '.\App\Support\Angka::tampil($bahan->isi_per_satuan_beli).' '.$bahan->satuanDasar->nama,
+                                };
+                            @endphp
                             <td class="kolom-no num hp-sembunyi" data-label="">{{ $daftar->firstItem() + $loop->index }}</td>
                             <td class="kartu-judul" data-label="Bahan">
                                 <div class="dengan-foto">
                                     <x-foto :src="$bahan->urlFoto()" :nama="$bahan->nama" />
                                     <div class="dengan-foto-teks">
                                         <a class="nama-barang tautan-baris" href="{{ route($rute.'.ubah', $bahan) }}" data-popup="panjang">{{ $bahan->nama }}</a>
-                                        <div class="satuan hp-saja-teks">{{ $bahan->kategori->nama }}</div>
+                                        <div class="satuan hp-saja-teks">{{ $bahan->kategori->nama }} · {{ $teksSatuan }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td class="hp-sembunyi" data-label="Kategori">{{ $bahan->kategori->nama }}</td>
-                            <td class="num" data-label="">
-                                @if ((int) $bahan->satuan_beli_id === (int) $bahan->satuan_dasar_id)
-                                    {{ $bahan->satuanDasar->nama }}
-                                @elseif (\App\Support\SatuanTunggal::turunan($bahan->satuanBeli->nama) === [$bahan->satuanDasar->nama, (float) $bahan->isi_per_satuan_beli])
-                                    {{ $bahan->satuanBeli->nama }}
-                                @else
-                                    1 {{ $bahan->satuanBeli->nama }} = {{ \App\Support\Angka::tampil($bahan->isi_per_satuan_beli) }} {{ $bahan->satuanDasar->nama }}
-                                @endif
-                            </td>
+                            <td class="num hp-sembunyi" data-label="Satuan">{{ $teksSatuan }}</td>
                             <td class="ka num kartu-utama" data-label="Toleransi">{{ \App\Support\Angka::tampil($bahan->toleransi_persen, 2) }}%</td>
                             <td @class(['tg', 'hp-sembunyi' => $bahan->aktif]) data-label=""><x-master.status :aktif="$bahan->aktif" /></td>
                             <td class="ka kartu-aksi kartu-aksi-hp" data-label="">

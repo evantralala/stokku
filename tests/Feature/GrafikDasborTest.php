@@ -102,7 +102,7 @@ class GrafikDasborTest extends TestCase
 
         $admin = User::factory()->adminUtama()->create();
         $this->actingAs($admin)->get(route('admin-utama.dashboard', ['jual' => 'bulan-ini', 'jual_cabang' => $lain->id]))
-            ->assertOk()->assertSee('Penjualan <span class="num">8</span> porsi', false)->assertSee('di Cabang Kenanga')
+            ->assertOk()->assertSee('Penjualan <span class="num">8 porsi</span>', false)->assertSee('di Cabang Kenanga')
             ->assertSee('Semua Cabang')->assertSee('Tahun Lalu');
 
         $html = $this->actingAs(User::factory()->adminCabang($this->cabang->id)->create())->get(route('cabang.dashboard', ['jual' => 'tahun-ini']))

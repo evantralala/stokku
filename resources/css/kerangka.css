@@ -520,6 +520,17 @@
     :is(.topbar, .alat-stok) .chip[aria-current='true'] .lampu-titik {
         box-shadow: 0 0 0 2px #fff;
     }
+    /* HP sempit: empat saringan lampu muat satu baris; warna teks sudah menandai lampunya. */
+    @media (max-width: 479.98px) {
+        :is(.topbar, .alat-stok) .chip {
+            gap: 4px;
+            padding: 0 4px;
+            font-size: 13px;
+        }
+        :is(.topbar, .alat-stok) .chip .lampu-titik {
+            display: none;
+        }
+    }
 
     /* ---------- angka lampu di kepala: tiga kartu kecil ---------- */
     .lampu-kepala {

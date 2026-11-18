@@ -422,7 +422,7 @@
     }
     .tombol-hari[aria-disabled='true'] { opacity: .35; pointer-events: none; }
     .ikon-balik { transform: scaleX(-1); }
-    .pilih-hari-form .chip-saring { padding: 12px 16px 0; }
+    .pilih-hari-form .chip-saring { margin: 12px 16px 0; max-width: calc(100% - 32px); }
     .tabel-per-hari .stok-akhir { font-weight: 700; }
     .tabel-per-hari .baris-diam { color: var(--color-hai); }
     .rincian-hari {
@@ -433,10 +433,7 @@
     }
 
     .tab-riwayat {
-        display: flex;
-        gap: 8px;
         margin-bottom: 12px;
-        overflow-x: auto;
     }
 
     .intip-aksi .simpan-aksi { flex-wrap: wrap; }

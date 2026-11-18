@@ -37,11 +37,6 @@
     }
 
     /* ---------- tabel barang ---------- */
-    .panel-head h2 .num {
-        margin-left: 4px;
-        font-weight: 500;
-        color: var(--color-hai);
-    }
     .barang-ket {
         display: block;
         margin-top: 2px;

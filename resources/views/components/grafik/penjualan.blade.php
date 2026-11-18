@@ -22,7 +22,7 @@
 <section {{ $attributes->class(['panel', 'grafik-kartu']) }} id="grafik-penjualan">
     <div class="panel-head">
         <div>
-            <h2>Penjualan <span class="num">{{ \App\Support\Angka::tampil($total) }}</span> porsi</h2>
+            <h2>Penjualan <span class="num">{{ \App\Support\Angka::tampil($total) }} porsi</span></h2>
             <div class="sub">Porsi terjual{{ $lokasi ? ' di '.$lokasi->nama : ' semua cabang' }} · {{ $layanan::keterangan($periode) }}</div>
         </div>
         <div class="kanan grafik-legenda" aria-hidden="true">
@@ -30,16 +30,18 @@
         </div>
     </div>
 
-    <x-grafik.periode nama="jual" :terpilih="$periode" jangkar="grafik-penjualan" />
+    <div class="grafik-saring">
+        <x-grafik.periode nama="jual" :terpilih="$periode" jangkar="grafik-penjualan" />
 
-    @if ($pilihanLokasi !== null && $pilihanLokasi->count() > 1)
-        <nav class="chip-saring chip-geser grafik-periode" aria-label="Cabang grafik penjualan">
-            <a class="chip" href="{{ request()->fullUrlWithQuery(['jual_cabang' => null]) }}#grafik-penjualan"{!! $dipilih === null ? ' aria-current="true"' : '' !!}>Semua Cabang</a>
-            @foreach ($pilihanLokasi as $id => $nama)
-                <a class="chip" href="{{ request()->fullUrlWithQuery(['jual_cabang' => $id]) }}#grafik-penjualan"{!! $dipilih === $id ? ' aria-current="true"' : '' !!}>{{ $nama }}</a>
-            @endforeach
-        </nav>
-    @endif
+        @if ($pilihanLokasi !== null && $pilihanLokasi->count() > 1)
+            <nav class="chip-saring chip-geser" aria-label="Cabang grafik penjualan">
+                <a class="chip" href="{{ request()->fullUrlWithQuery(['jual_cabang' => null]) }}#grafik-penjualan"{!! $dipilih === null ? ' aria-current="true"' : '' !!}>Semua Cabang</a>
+                @foreach ($pilihanLokasi as $id => $nama)
+                    <a class="chip" href="{{ request()->fullUrlWithQuery(['jual_cabang' => $id]) }}#grafik-penjualan"{!! $dipilih === $id ? ' aria-current="true"' : '' !!}>{{ $nama }}</a>
+                @endforeach
+            </nav>
+        @endif
+    </div>
 
     @foreach ([640 => 'grafik-sempit', 960 => 'grafik-luas'] as $lebar => $kelas)
         <div class="grafik-badan {{ $kelas }}">

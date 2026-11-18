@@ -4,7 +4,7 @@
 --}}
 @props(['nama', 'terpilih', 'jangkar'])
 
-<nav class="chip-saring chip-geser grafik-periode" aria-label="Periode grafik">
+<nav class="chip-saring" aria-label="Periode grafik">
     @foreach (\App\Services\GrafikDasborService::PERIODE as $kunci => $label)
         <a class="chip" href="{{ request()->fullUrlWithQuery([$nama => $kunci]) }}#{{ $jangkar }}"{!! $terpilih === $kunci ? ' aria-current="true"' : '' !!}>{{ $label }}</a>
     @endforeach

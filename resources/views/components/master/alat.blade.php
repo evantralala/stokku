@@ -1,6 +1,6 @@
 {{--
-    Kartu alat di kepala daftar data master: kotak cari, saringan tambahan (slot), chip status, tombol hapus saringan,
-    lalu tombol aksi halaman (slot aksi: riwayat, impor/ekspor, tambah) di kanan.
+    Kartu alat di kepala daftar data master. Baris 1: kotak cari + saringan tambahan (slot). Baris 2: chip status dan
+    tombol hapus saringan, lalu tombol aksi halaman (slot aksi: riwayat, impor/ekspor, tambah) di kanan.
     Prop: rute (awalan nama route), filter (['cari', 'status']), placeholder.
     Status berupa chip tautan yang mempertahankan saringan lain.
 --}}
@@ -25,15 +25,17 @@
         <input type="hidden" name="status" value="{{ $filter['status'] }}">
     </form>
 
-    <nav class="chip-saring chip-geser" aria-label="Saring status">
-        @foreach ($pilihanStatus as $nilai => $teks)
-            <a class="chip" href="{{ $tautanStatus($nilai) }}"{!! $filter['status'] === $nilai ? ' aria-current="true"' : '' !!}>{{ $teks }}</a>
-        @endforeach
-    </nav>
+    <div class="alat-master-saring">
+        <nav class="chip-saring chip-geser" aria-label="Saring status">
+            @foreach ($pilihanStatus as $nilai => $teks)
+                <a class="chip" href="{{ $tautanStatus($nilai) }}"{!! $filter['status'] === $nilai ? ' aria-current="true"' : '' !!}>{{ $teks }}</a>
+            @endforeach
+        </nav>
 
-    <a class="btn tombol-reset" href="{{ route($rute) }}" aria-label="Hapus saringan" title="Hapus saringan">
-        <x-ikon nama="ulang" width="18" height="18" />
-    </a>
+        <a class="btn tombol-reset" href="{{ route($rute) }}" aria-label="Hapus saringan" title="Hapus saringan">
+            <x-ikon nama="ulang" width="18" height="18" />
+        </a>
+    </div>
 
     @isset($aksi)
         <div class="alat-master-aksi">{{ $aksi }}</div>

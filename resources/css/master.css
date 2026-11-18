@@ -103,8 +103,9 @@
 }
 
 /*
- * Kartu alat daftar master (ala referensi): kotak cari (+ saringan tambahan), chip status, tombol hapus saringan,
- * dan tombol aksi halaman di kanan. Di HP tombol riwayat/impor/ekspor jadi ikon dan tombol tambah memenuhi sisa baris.
+ * Kartu alat daftar master: baris 1 kotak cari (+ saringan tambahan), baris 2 chip status + hapus saringan di kiri dan
+ * tombol aksi halaman di kanan. Di HP tombol aksi di baris sendiri: riwayat/impor/ekspor jadi ikon, tombol tambah
+ * memenuhi sisa baris.
  */
 @layer components {
     .panel-head:has(> .alat-master) { padding: 16px 18px; }
@@ -116,11 +117,13 @@
         width: 100%;
         margin-left: 0;
     }
-    .alat.alat-master > * { flex: initial; }
-    .alat-master-form { display: flex; flex-wrap: wrap; gap: 10px; flex: 1 1 100%; min-width: 0; }
+    :where(.alat.alat-master) > * { flex: initial; }
+    .alat-master-form { display: flex; flex-wrap: wrap; gap: 10px; flex: 1 1 100%; min-width: 0; order: 1; }
     .alat-master-form .kotak-cari { flex: 1 1 260px; }
     .alat-master-form > select.isian { flex: 1 1 150px; width: auto; }
-    .alat-master .chip-saring { flex: 1 1 auto; min-width: 0; }
+    .alat-master-saring { display: flex; align-items: center; gap: 10px; flex: 1 1 100%; min-width: 0; order: 3; }
+    .alat-master-aksi { order: 2; }
+    .alat-master .chip-saring { flex: 0 1 auto; min-width: 0; }
     .tombol-reset {
         flex: none;
         width: var(--sentuh);
@@ -209,15 +212,14 @@
         .tabel-kartu.tabel-ringkas td.kartu-aksi.kartu-aksi-hp:has(.aksi-baris) { display: block; order: -1; flex: none; align-self: center; position: relative; z-index: 1; }
     }
 
+    /* Mulai tablet: baris 1 cari dan saringan selebar kartu; baris 2 chip status di kiri, tombol aksi di kanan. */
     @media (min-width: 768px) {
-        .alat-master-aksi { width: auto; margin-left: auto; }
+        .alat-master-form { flex-wrap: nowrap; }
+        .alat-master-form .kotak-cari { flex: 1 1 auto; }
+        .alat-master-form > select.isian { flex: 0 1 220px; min-width: 160px; }
+        .alat-master-saring { flex: 0 1 auto; order: 2; }
+        .alat-master-aksi { width: auto; margin-left: auto; order: 3; }
         .alat-master-aksi > .btn-merah { flex: none; }
-    }
-
-    @media (min-width: 1100px) {
-        .alat-master-form { flex: 1 1 360px; max-width: 620px; flex-wrap: nowrap; }
-        .alat-master-form > select.isian { flex: 0 1 190px; }
-        .alat-master .chip-saring { flex: none; }
     }
 
     @media (min-width: 1500px) {

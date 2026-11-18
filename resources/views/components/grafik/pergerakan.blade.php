@@ -25,7 +25,9 @@
         </div>
     </div>
 
-    <x-grafik.periode nama="gerak" :terpilih="$periode" jangkar="grafik-pergerakan" />
+    <div class="grafik-saring">
+        <x-grafik.periode nama="gerak" :terpilih="$periode" jangkar="grafik-pergerakan" />
+    </div>
 
     <div class="grafik-badan">
         <x-grafik.batang :data="$data" :seri="['masuk' => ['Masuk', 'batang-masuk'], 'keluar' => ['Keluar', 'batang-keluar']]"

@@ -225,10 +225,10 @@
     .legenda-keluar { background: linear-gradient(180deg, #ffc65c, #e58a10); }
     .legenda-porsi { background: linear-gradient(180deg, #4ade80, #15803d); }
     .batang-porsi { fill: url(#gradasi-batang-porsi); }
-    .grafik-periode { padding: 0 16px; margin-top: 4px; }
+    .grafik-saring { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px; margin-top: 4px; }
+    .grafik-saring > .chip-saring { max-width: 100%; }
     .grafik-lebar .grafik-sumbu { font-size: 30px; }
     .grafik-luas { display: none; }
-    .grafik-periode + .grafik-periode { margin-top: 8px; }
     .grafik-badan { padding: 12px 14px 8px 6px; }
     .grafik-batang { display: block; width: 100%; height: auto; overflow: visible; }
     .grafik-garis { stroke: var(--color-garis); stroke-width: 1; stroke-dasharray: 3 4; }

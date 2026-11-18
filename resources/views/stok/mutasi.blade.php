@@ -41,7 +41,7 @@
 @endsection
 
 @section('content')
-    <nav class="tab-riwayat" aria-label="Jenis riwayat">
+    <nav class="chip-saring tab-riwayat" aria-label="Jenis riwayat">
         <a class="chip" href="{{ route($rute.'.mutasi', $parameterLokasi + ['tampil' => 'hari'] + $saring) }}" @if ($hari) aria-current="true" @endif>Per Hari</a>
         <a class="chip" href="{{ route($rute.'.mutasi', $dasar + ['tampil' => 'transaksi']) }}" @if ($tampil === 'transaksi') aria-current="true" @endif>Masuk & Keluar</a>
         <a class="chip" href="{{ route($rute.'.mutasi', $dasar + ['tampil' => 'harian']) }}" @if ($harian) aria-current="true" @endif>Pemakaian Harian</a>
