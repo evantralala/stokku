@@ -1,13 +1,16 @@
 /**
  * Notifikasi HP (Web Push). Aktif bila halaman punya <meta name="push-kunci"> (kunci VAPID server).
- * - Izin sudah diberikan: perangkat langsung didaftarkan (bawaannya aktif).
+ * - Izin sudah diberikan: langganan perangkat dikirim ulang ke server setiap halaman dibuka (bawaannya aktif), supaya
+ *   tetap terdaftar setelah data server dikosongkan dan ikut pindah ke akun yang sedang login di perangkat itu.
  * - Izin belum ditanyakan: ajakan [data-push-ajak] tampil; tombol [data-push-aktifkan] meminta izin lalu mendaftar,
  *   [data-push-nanti] menyembunyikan ajakan selama 7 hari.
- * - [data-push-matikan] berhenti berlangganan di perangkat ini (menu Akun).
+ * - [data-push-matikan] berhenti berlangganan di perangkat ini (menu Akun) dan diingat, supaya tidak terdaftar lagi
+ *   otomatis sampai [data-push-aktifkan] ditekan.
  * - [data-push-keadaan="aktif|mati|diblokir|tidak-didukung"] hanya yang sesuai keadaan perangkat yang tampil
  *   (tidak-didukung mis. Safari iPhone yang belum dipasang di Layar Utama).
  */
 const KUNCI_NANTI = 'stokku:push-nanti';
+const KUNCI_MATI = 'stokku:push-mati';
 const TUNDA_HARI = 7;
 
 export function pasangPush() {
@@ -31,6 +34,7 @@ export function pasangPush() {
         if (e.target.closest('[data-push-aktifkan]')) {
             e.preventDefault();
             const izin = await Notification.requestPermission();
+            simpan(KUNCI_MATI, null);
             if (izin === 'granted') {
                 await daftar(kunci, alamat);
             }
@@ -38,10 +42,11 @@ export function pasangPush() {
         } else if (e.target.closest('[data-push-matikan]')) {
             e.preventDefault();
             await berhenti(alamat);
+            simpan(KUNCI_MATI, '1');
             perbarui(kunci, alamat);
         } else if (e.target.closest('[data-push-nanti]')) {
             e.preventDefault();
-            simpanNanti();
+            simpan(KUNCI_NANTI, String(Date.now() + TUNDA_HARI * 86400000));
             tampilkan('[data-push-ajak]', false);
         }
     });
@@ -49,11 +54,7 @@ export function pasangPush() {
 
 async function perbarui(kunci, alamat) {
     const izin = Notification.permission;
-    let langganan = await ambilLangganan();
-
-    if (izin === 'granted' && !langganan) {
-        langganan = await daftar(kunci, alamat);
-    }
+    const langganan = izin === 'granted' && !baca(KUNCI_MATI) ? await daftar(kunci, alamat) : await ambilLangganan();
 
     tampilkan('[data-push-ajak]', izin === 'default' && !sedangDitunda());
 
@@ -128,18 +129,26 @@ function tampilkan(pemilih, ya) {
 }
 
 function sedangDitunda() {
+    return Number(baca(KUNCI_NANTI) || 0) > Date.now();
+}
+
+function baca(kunci) {
     try {
-        return Number(localStorage.getItem(KUNCI_NANTI) || 0) > Date.now();
+        return localStorage.getItem(kunci);
     } catch {
-        return false;
+        return null;
     }
 }
 
-function simpanNanti() {
+function simpan(kunci, nilai) {
     try {
-        localStorage.setItem(KUNCI_NANTI, String(Date.now() + TUNDA_HARI * 86400000));
+        if (nilai === null) {
+            localStorage.removeItem(kunci);
+        } else {
+            localStorage.setItem(kunci, nilai);
+        }
     } catch {
-        // Penyimpanan browser tidak tersedia: ajakan muncul lagi di halaman berikutnya.
+        return;
     }
 }
 
