@@ -94,7 +94,7 @@ class ImporPenjualanCabangTest extends TestCase
         $this->get(route('cabang.penjualan.impor'))->assertOk()
             ->assertSee('data-popup-isi', false)
             ->assertSee(route('cabang.penjualan.impor.templat'), false)
-            ->assertSee('Tanpa kolom Tanggal, penjualan dicatat untuk hari ini (sebelum jam 06:00 masih dianggap kemarin).');
+            ->assertSee('Tanggal kosong = hari ini (sebelum jam 06:00 = kemarin).');
 
         $berkas = tempnam(sys_get_temp_dir(), 'pj').'.xlsx';
         file_put_contents($berkas, $this->get(route('cabang.penjualan.impor.templat'))->assertOk()->streamedContent());

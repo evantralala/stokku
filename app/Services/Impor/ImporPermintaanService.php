@@ -52,7 +52,7 @@ class ImporPermintaanService extends ImporExcel
     {
         return [
             'Impor Permintaan',
-            'Unduh templat berisi semua bahan; bahan di bawah minimum sudah terisi usulan. Ubah kolom Jumlah, lalu unggah. Jumlah kosong atau 0 tidak diminta. Tabel sendiri juga bisa.',
+            'Ubah kolom Jumlah. Jumlah kosong atau 0 tidak diminta.',
             'Unduh Templat',
         ];
     }

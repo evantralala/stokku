@@ -31,7 +31,6 @@ class ImporSekaligusController extends Controller
     public function unggah(): View
     {
         return view('admin-utama.impor-sekaligus.unggah', [
-            'kolom'       => $this->layanan->kolom(),
             'pilihanMode' => $this->layanan->pilihanMode(),
             'mode'        => $this->layanan->mode(),
         ]);

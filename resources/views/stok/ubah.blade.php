@@ -28,14 +28,16 @@
 
             <fieldset class="impor-mode lebar">
                 <legend class="label-isian">Cara Ubah</legend>
-                <label class="impor-mode-pilih">
-                    <input type="radio" name="cara" value="kurangi" @checked($cara === 'kurangi')>
-                    <span class="nama-barang">Kurangi</span>
-                </label>
-                <label class="impor-mode-pilih">
-                    <input type="radio" name="cara" value="samakan" @checked($cara === 'samakan')>
-                    <span class="nama-barang">Ganti</span>
-                </label>
+                <div class="pilih-segmen">
+                    <label>
+                        <input type="radio" name="cara" value="kurangi" @checked($cara === 'kurangi')>
+                        <span>Kurangi</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="cara" value="samakan" @checked($cara === 'samakan')>
+                        <span>Ganti</span>
+                    </label>
+                </div>
             </fieldset>
 
             <div class="lebar" data-tampil-jika="cara:kurangi" @if ($cara !== 'kurangi') hidden @endif>

@@ -97,7 +97,8 @@ class ExcelMasterTest extends TestCase
             ->assertOk()
             ->assertSee('data-popup-isi', false)
             ->assertSee(route('admin-utama.excel.templat', 'bahan-baku'), false)
-            ->assertSee('Isi Kolom');
+            ->assertSee('Satu baris untuk satu data.')
+            ->assertDontSee('Isi Kolom');
     }
 
     public function test_impor_bahan_baku_membuat_kategori_dan_satuan_baru_dan_melewati_yang_sudah_ada(): void

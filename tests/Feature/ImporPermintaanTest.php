@@ -89,7 +89,7 @@ class ImporPermintaanTest extends TestCase
         $this->get(route('cabang.permintaan.impor'))
             ->assertOk()
             ->assertSee('Unduh Templat')
-            ->assertSee('usulan')
+            ->assertSee('Jumlah kosong atau 0 tidak diminta.')
             ->assertSee(route('cabang.permintaan.impor.templat'), false);
     }
 

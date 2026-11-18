@@ -77,9 +77,15 @@ abstract class ImporExcel
     public function pakaiMode(mixed $mode): static
     {
         $pilihan = $this->pilihanMode();
-        $this->mode = $pilihan === [] ? null : (is_string($mode) && isset($pilihan[$mode]) ? $mode : array_key_first($pilihan));
+        $this->mode = $pilihan === [] ? null : (is_string($mode) && isset($pilihan[$mode]) ? $mode : $this->modeBawaan());
 
         return $this;
+    }
+
+    /** Cara simpan yang terpilih bila tidak dipilih; bawaan pilihan pertama. */
+    protected function modeBawaan(): ?string
+    {
+        return array_key_first($this->pilihanMode());
     }
 
     public function mode(): ?string
@@ -477,7 +483,7 @@ abstract class ImporExcel
      */
     public function teksUnggah(): array
     {
-        return [Teks::judul('Impor '.$this->judul()), 'Unduh templat, isi satu baris untuk satu data, lalu unggah di sini. Tabel sendiri juga bisa.', 'Unduh Templat'];
+        return [Teks::judul('Impor '.$this->judul()), 'Satu baris untuk satu data.', 'Unduh Templat'];
     }
 
     /**

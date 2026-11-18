@@ -84,14 +84,14 @@ class ImporPenjualanCabangService extends ImporExcel
         if ($this->catatan) {
             return [
                 'Ubah Lewat Excel',
-                'Unduh file penjualan '.$this->catatan->tanggal->translatedFormat('j M Y').' (berisi porsi yang sudah dicatat), ubah angka di kolom Porsi, lalu unggah. Menu yang dikosongkan tetap seperti semula; tulis 0 untuk menghapus porsinya.',
+                'Ubah kolom Porsi. Porsi kosong tidak berubah; isi 0 untuk menghapus.',
                 'Unduh File Penjualan',
             ];
         }
 
         return [
             'Impor Penjualan',
-            'Unduh templat (format sama dengan Unduh Excel, berisi semua menu dan tanggal hari ini), isi kolom Porsi, lalu unggah. Tanpa kolom Tanggal, penjualan dicatat untuk hari ini (sebelum jam '.HariOperasional::jamGanti().' masih dianggap kemarin). File dari kasir juga bisa, asal ada kolom Menu dan Porsi/Qty.',
+            'Isi kolom Porsi. Tanggal kosong = hari ini (sebelum jam '.HariOperasional::jamGanti().' = kemarin).',
             'Unduh Templat',
         ];
     }

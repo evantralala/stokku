@@ -187,7 +187,8 @@ class ImporSekaligusTest extends TestCase
             ->map(fn ($d, $k) => ['lihat' => $k === 'utama-impor-sekaligus' ? '1' : '0'])->all();
         $this->actingAs($this->utama)->put(route('admin-utama.kontrol-sistem.akses.simpan', 'pusat'), ['akses' => $isian]);
 
-        $this->actingAs($pusat)->get(route('admin-utama.impor-sekaligus'))->assertOk();
+        $this->actingAs($pusat)->get(route('admin-utama.impor-sekaligus'))->assertOk()
+            ->assertSee('Isi lembar yang diperlukan saja')->assertSee('class="pilih-segmen"', false)->assertDontSee('Isi Lembar');
         $this->actingAs($pusat)->get(route('pusat.dashboard'))->assertOk()->assertSee('Impor Sekaligus');
         $this->cek($this->file(['Menu' => [['Nama', 'Kategori Menu'], ['Ocha', 'Minuman']]]), 'samakan', $pusat)->assertOk();
         $this->simpan($pusat)->assertRedirect(route('pusat.dashboard'));

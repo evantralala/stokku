@@ -29,7 +29,6 @@ trait AlurImporExcel
         return view('admin-utama.excel.unggah', [
             'judul' => $layanan->judul(),
             'teks'  => $layanan->teksUnggah(),
-            'kolom' => $layanan->kolom(),
             'url'   => $url,
             'pilihanMode' => $layanan->pilihanMode(),
             'mode'  => $layanan->mode(),

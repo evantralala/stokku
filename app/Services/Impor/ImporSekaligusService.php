@@ -47,16 +47,6 @@ class ImporSekaligusService
         'stok'         => ['Stok', ImporPenyesuaianStokService::class, ['stok', 'stock', 'stokawal', 'persediaan', 'inventory', 'stokgudang']],
     ];
 
-    /** Keterangan kolom yang berbeda di Impor Sekaligus karena boleh kosong (diisi bawaan). */
-    private const KET_BAWAAN = [
-        'bahan' => [
-            'kategori'     => 'Boleh kosong (dipakai Lainnya). Yang belum ada dibuat otomatis.',
-            'satuan'       => 'Boleh kosong (dipakai pcs). Satuan stok, mis. kg, liter, pcs, botol. Untuk kg dan liter, resep ditulis dalam gram dan ml.',
-        ],
-        'menu'  => ['kategori_menu' => 'Boleh kosong (dipakai Lainnya). Yang belum ada dibuat otomatis.'],
-        'resep' => ['kategori_menu' => 'Untuk menu baru. Boleh kosong (dipakai Lainnya).'],
-    ];
-
     /** Lembar di templat, urut seperti di file. */
     private const LEMBAR_TEMPLAT = ['lokasi', 'bahan', 'menu', 'resep', 'stok_minimum', 'stok'];
 
@@ -203,15 +193,6 @@ class ImporSekaligusService
         $buku->setActiveSheetIndex(0);
 
         return $buku;
-    }
-
-    /** Kolom tiap lembar untuk halaman unggah: [label => [judul kolom => keterangan]]. */
-    public function kolom(): array
-    {
-        return collect(self::LEMBAR_TEMPLAT)->mapWithKeys(fn (string $jenis) => [
-            self::LEMBAR[$jenis][0] => collect($jenis === 'stok' ? self::kolomStok() : $this->layanan($jenis)->kolom())
-                ->map(fn (array $t, string $kolom) => self::KET_BAWAAN[$jenis][$kolom] ?? $t['ket'])->all(),
-        ])->all();
     }
 
     /**

@@ -95,7 +95,8 @@ class PerbaruiStokExcelTest extends TestCase
             ->assertSee('Unduh Templat')
             ->assertSee(route('admin-utama.stok.excel.unduh', ['lokasi' => $this->pusat->id]), false)
             ->assertSee(route('admin-utama.stok.excel.pratinjau', ['lokasi' => $this->pusat->id]), false)
-            ->assertSee('Tabel sendiri juga bisa');
+            ->assertSee('Isi kolom Stok dalam satuan beli.')
+            ->assertSee('class="pilih-segmen"', false);
     }
 
     public function test_templat_stok_berformat_sama_dengan_unduh_excel_berisi_contoh_per_kategori(): void

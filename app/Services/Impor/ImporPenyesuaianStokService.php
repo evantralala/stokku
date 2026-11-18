@@ -81,9 +81,14 @@ class ImporPenyesuaianStokService extends ImporExcel
     public function pilihanMode(): array
     {
         return [
-            self::MODE_TAMBAH  => ['Tambah'],
             self::MODE_SAMAKAN => ['Ganti'],
+            self::MODE_TAMBAH  => ['Tambah'],
         ];
+    }
+
+    protected function modeBawaan(): string
+    {
+        return self::MODE_TAMBAH;
     }
 
     private function tambah(): bool
@@ -114,7 +119,7 @@ class ImporPenyesuaianStokService extends ImporExcel
     {
         return [
             'Perbarui Lewat Excel',
-            'Unduh templat atau file Unduh Excel '.$this->lokasiDipakai()->nama.', isi angka di kolom Stok, lalu unggah di sini. Tabel sendiri juga bisa, asal ada kolom nama bahan dan stok.',
+            'Isi kolom Stok dalam satuan beli.',
             'Unduh Templat',
         ];
     }

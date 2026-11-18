@@ -54,7 +54,7 @@ class ImporOpnameService extends ImporExcel
     {
         return [
             'Impor Opname',
-            'Unduh templat berisi semua bahan dan stok sistem, isi kolom Hitung Fisik, lalu unggah. Opname langsung dikirim ke Admin Utama. Bahan yang tidak diisi dianggap 0.',
+            'Isi kolom Hitung Fisik. Bahan yang tidak diisi dianggap 0.',
             'Unduh Templat',
         ];
     }
