@@ -277,6 +277,9 @@
     /* ---------- pasang aplikasi (PWA) di Akun saya ---------- */
     .pasang-isi { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
     .pasang-status { margin: 0; color: var(--color-matcha); font-weight: 600; font-size: 14px; }
+    .pasang-status[data-push-keadaan='mati'] { color: var(--color-hai); }
+    .pasang-status[data-push-keadaan='diblokir'],
+    .pasang-status[data-push-keadaan='tidak-didukung'] { color: var(--color-beni-teks); font-weight: 500; }
     .pasang-langkah {
         margin: 0;
         padding-left: 18px;

@@ -23,6 +23,7 @@ import { pasangTambahStok } from './tambah-stok';
 import { pasangIsianFoto } from './isian-foto';
 import { pasangLihatSandi } from './lihat-sandi';
 import { pasangPwa } from './pwa';
+import { pasangPush } from './push';
 import { pasangBukaLipatan } from './buka-lipatan';
 import { pasangPratinjauImpor } from './pratinjau-impor';
 import { pasangCentangSemua } from './centang-semua';
@@ -60,6 +61,7 @@ pasangPilihBanyak();
 pasangSaringBantuan();
 pasangLihatSandi();
 pasangPwa();
+pasangPush();
 pasangBukaLipatan();
 pasangPratinjauImpor();
 

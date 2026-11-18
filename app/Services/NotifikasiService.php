@@ -6,11 +6,14 @@ use App\Models\Cabang;
 use App\Models\Notifikasi;
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
  * Membuat notifikasi untuk sekelompok pengguna.
  * Dipanggil dari service transaksi di dalam transaksi yang sama, sehingga notifikasi ikut batal bila transaksi gagal.
+ * Setiap notifikasi juga dikirim ke HP penerima (PushService) setelah transaksi tersimpan dan jawaban halaman terkirim,
+ * sehingga pengiriman ke layanan push tidak memperlambat atau menggagalkan pekerjaan pengguna.
  */
 class NotifikasiService
 {
@@ -85,6 +88,11 @@ class NotifikasiService
 
         if ($baris !== []) {
             Notifikasi::insert($baris);
+
+            $penerimaId = array_column($baris, 'user_id');
+            DB::afterCommit(fn () => app()->terminating(
+                fn () => app(PushService::class)->kirim($penerimaId, $judul, $keterangan, $tautan),
+            ));
         }
 
         return count($baris);

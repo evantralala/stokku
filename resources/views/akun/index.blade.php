@@ -75,6 +75,32 @@
         </div>
     </section>
 
+    @if (\App\Services\PushService::aktif())
+        <section class="panel notif-hp" aria-labelledby="judul-notif-hp">
+            <div class="panel-head">
+                <div>
+                    <h2 id="judul-notif-hp"><x-ikon-judul nama="lonceng" />Notifikasi HP</h2>
+                    <div class="sub">Notifikasi juga muncul di perangkat ini walau aplikasi sedang ditutup.</div>
+                </div>
+            </div>
+            <div class="pasang-isi">
+                <p class="pasang-status" data-push-keadaan="aktif" hidden>Aktif di perangkat ini.</p>
+                <p class="pasang-status" data-push-keadaan="mati" hidden>Belum aktif di perangkat ini.</p>
+                <p class="pasang-status" data-push-keadaan="diblokir" hidden>Diblokir di pengaturan browser. Izinkan notifikasi untuk situs ini, lalu muat ulang halaman.</p>
+                <p class="pasang-status" data-push-keadaan="tidak-didukung" hidden>Browser ini belum bisa menerima notifikasi. Di iPhone, pasang dulu ke Layar Utama, lalu buka dari ikonnya.</p>
+            </div>
+            <div class="simpan-bar">
+                <div class="simpan-aksi">
+                    <button type="button" class="btn" data-push-matikan hidden>Matikan</button>
+                    <button type="button" class="btn btn-merah" data-push-aktifkan hidden>
+                        <x-ikon nama="lonceng" />
+                        Aktifkan
+                    </button>
+                </div>
+            </div>
+        </section>
+    @endif
+
     @php
         $gagalEmail = $errors->hasAny(['aktif', 'alamat_teks', 'laporan', 'laporan.0']);
         $aktifEmail = $gagalEmail ? (bool) old('aktif') : $email->aktif;

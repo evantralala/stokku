@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `klien_api`;
 DROP TABLE IF EXISTS `menu_kode_luar`;
 DROP TABLE IF EXISTS `supplier`;
 DROP TABLE IF EXISTS `migrations`;
+DROP TABLE IF EXISTS `langganan_push`;
 DROP TABLE IF EXISTS `email_laporan`;
 DROP TABLE IF EXISTS `periode_buku`;
 DROP TABLE IF EXISTS `penyesuaian_stok`;
@@ -111,7 +112,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (34, '2026_11_06_000001_ganti_sebab_rusak_jadi_alasan', 1),
 (35, '2026_11_09_000001_buat_tabel_email_laporan', 1),
 (36, '2026_11_10_000001_tambah_foto_pengguna', 1),
-(37, '2026_11_16_000001_tambah_sisa_ditutup_permintaan', 1);
+(37, '2026_11_16_000001_tambah_sisa_ditutup_permintaan', 1),
+(38, '2026_11_18_000001_buat_tabel_langganan_push', 1);
 
 -- --------------------------------------------------------
 -- Tabel `cache`
@@ -455,6 +457,14 @@ alter table `periode_buku` add constraint `periode_buku_ditutup_oleh_foreign` fo
 create table `email_laporan` (`id` bigint unsigned not null auto_increment primary key, `user_id` bigint unsigned not null, `aktif` tinyint(1) not null default '0', `alamat` json not null, `laporan` json not null, `terakhir_dikirim` datetime null, `created_at` timestamp null, `updated_at` timestamp null) ENGINE=InnoDB default character set utf8mb4 collate 'utf8mb4_unicode_ci';
 alter table `email_laporan` add constraint `email_laporan_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade;
 alter table `email_laporan` add unique `email_laporan_user_id_unique`(`user_id`);
+
+-- --------------------------------------------------------
+-- Tabel `langganan_push`
+-- --------------------------------------------------------
+
+create table `langganan_push` (`id` bigint unsigned not null auto_increment primary key, `user_id` bigint unsigned not null, `endpoint_hash` char(64) not null, `endpoint` text not null, `p256dh` varchar(200) not null, `auth` varchar(100) not null, `perangkat` varchar(150) null, `terakhir_dikirim` datetime null, `created_at` datetime null, `updated_at` datetime null) ENGINE=InnoDB default character set utf8mb4 collate 'utf8mb4_unicode_ci';
+alter table `langganan_push` add constraint `langganan_push_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade;
+alter table `langganan_push` add unique `langganan_push_endpoint_hash_unique`(`endpoint_hash`);
 
 -- --------------------------------------------------------
 -- Pengaturan bawaan (sama dengan PengaturanSeeder)

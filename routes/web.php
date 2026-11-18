@@ -33,6 +33,7 @@ use App\Http\Controllers\IdentitasController;
 use App\Services\IdentitasUsahaService;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\PushController;
 use App\Http\Controllers\Cabang\BarangKeluarController as CabangBarangKeluarController;
 use App\Http\Controllers\Cabang\DashboardController as CabangDashboardController;
 use App\Http\Controllers\Cabang\KirimBarangController;
@@ -101,6 +102,14 @@ Route::middleware(['auth', 'role:admin_utama,admin_pusat,admin_cabang'])
         Route::get('/', 'index')->name('notifikasi');
         Route::patch('/baca-semua', 'bacaSemua')->name('notifikasi.baca-semua');
         Route::get('/{notifikasi}', 'buka')->whereNumber('notifikasi')->name('notifikasi.buka');
+    });
+
+// Notifikasi HP / Web Push (semua peran)
+Route::middleware(['auth', 'role:admin_utama,admin_pusat,admin_cabang', 'throttle:30,1'])
+    ->controller(PushController::class)
+    ->group(function () {
+        Route::post('/push/langganan', 'simpan')->name('push.simpan');
+        Route::delete('/push/langganan', 'hapus')->name('push.hapus');
     });
 
 // Bantuan (semua peran)

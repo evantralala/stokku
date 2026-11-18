@@ -58,6 +58,16 @@
         @include('components.topbar')
 
         <main class="content" id="isi" tabindex="-1">
+            @if (\App\Services\PushService::aktif())
+                <div class="ajak-push" data-push-ajak hidden>
+                    <x-ikon nama="lonceng" />
+                    <span class="ajak-push-teks">Terima notifikasi di perangkat ini?</span>
+                    <div class="ajak-push-aksi">
+                        <button type="button" class="btn btn-sm" data-push-nanti>Nanti</button>
+                        <button type="button" class="btn btn-sm btn-merah" data-push-aktifkan>Aktifkan</button>
+                    </div>
+                </div>
+            @endif
             @hasSection('segar')
                 <div class="isi-segar" id="isi-segar" data-segar>
                     @yield('content')

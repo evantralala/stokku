@@ -6,3 +6,9 @@
 <meta name="apple-mobile-web-app-title" content="{{ \App\Support\Identitas::singkat() }}">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="service-worker" content="{{ asset('sw.js') }}">
+@auth
+    @if (\App\Services\PushService::aktif())
+        <meta name="push-kunci" content="{{ config('stokku.push.publik') }}">
+        <meta name="push-alamat" content="{{ route('push.simpan') }}">
+    @endif
+@endauth

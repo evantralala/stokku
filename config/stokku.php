@@ -24,4 +24,14 @@ return [
     */
     'paksa_https' => (bool) env('PAKSA_HTTPS', false),
 
+    /*
+    | Notifikasi HP (Web Push). Kunci dibuat sekali dengan: php artisan push:buat-kunci (langsung ditulis ke .env).
+    | Kosong = notifikasi HP mati, notifikasi di lonceng tetap jalan. Subjek: email atau alamat situs pengelola.
+    */
+    'push' => [
+        'publik' => env('VAPID_PUBLIC_KEY'),
+        'privat' => env('VAPID_PRIVATE_KEY'),
+        'subjek' => env('VAPID_SUBJECT') ?: 'mailto:admin@stokku.test',
+    ],
+
 ];

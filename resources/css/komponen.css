@@ -1542,3 +1542,39 @@
     }
     .centang-baris span { min-width: 0; overflow-wrap: anywhere; }
 }
+
+/* Ajakan menyalakan notifikasi HP di atas isi halaman (resources/js/push.js). */
+@layer components {
+    .ajak-push {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 12px;
+        margin-bottom: 16px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: var(--color-shiro);
+        box-shadow: var(--shadow-kartu), inset 0 0 0 1px var(--color-garis);
+        color: var(--color-sumi);
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .ajak-push[hidden] {
+        display: none;
+    }
+    .ajak-push > svg {
+        flex: none;
+        width: 20px;
+        height: 20px;
+        color: var(--color-beni-teks);
+    }
+    .ajak-push-teks {
+        flex: 1 1 160px;
+        min-width: 0;
+    }
+    .ajak-push-aksi {
+        display: flex;
+        gap: 8px;
+        margin-left: auto;
+    }
+}
