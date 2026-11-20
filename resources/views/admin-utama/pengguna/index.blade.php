@@ -9,7 +9,7 @@
 
     <section class="panel">
         <div class="panel-head">
-            <x-master.alat :rute="$rute" :filter="$filter" placeholder="Cari nama atau email">
+            <x-master.alat :rute="$rute" :filter="$filter" placeholder="Cari nama atau username">
                 <label class="tersembunyi" for="filter-peran">Peran</label>
                 <select class="isian" id="filter-peran" name="peran" data-kirim-otomatis>
                     <option value="">Semua Peran</option>
@@ -55,7 +55,7 @@
                                 @if ($u->is($pengguna))
                                     <span class="badge b-jalan">Anda</span>
                                 @endif
-                                <div class="satuan">{{ $u->email }}</div>
+                                <div class="satuan">{{ $u->username }}</div>
                             </td>
                             <td class="kartu-utama" data-label="Peran">
                                 <span class="badge {{ $u->isAdminUtama() ? 'b-pusat' : 'b-draf' }}">{{ $u->label_role }}</span>

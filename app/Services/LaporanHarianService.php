@@ -46,7 +46,7 @@ class LaporanHarianService
         return $pengguna->emailLaporan()->first() ?? new EmailLaporan([
             'user_id' => $pengguna->id,
             'aktif'   => false,
-            'alamat'  => [$pengguna->email],
+            'alamat'  => [],
             'laporan' => Daftar::bawaan($pengguna->role),
         ]);
     }
@@ -88,7 +88,7 @@ class LaporanHarianService
                 $hasil['terkirim']++;
             } catch (Throwable $e) {
                 $hasil['gagal']++;
-                Log::error('Email laporan harian gagal untuk '.$pengaturan->user->email.': '.$e->getMessage());
+                Log::error('Email laporan harian gagal untuk '.$pengaturan->user->username.': '.$e->getMessage());
             }
         }
 

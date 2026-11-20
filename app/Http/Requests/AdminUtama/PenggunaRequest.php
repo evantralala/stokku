@@ -7,7 +7,6 @@ use App\Http\Requests\DataMasterRequest;
 use App\Models\Cabang;
 use App\Models\User;
 use Closure;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
@@ -21,8 +20,8 @@ class PenggunaRequest extends DataMasterRequest
     use IsianAman;
 
     public const MAKS = [
-        'nama'  => 100,
-        'email' => 150,
+        'nama'     => 100,
+        'username' => 30,
     ];
 
     /** Akun Admin Utama hanya bisa diubah Admin Utama (Admin Pusat bisa diberi menu Pengguna). */
@@ -50,7 +49,7 @@ class PenggunaRequest extends DataMasterRequest
         $role = $this->input('role');
 
         $this->merge([
-            'email'     => Str::lower($this->teks('email')),
+            'username'  => User::rapikanUsername($this->teks('username')),
             'cabang_id' => match ($role) {
                 User::ROLE_ADMIN_PUSAT  => Cabang::pusatAktifSelain(null)?->id,
                 User::ROLE_ADMIN_CABANG => $this->input('cabang_id') ?: null,
@@ -65,7 +64,7 @@ class PenggunaRequest extends DataMasterRequest
 
         return [
             'nama'  => ['required', 'string', 'max:'.self::MAKS['nama']],
-            'email' => ['required', 'string', 'email', 'max:'.self::MAKS['email'], $this->unik('users', 'email')],
+            'username' => ['required', 'string', 'max:'.self::MAKS['username'], 'regex:'.User::POLA_USERNAME, $this->unik('users', 'username')],
             'role'  => [
                 'required',
                 Rule::in(array_keys(User::LABEL_ROLE)),
@@ -126,7 +125,8 @@ class PenggunaRequest extends DataMasterRequest
     public function messages(): array
     {
         return [
-            'email.unique'       => 'Email ini sudah dipakai pengguna lain.',
+            'username.unique'    => 'Username ini sudah dipakai pengguna lain.',
+            'username.regex'     => 'Username 3–30 karakter: huruf, angka, titik, atau garis bawah, tanpa spasi.',
             'cabang_id.required' => 'Pilih cabang tempat admin ini bertugas.',
             'cabang_id.exists'   => 'Cabang tidak ditemukan atau sudah tidak aktif. Pilih cabang lain.',
             'password.confirmed' => 'Ulangi password belum sama. Ketik ulang dengan teliti.',
@@ -137,7 +137,7 @@ class PenggunaRequest extends DataMasterRequest
     {
         return [
             'nama'      => 'nama',
-            'email'     => 'email',
+            'username'  => 'username',
             'role'      => 'peran',
             'cabang_id' => 'cabang',
             'password'  => 'password',

@@ -14,7 +14,7 @@ class PenggunaService
     /** Kolom pengguna yang dicatat di log beserta labelnya di layar. */
     private const LABEL_KOLOM = [
         'nama'      => 'Nama',
-        'email'     => 'Email',
+        'username'  => 'Username',
         'role'      => 'Peran',
         'cabang_id' => 'Lokasi',
     ];
@@ -109,7 +109,7 @@ class PenggunaService
             $oleh,
             LogPerubahan::KATEGORI_PENGGUNA,
             'pengguna.hapus',
-            "Pengguna dihapus: {$pengguna->nama} ({$pengguna->email})",
+            "Pengguna dihapus: {$pengguna->nama} ({$pengguna->username})",
             [],
             $pengguna,
         );
@@ -133,7 +133,7 @@ class PenggunaService
 
         return [
             'nama'      => $data['nama'] ?? null,
-            'email'     => $data['email'] ?? null,
+            'username'  => $data['username'] ?? null,
             'role'      => $role === null ? null : (User::LABEL_ROLE[$role] ?? $role),
             'cabang_id' => $cabangId ? Cabang::query()->whereKey($cabangId)->value('nama') : 'Semua Lokasi',
         ];

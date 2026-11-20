@@ -8,7 +8,7 @@ Tampilan dirancang untuk HP lebih dulu (mobile-first) dan bisa dipasang sebagai 
 > **English summary.** Stokku is a mobile-first inventory system for multi-branch F&B businesses, built with
 > Laravel 12. It covers the whole flow from supplier purchases to central-warehouse approval, branch requests,
 > blind-count deliveries, stock opname, daily sales with recipe-based consumption, Excel import/export with typo
-> detection, PDF documents, dashboards, and a nightly email report. 554 automated tests.
+> detection, PDF documents, dashboards, and a nightly email report. 563 automated tests.
 
 Dikembangkan untuk usaha kuliner yang sedang berjalan. Repositori publik ini memakai nama, logo, dan data contoh;
 identitas usaha aslinya tidak disertakan.
@@ -44,7 +44,7 @@ identitas usaha aslinya tidak disertakan.
 - **Laravel 12**, PHP 8.2, MySQL / MariaDB
 - Blade, **Tailwind CSS v4**, Vite, JavaScript tanpa framework
 - **PhpSpreadsheet** untuk Excel; pembuat PDF sendiri (tanpa pustaka PDF eksternal)
-- PHPUnit: 554 pengujian otomatis (88 berkas pengujian fitur)
+- PHPUnit: 563 pengujian otomatis (89 berkas pengujian fitur)
 
 ## Arsitektur singkat
 
@@ -86,7 +86,7 @@ npm run build
 php artisan serve
 ```
 
-Buka `http://localhost:8000` dan masuk dengan `ADMIN_UTAMA_EMAIL` dari `.env`. Seeder hanya membuat akun Admin Utama
+Buka `http://localhost:8000` dan masuk dengan `ADMIN_UTAMA_USERNAME` dari `.env`. Seeder hanya membuat akun Admin Utama
 dan pengaturan bawaan; lokasi, bahan, menu, dan pengguna lain diisi lewat aplikasi atau templat Excel.
 
 ### Paket data awal

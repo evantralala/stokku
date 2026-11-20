@@ -56,7 +56,7 @@ class RealtimePwaTest extends TestCase
         $this->assertNotSame($awal, $kedua);
 
         $this->post(route('logout'));
-        $this->post(route('login'), ['email' => $this->adminUtama->email, 'password' => 'rahasia-utama']);
+        $this->post(route('login'), ['username' => $this->adminUtama->username, 'password' => 'rahasia-utama']);
         $this->assertSame($kedua, $this->versi());
     }
 

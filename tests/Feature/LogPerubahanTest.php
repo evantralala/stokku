@@ -49,14 +49,14 @@ class LogPerubahanTest extends TestCase
         $cabang = Cabang::create(['kode' => 'MLT', 'nama' => 'Cabang Melati', 'jenis' => Cabang::JENIS_CABANG]);
 
         $this->actingAs($this->adminUtama)->post(route('admin-utama.pengguna.simpan'), [
-            'nama' => 'Fitri', 'email' => 'fitri@contoh.com', 'role' => User::ROLE_ADMIN_CABANG, 'cabang_id' => $cabang->id,
+            'nama' => 'Fitri', 'username' => 'fitri', 'role' => User::ROLE_ADMIN_CABANG, 'cabang_id' => $cabang->id,
             'password' => 'rahasia123', 'password_confirmation' => 'rahasia123',
         ])->assertSessionHasNoErrors();
 
-        $fitri = User::firstWhere('email', 'fitri@contoh.com');
+        $fitri = User::firstWhere('username', 'fitri');
 
         $this->actingAs($this->adminUtama)->put(route('admin-utama.pengguna.perbarui', $fitri), [
-            'nama' => 'Fitri Nuraini', 'email' => 'fitri@contoh.com', 'role' => User::ROLE_ADMIN_UTAMA,
+            'nama' => 'Fitri Nuraini', 'username' => 'fitri', 'role' => User::ROLE_ADMIN_UTAMA,
         ])->assertSessionHasNoErrors();
 
         $this->actingAs($this->adminUtama)->patch(route('admin-utama.pengguna.password', $fitri), [

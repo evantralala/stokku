@@ -128,13 +128,13 @@ class SaklarPengaturanTest extends TestCase
         $this->actingAs($cabang->fresh())->get(route('cabang.dashboard'))->assertRedirect(route('login'));
         $this->assertGuest();
 
-        $this->post(route('login'), ['email' => $cabang->email, 'password' => 'rahasia123']);
+        $this->post(route('login'), ['username' => $cabang->username, 'password' => 'rahasia123']);
         $this->assertGuest();
 
         $this->actingAs($this->adminUtama)->patch(route('admin-utama.kontrol-sistem.akun', $cabang), ['aktif' => 1])->assertSessionHas('sukses');
         auth()->logout();
 
-        $this->post(route('login'), ['email' => $cabang->email, 'password' => 'rahasia123']);
+        $this->post(route('login'), ['username' => $cabang->username, 'password' => 'rahasia123']);
         $this->assertAuthenticatedAs($cabang->fresh());
     }
 

@@ -29,7 +29,7 @@ class AksesRoleTest extends TestCase
     {
         $adminUtama = User::factory()->adminUtama()->create(['password' => 'rahasia123']);
 
-        $this->post(route('login.store'), ['email' => $adminUtama->email, 'password' => 'rahasia123'])
+        $this->post(route('login.store'), ['username' => $adminUtama->username, 'password' => 'rahasia123'])
             ->assertRedirect(route('admin-utama.dashboard'));
     }
 
@@ -70,7 +70,7 @@ class AksesRoleTest extends TestCase
     {
         $adminUtama = User::factory()->adminUtama()->create(['password' => 'rahasia123']);
 
-        $this->post(route('login.store'), ['email' => $adminUtama->email, 'password' => 'rahasia123'])
+        $this->post(route('login.store'), ['username' => $adminUtama->username, 'password' => 'rahasia123'])
             ->assertRedirect('/admin-utama/dashboard');
 
         $this->get('/admin-utama/dashboard')->assertOk();

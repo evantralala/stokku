@@ -35,7 +35,7 @@ class UjiIsengTest extends TestCase
 
         return array_values(array_unique(array_merge($nama, [
             'tanggal', 'dari', 'sampai', 'baris', 'bahan', 'porsi', 'qty', 'jumlah', 'file', 'kunci', 'tebakan', 'aktif', 'nyala', 'akses',
-            'nilai', 'konfirmasi', 'alasan', 'keterangan', 'stok_lama', 'stok_baru', 'nama', 'kode', 'email', 'password', 'lokasi',
+            'nilai', 'konfirmasi', 'alasan', 'keterangan', 'stok_lama', 'stok_baru', 'nama', 'kode', 'username', 'password', 'lokasi',
         ])));
     }
 

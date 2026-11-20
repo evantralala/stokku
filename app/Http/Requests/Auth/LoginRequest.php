@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Concerns\IsianAman;
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -28,10 +29,15 @@ class LoginRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge(['username' => User::rapikanUsername($this->teks('username'))]);
+    }
+
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'username' => ['required', 'string', 'max:30'],
             'password' => ['required', 'string'],
         ];
     }
@@ -39,8 +45,8 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email belum benar. Contoh: nama@email.com',
+            'username.required' => 'Username wajib diisi.',
+            'username.max' => 'Username atau password salah.',
             'password.required' => 'Password wajib diisi.',
         ];
     }
@@ -50,16 +56,16 @@ class LoginRequest extends FormRequest
     {
         $this->pastikanTidakDikunci();
 
-        $kredensial = $this->only('email', 'password');
+        $kredensial = $this->only('username', 'password');
 
-        // validate() hanya mengecek email + password, belum login,
+        // validate() hanya mengecek username + password, belum login,
         // supaya status aktif bisa diperiksa lebih dulu.
         if (! Auth::validate($kredensial)) {
             RateLimiter::hit($this->kunciThrottle(), self::LAMA_KUNCI);
 
-            // Pesan sengaja umum: tidak membocorkan apakah email terdaftar.
+            // Pesan sengaja umum: tidak membocorkan apakah username terdaftar.
             throw ValidationException::withMessages([
-                'login' => 'Email atau password salah.',
+                'login' => 'Username atau password salah.',
             ]);
         }
 
@@ -92,9 +98,9 @@ class LoginRequest extends FormRequest
         ]);
     }
 
-    /** Penghitung percobaan per email + IP. */
+    /** Penghitung percobaan per username + IP. */
     public function kunciThrottle(): string
     {
-        return Str::transliterate(Str::lower($this->teks('email')).'|'.$this->ip());
+        return Str::transliterate($this->string('username').'|'.$this->ip());
     }
 }

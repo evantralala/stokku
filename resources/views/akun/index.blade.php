@@ -5,7 +5,7 @@
 @extends('layouts.app')
 
 @section('judul', 'Akun')
-@section('sub', $pengguna->email)
+@section('sub', $pengguna->username)
 
 @section('content')
     <section class="panel profil-akun">
@@ -18,11 +18,11 @@
             <x-master.status :aktif="$pengguna->aktif" />
         </div>
         <dl class="kepala-dokumen-info">
-            <div><dt>Email</dt><dd>{{ $pengguna->email }}</dd></div>
+            <div><dt>Username</dt><dd>{{ $pengguna->username }}</dd></div>
             <div><dt>Peran</dt><dd>{{ $pengguna->label_role }}</dd></div>
             <div><dt>Lokasi</dt><dd>{{ $pengguna->cabang?->nama ?? 'Semua Lokasi' }}</dd></div>
         </dl>
-        <p class="panduan">Nama, email, peran, dan lokasi diatur Admin Utama.</p>
+        <p class="panduan">Nama, username, peran, dan lokasi diatur Admin Utama.</p>
     </section>
 
     <form id="foto-profil" class="panel" method="POST" action="{{ route('akun.foto') }}" enctype="multipart/form-data" novalidate>

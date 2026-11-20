@@ -35,10 +35,10 @@ class SiapHostingTest extends TestCase
 
     public function test_setelah_impor_sql_akun_admin_utama_dibuat_dari_env_saat_halaman_masuk_dibuka(): void
     {
-        config(['stokku.admin_utama_awal' => ['nama' => 'Bos', 'email' => 'bos@stokku.test', 'password' => 'rahasia-kuat-1']]);
+        config(['stokku.admin_utama_awal' => ['nama' => 'Bos', 'username' => 'bos', 'password' => 'rahasia-kuat-1']]);
 
-        $this->get(route('login'))->assertOk()->assertSee('Akun Admin Utama dibuat: bos@stokku.test');
-        $this->post(route('login.store'), ['email' => 'bos@stokku.test', 'password' => 'rahasia-kuat-1'])->assertRedirect();
+        $this->get(route('login'))->assertOk()->assertSee('Akun Admin Utama dibuat: bos');
+        $this->post(route('login.store'), ['username' => 'bos', 'password' => 'rahasia-kuat-1'])->assertRedirect();
         $this->assertAuthenticated();
 
         $this->assertSame(1, User::where('role', User::ROLE_ADMIN_UTAMA)->count());

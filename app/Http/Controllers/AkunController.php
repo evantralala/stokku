@@ -68,7 +68,7 @@ class AkunController extends Controller
         } catch (DomainException $e) {
             return $tujuan->with('galat', $e->getMessage());
         } catch (Throwable $e) {
-            Log::error('Kirim email laporan gagal untuk '.$pengguna->email.': '.$e->getMessage());
+            Log::error('Kirim email laporan gagal untuk '.$pengguna->username.': '.$e->getMessage());
 
             return $tujuan->with('galat', 'Email gagal dikirim. Pengaturan pengirim email di server (MAIL_* di .env) perlu dicek.');
         }

@@ -21,7 +21,7 @@ class UserFactory extends Factory
     {
         return [
             'nama'           => fake('id_ID')->name(),
-            'email'          => fake()->unique()->safeEmail(),
+            'username'       => fake()->unique()->regexify('[a-z]{6}[0-9]{4}'),
             'password'       => static::$password ??= Hash::make('password'),
             'role'           => User::ROLE_ADMIN_CABANG,
             'cabang_id'      => null,

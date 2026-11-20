@@ -53,7 +53,7 @@ Struktur yang dipakai (folder aplikasi di luar `public_html`, jadi `.env` dan da
 3. Isi `APP_KEY`: jalankan `php artisan key:generate --show` di laptop, salin hasilnya (`base64:...`).
 4. Biarkan `APP_DEBUG=false`. `SESSION_SECURE_COOKIE=true` dan `PAKSA_HTTPS=true` hanya untuk alamat **https**; ubah
    keduanya ke `false` bila belum ada SSL. Nyalakan juga hPanel → **SSL** → **Force HTTPS**.
-5. Isi `ADMIN_UTAMA_EMAIL` dan `ADMIN_UTAMA_PASSWORD` (sandi kuat, minimal 8 karakter) untuk akun Admin Utama pertama.
+5. Isi `ADMIN_UTAMA_USERNAME` dan `ADMIN_UTAMA_PASSWORD` (sandi kuat, minimal 8 karakter) untuk akun Admin Utama pertama.
    Tidak ada sandi bawaan.
 
 ## 5. Isi database
@@ -69,7 +69,7 @@ Pilih salah satu:
   ditampilkan sekali di terminal. Segera ganti password setelah login pertama.
 - **Tanpa terminal:** phpMyAdmin → pilih database → **Import** → `database_stok.sql`
   (atau file hasil **Export** phpMyAdmin dari server lama). Lalu buka halaman masuk: bila belum ada Admin Utama,
-  akun dibuat otomatis dari `ADMIN_UTAMA_EMAIL` dan `ADMIN_UTAMA_PASSWORD` di `.env`.
+  akun dibuat otomatis dari `ADMIN_UTAMA_USERNAME` dan `ADMIN_UTAMA_PASSWORD` di `.env`.
 
 ## 6. Pasang cron (wajib)
 

@@ -72,12 +72,12 @@ class MasterKasirTest extends TestCase
 
         $this->actingAs($this->adminUtama)
             ->post(route('admin-utama.pengguna.simpan'), [
-                'nama' => 'Rina', 'email' => 'rina@stokku.test', 'role' => User::ROLE_ADMIN_CABANG,
+                'nama' => 'Rina', 'username' => 'rina', 'role' => User::ROLE_ADMIN_CABANG,
                 'cabang_id' => $cabang->id, 'password' => 'rahasia123', 'password_confirmation' => 'rahasia123',
             ])
             ->assertSessionHasNoErrors();
 
-        $this->assertSame($cabang->id, User::where('email', 'rina@stokku.test')->sole()->cabang_id);
+        $this->assertSame($cabang->id, User::where('username', 'rina')->sole()->cabang_id);
     }
 
     public function test_stok_minimum_dan_pengaturan_memakai_isian_jumlah(): void

@@ -213,8 +213,8 @@ class ExcelMasterTest extends TestCase
         $this->assertEquals(['JB', 'Cabang Jati', 'Cabang', null, 'Aktif'], $isi[1]);
 
         $isi = $this->bukaExcel($this->get(route('admin-utama.excel.ekspor', 'pengguna'))->assertOk());
-        $this->assertSame(['Nama', 'Email', 'Peran', 'Lokasi', 'Status'], $isi[0]);
-        $this->assertContains(['Rani', $kasir->email, 'Admin Cabang', 'Cabang Jati', 'Aktif'], $isi);
+        $this->assertSame(['Nama', 'Username', 'Peran', 'Lokasi', 'Status'], $isi[0]);
+        $this->assertContains(['Rani', $kasir->username, 'Admin Cabang', 'Cabang Jati', 'Aktif'], $isi);
 
         $this->app->forgetScopedInstances();
         $this->actingAs($kasir)->get(route('admin-utama.excel.ekspor', 'bahan-baku'))->assertForbidden();

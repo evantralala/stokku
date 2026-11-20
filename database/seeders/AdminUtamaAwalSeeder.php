@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 
 /**
  * Memastikan selalu ada minimal satu akun Admin Utama aktif.
- * Data akun diambil dari ADMIN_UTAMA_NAMA, ADMIN_UTAMA_EMAIL, dan ADMIN_UTAMA_PASSWORD di .env
+ * Data akun diambil dari ADMIN_UTAMA_NAMA, ADMIN_UTAMA_USERNAME, dan ADMIN_UTAMA_PASSWORD di .env
  * (lihat App\Services\AdminUtamaAwalService untuk nilai pengganti bila kosong).
  */
 class AdminUtamaAwalSeeder extends Seeder
@@ -22,7 +22,7 @@ class AdminUtamaAwalSeeder extends Seeder
             return;
         }
 
-        $this->command?->info(($hasil['dipulihkan'] ? 'Akun Admin Utama dipulihkan: ' : 'Akun Admin Utama dibuat: ').$hasil['email']);
+        $this->command?->info(($hasil['dipulihkan'] ? 'Akun Admin Utama dipulihkan: ' : 'Akun Admin Utama dibuat: ').$hasil['username']);
 
         if ($hasil['password_dibuat'] !== null) {
             $this->command?->warn('ADMIN_UTAMA_PASSWORD di .env kosong, jadi password dibuat otomatis: '.$hasil['password_dibuat']);

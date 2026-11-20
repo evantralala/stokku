@@ -20,9 +20,9 @@
                 <x-form.teks name="nama" label="Nama Lengkap" :value="$item?->nama" wajib
                              :maxlength="$maks['nama']" autocomplete="off" placeholder="Contoh: Fitri Nuraini" />
 
-                <x-form.teks name="email" label="Email" type="email" :value="$item?->email" wajib
-                             :maxlength="$maks['email']" inputmode="email" autocapitalize="none" spellcheck="false"
-                             autocomplete="off" placeholder="nama@contoh.com" />
+                <x-form.teks name="username" label="Username" :value="$item?->username" wajib
+                             :maxlength="$maks['username']" autocapitalize="none" autocorrect="off" spellcheck="false"
+                             autocomplete="off" placeholder="Contoh: fitri" />
 
                 @if ($akunSendiri)
                     <x-form.tetap label="Peran" :nilai="$item->label_role" name="role" :value="$item->role"

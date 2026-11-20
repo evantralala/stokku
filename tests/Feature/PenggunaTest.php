@@ -34,14 +34,14 @@ class PenggunaTest extends TestCase
     {
         return $ubah + [
             'nama'                  => 'Fitri Nuraini',
-            'email'                 => 'Fitri@Contoh.com ',
+            'username'              => ' Fitri ',
             'role'                  => User::ROLE_ADMIN_CABANG,
             'password'              => 'rahasia123',
             'password_confirmation' => 'rahasia123',
         ];
     }
 
-    public function test_admin_cabang_wajib_memilih_cabang_dan_email_dirapikan(): void
+    public function test_admin_cabang_wajib_memilih_cabang_dan_username_dirapikan(): void
     {
         $cabang = $this->lokasi(Cabang::JENIS_CABANG, 'Cabang Jati');
 
@@ -53,9 +53,29 @@ class PenggunaTest extends TestCase
             ->post(route('admin-utama.pengguna.simpan'), $this->dataBaru(['cabang_id' => $cabang->id]))
             ->assertSessionHasNoErrors();
 
-        $baru = User::firstWhere('email', 'fitri@contoh.com');
+        $baru = User::firstWhere('username', 'fitri');
         $this->assertSame($cabang->id, $baru->cabang_id);
         $this->assertTrue(Hash::check('rahasia123', $baru->password));
+    }
+
+    public function test_username_tanpa_spasi_dan_login_tidak_peka_huruf_besar(): void
+    {
+        $cabang = $this->lokasi(Cabang::JENIS_CABANG, 'Cabang Jati');
+
+        foreach (['fitri nur', 'fi', 'fitri@toko', str_repeat('a', 31)] as $salah) {
+            $this->actingAs($this->adminUtama)
+                ->post(route('admin-utama.pengguna.simpan'), $this->dataBaru(['username' => $salah, 'cabang_id' => $cabang->id]))
+                ->assertSessionHasErrors('username');
+        }
+
+        $this->post(route('admin-utama.pengguna.simpan'), $this->dataBaru(['username' => 'Fitri.Nur_2', 'cabang_id' => $cabang->id]))
+            ->assertSessionHasNoErrors();
+        $this->post(route('admin-utama.pengguna.simpan'), $this->dataBaru(['username' => 'FITRI.NUR_2', 'cabang_id' => $cabang->id]))
+            ->assertSessionHasErrors(['username' => 'Username ini sudah dipakai pengguna lain.']);
+
+        auth()->logout();
+        $this->post(route('login.store'), ['username' => ' Fitri.NUR_2 ', 'password' => 'rahasia123'])->assertRedirect(route('cabang.dashboard'));
+        $this->assertSame('fitri.nur_2', auth()->user()->username);
     }
 
     public function test_admin_pusat_otomatis_di_gudang_pusat(): void
@@ -71,7 +91,7 @@ class PenggunaTest extends TestCase
             ->post(route('admin-utama.pengguna.simpan'), $this->dataBaru(['role' => User::ROLE_ADMIN_PUSAT, 'cabang_id' => $cabang->id]))
             ->assertSessionHasNoErrors();
 
-        $this->assertSame($pusat->id, User::firstWhere('email', 'fitri@contoh.com')->cabang_id);
+        $this->assertSame($pusat->id, User::firstWhere('username', 'fitri')->cabang_id);
     }
 
     public function test_admin_utama_tidak_punya_lokasi_dan_cabang_nonaktif_ditolak(): void
@@ -86,7 +106,7 @@ class PenggunaTest extends TestCase
             ->post(route('admin-utama.pengguna.simpan'), $this->dataBaru(['role' => User::ROLE_ADMIN_UTAMA, 'cabang_id' => $tutup->id]))
             ->assertSessionHasNoErrors();
 
-        $this->assertNull(User::firstWhere('email', 'fitri@contoh.com')->cabang_id);
+        $this->assertNull(User::firstWhere('username', 'fitri')->cabang_id);
     }
 
     public function test_password_wajib_minimal_delapan_dan_sama(): void
@@ -108,7 +128,7 @@ class PenggunaTest extends TestCase
 
         $this->actingAs($this->adminUtama)
             ->put(route('admin-utama.pengguna.perbarui', $this->adminUtama), [
-                'nama' => $this->adminUtama->nama, 'email' => $this->adminUtama->email, 'role' => User::ROLE_ADMIN_CABANG,
+                'nama' => $this->adminUtama->nama, 'username' => $this->adminUtama->username, 'role' => User::ROLE_ADMIN_CABANG,
             ])
             ->assertSessionHasErrors('role');
 
@@ -158,6 +178,6 @@ class PenggunaTest extends TestCase
             ->assertOk()
             ->assertSee('Admin Jati Satu')
             ->assertSee('Cabang Jati')
-            ->assertDontSee($this->adminUtama->email);
+            ->assertDontSee($this->adminUtama->username);
     }
 }

@@ -1,6 +1,6 @@
 -- Struktur database Stokku (MySQL / MariaDB), sama dengan hasil `php artisan migrate`.
 -- Database bersih: hanya struktur tabel, daftar migrations, dan pengaturan bawaan. Tidak ada data lokasi, bahan, atau akun.
--- Setelah impor lewat phpMyAdmin: isi ADMIN_UTAMA_NAMA, ADMIN_UTAMA_EMAIL, ADMIN_UTAMA_PASSWORD di .env, lalu jalankan
+-- Setelah impor lewat phpMyAdmin: isi ADMIN_UTAMA_NAMA, ADMIN_UTAMA_USERNAME, ADMIN_UTAMA_PASSWORD di .env, lalu jalankan
 --   php artisan config:clear
 --   php artisan db:seed --class=AdminUtamaAwalSeeder
 -- Data Stokku diisi lewat aplikasi atau paket templat Excel (lihat BACA-DULU.txt di paket).
@@ -113,7 +113,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (35, '2026_11_09_000001_buat_tabel_email_laporan', 1),
 (36, '2026_11_10_000001_tambah_foto_pengguna', 1),
 (37, '2026_11_16_000001_tambah_sisa_ditutup_permintaan', 1),
-(38, '2026_11_18_000001_buat_tabel_langganan_push', 1);
+(38, '2026_11_18_000001_buat_tabel_langganan_push', 1),
+(39, '2026_11_20_000001_ganti_email_pengguna_jadi_username', 1);
 
 -- --------------------------------------------------------
 -- Tabel `cache`
@@ -465,6 +466,15 @@ alter table `email_laporan` add unique `email_laporan_user_id_unique`(`user_id`)
 create table `langganan_push` (`id` bigint unsigned not null auto_increment primary key, `user_id` bigint unsigned not null, `endpoint_hash` char(64) not null, `endpoint` text not null, `p256dh` varchar(200) not null, `auth` varchar(100) not null, `perangkat` varchar(150) null, `terakhir_dikirim` datetime null, `created_at` datetime null, `updated_at` datetime null) ENGINE=InnoDB default character set utf8mb4 collate 'utf8mb4_unicode_ci';
 alter table `langganan_push` add constraint `langganan_push_user_id_foreign` foreign key (`user_id`) references `users` (`id`) on delete cascade;
 alter table `langganan_push` add unique `langganan_push_endpoint_hash_unique`(`endpoint_hash`);
+
+-- --------------------------------------------------------
+-- Tabel `users`: login memakai username, kolom email dihapus
+-- --------------------------------------------------------
+
+alter table `users` add `username` varchar(30) not null after `nama`;
+alter table `users` add unique `users_username_unique`(`username`);
+alter table `users` drop index `users_email_unique`;
+alter table `users` drop `email`;
 
 -- --------------------------------------------------------
 -- Pengaturan bawaan (sama dengan PengaturanSeeder)

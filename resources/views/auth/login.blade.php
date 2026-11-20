@@ -1,5 +1,5 @@
 {{--
-    Halaman login, berdiri sendiri (tanpa layouts.app). Error ditampilkan dari key email, password, dan login.
+    Halaman login, berdiri sendiri (tanpa layouts.app). Error ditampilkan dari key username, password, dan login.
     Laptop (>= 900px): kiri ilustrasi gudang bergerak + pembatas bergelombang, kanan form.
     HP & tablet: ilustrasi menjadi kepala ringkas di atas, form di bawahnya.
 --}}
@@ -177,7 +177,7 @@
 
         @if ($perluSandi ?? false)
           <div class="kotak-galat" role="alert">
-            <span>Belum ada akun Admin Utama. Isi ADMIN_UTAMA_EMAIL dan ADMIN_UTAMA_PASSWORD (minimal 8 karakter) di file .env, lalu muat ulang halaman ini.</span>
+            <span>Belum ada akun Admin Utama. Isi ADMIN_UTAMA_USERNAME dan ADMIN_UTAMA_PASSWORD (minimal 8 karakter) di file .env, lalu muat ulang halaman ini.</span>
           </div>
         @elseif ($adminDibuat ?? null)
           <div class="kotak-galat" role="status">
@@ -185,7 +185,7 @@
           </div>
         @endif
 
-        {{-- Gagal masuk (email/sandi salah, akun nonaktif) --}}
+        {{-- Gagal masuk (username/sandi salah, akun nonaktif) --}}
         @error('login')
           <div class="kotak-galat" role="alert">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
@@ -197,16 +197,16 @@
           @csrf
 
           <div class="baris">
-            <label for="email">Email</label>
+            <label for="username">Username</label>
             <div class="isian-ikon">
-              <svg class="isian-tanda" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-              <input class="isian @error('email') galat @enderror"
-                     id="email" name="email" type="email"
-                     value="{{ old('email') }}"
-                     placeholder="nama@email.com" autocomplete="username" autofocus
-                     inputmode="email" autocapitalize="none" spellcheck="false">
+              <svg class="isian-tanda" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+              <input class="isian @error('username') galat @enderror"
+                     id="username" name="username" type="text"
+                     value="{{ old('username') }}" maxlength="30"
+                     placeholder="Masukkan username" autocomplete="username" autofocus
+                     autocapitalize="none" autocorrect="off" spellcheck="false">
             </div>
-            @error('email')
+            @error('username')
               <div class="pesan-galat">{{ $message }}</div>
             @enderror
           </div>

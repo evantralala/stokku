@@ -30,6 +30,9 @@ class User extends Authenticatable
     ];
 
     /** Kolom transaksi yang mencatat pengguna; pengguna yang tercatat di sini tidak boleh dihapus. */
+    /** Username: 3–30 huruf kecil, angka, titik, atau garis bawah, tanpa spasi. */
+    public const POLA_USERNAME = '/^[a-z0-9._]{3,30}$/';
+
     private const RUJUKAN = [
         'stok_mutasi'          => 'dibuat_oleh',
         'permintaan'           => 'diajukan_oleh',
@@ -49,7 +52,7 @@ class User extends Authenticatable
     protected $fillable = [
         'nama',
         'foto',
-        'email',
+        'username',
         'password',
         'role',
         'cabang_id',
@@ -134,14 +137,20 @@ class User extends Authenticatable
         };
     }
 
+    /** Username sebagaimana disimpan: tanpa spasi di tepi, huruf kecil. */
+    public static function rapikanUsername(string $username): string
+    {
+        return mb_strtolower(trim($username));
+    }
+
     public function kolomUnik(): array
     {
-        return ['email'];
+        return ['username'];
     }
 
     public function kolomCari(): array
     {
-        return ['nama', 'email'];
+        return ['nama', 'username'];
     }
 
     public function sudahDipakai(): bool

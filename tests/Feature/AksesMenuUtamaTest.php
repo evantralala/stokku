@@ -135,7 +135,7 @@ class AksesMenuUtamaTest extends TestCase
             ->assertSee(route('admin-utama.pengguna.ubah', $this->cabang));
 
         $saya->get(route('admin-utama.pengguna.ubah', $this->utama))->assertRedirect(route('admin-utama.pengguna'))->assertSessionHas('galat');
-        $saya->put(route('admin-utama.pengguna.perbarui', $this->utama), ['nama' => 'X', 'email' => 'x@x.test', 'role' => 'admin_utama'])->assertForbidden();
+        $saya->put(route('admin-utama.pengguna.perbarui', $this->utama), ['nama' => 'X', 'username' => 'xxx', 'role' => 'admin_utama'])->assertForbidden();
         $saya->patch(route('admin-utama.pengguna.aktif', $this->utama), ['aktif' => '0'])->assertSessionHas('galat');
         $saya->delete(route('admin-utama.pengguna.hapus', $this->utama))->assertSessionHas('galat');
         $saya->patch(route('admin-utama.pengguna.password', $this->utama), ['password_baru' => 'rahasia999', 'password_baru_confirmation' => 'rahasia999'])
@@ -147,21 +147,21 @@ class AksesMenuUtamaTest extends TestCase
 
         $saya->get(route('admin-utama.pengguna.tambah'))->assertOk()->assertDontSee('value="admin_utama"', false);
         $saya->post(route('admin-utama.pengguna.simpan'), [
-            'nama' => 'Calon Bos', 'email' => 'bos2@uji.test', 'role' => 'admin_utama', 'password' => 'rahasia123', 'password_confirmation' => 'rahasia123',
+            'nama' => 'Calon Bos', 'username' => 'bos2', 'role' => 'admin_utama', 'password' => 'rahasia123', 'password_confirmation' => 'rahasia123',
         ])->assertSessionHasErrors('role');
         $saya->put(route('admin-utama.pengguna.perbarui', $this->cabang), [
-            'nama' => 'Admin Jati', 'email' => $this->cabang->email, 'role' => 'admin_utama',
+            'nama' => 'Admin Jati', 'username' => $this->cabang->username, 'role' => 'admin_utama',
         ])->assertSessionHasErrors('role');
         $saya->put(route('admin-utama.pengguna.perbarui', $this->pusat), [
-            'nama' => 'Admin Gudang', 'email' => $this->pusat->email, 'role' => 'admin_cabang', 'cabang_id' => $this->cabang->cabang_id,
+            'nama' => 'Admin Gudang', 'username' => $this->pusat->username, 'role' => 'admin_cabang', 'cabang_id' => $this->cabang->cabang_id,
         ])->assertSessionHasErrors('role');
-        $this->assertSame(0, User::where('email', 'bos2@uji.test')->count());
+        $this->assertSame(0, User::where('username', 'bos2')->count());
 
         $saya->post(route('admin-utama.pengguna.simpan'), [
-            'nama' => 'Admin Baru', 'email' => 'baru@uji.test', 'role' => 'admin_cabang', 'cabang_id' => $this->cabang->cabang_id,
+            'nama' => 'Admin Baru', 'username' => 'baru', 'role' => 'admin_cabang', 'cabang_id' => $this->cabang->cabang_id,
             'password' => 'rahasia123', 'password_confirmation' => 'rahasia123',
         ])->assertSessionHasNoErrors();
-        $this->assertTrue(User::where('email', 'baru@uji.test')->exists());
+        $this->assertTrue(User::where('username', 'baru')->exists());
 
         $saya->patch(route('admin-utama.pengguna.password', $this->cabang), ['password_baru' => 'rahasia999', 'password_baru_confirmation' => 'rahasia999'])
             ->assertSessionHas('sukses');

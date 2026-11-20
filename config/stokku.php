@@ -4,12 +4,12 @@ return [
 
     /*
     | Akun Admin Utama pertama yang dibuat oleh AdminUtamaAwalSeeder.
-    | Isi di .env; nama/email kosong dipakai Admin Utama / admin@stokku.test. Password kosong (atau kurang dari 8 karakter)
-    | dibuat acak dan ditampilkan sekali saat seeder dijalankan. Ganti password setelah login pertama.
+    | Isi di .env; nama kosong dipakai Admin Utama. Username kosong diambil dari bagian depan ADMIN_UTAMA_EMAIL (isian lama),
+    | lalu admin. Password kosong (atau kurang dari 8 karakter) dibuat acak dan ditampilkan sekali saat seeder dijalankan.
     */
     'admin_utama_awal' => [
         'nama' => env('ADMIN_UTAMA_NAMA') ?: 'Admin Utama',
-        'email' => env('ADMIN_UTAMA_EMAIL') ?: 'admin@stokku.test',
+        'username' => env('ADMIN_UTAMA_USERNAME') ?: Illuminate\Support\Str::before((string) env('ADMIN_UTAMA_EMAIL'), '@'),
         'password' => env('ADMIN_UTAMA_PASSWORD') ?: null,
     ],
 

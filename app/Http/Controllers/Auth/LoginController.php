@@ -21,7 +21,7 @@ class LoginController extends Controller
     {
         $belumAda = ! User::query()->where('role', User::ROLE_ADMIN_UTAMA)->where('aktif', true)->exists();
         $sandiSiap = mb_strlen((string) config('stokku.admin_utama_awal.password')) >= 8;
-        $dibuat = $belumAda && $sandiSiap ? $admin->pastikanAda()['email'] ?? null : null;
+        $dibuat = $belumAda && $sandiSiap ? $admin->pastikanAda()['username'] ?? null : null;
 
         return view('auth.login', [
             'adminDibuat' => $dibuat,
