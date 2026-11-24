@@ -233,6 +233,8 @@
     .grafik-batang { display: block; width: 100%; height: auto; overflow: visible; }
     .grafik-garis { stroke: var(--color-garis); stroke-width: 1; stroke-dasharray: 3 4; }
     .grafik-sumbu { fill: var(--color-hai); font-family: var(--font-sans); font-size: 21px; }
+    .grafik-sumbu-turun { transform: translateY(24px); }
+    .grafik-keterangan { fill: var(--color-sumi); font-weight: 600; }
     .batang-masuk { fill: url(#gradasi-batang-masuk); }
     .batang-keluar { fill: url(#gradasi-batang-keluar); }
     .grafik-batang rect {
@@ -359,6 +361,8 @@
     @media (min-width: 640px) {
         .grafik-sumbu { font-size: 14px; }
         .grafik-lebar .grafik-sumbu { font-size: 18px; }
+        .grafik-sumbu-turun { transform: none; }
+        .grafik-keterangan { transform: translateY(-24px); }
         .sapaan { padding: 24px 26px; }
         .sapaan-judul { font-size: 25px; }
         .tombol-cepat-grid { gap: 16px; }

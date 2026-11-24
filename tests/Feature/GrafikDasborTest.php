@@ -72,6 +72,9 @@ class GrafikDasborTest extends TestCase
         $this->assertCount(31, $bulanIni);
         $this->assertSame([1, 0], [$bulanIni[1]['masuk'], $bulanIni[1]['keluar']], '2 Okt: satu dokumen barang masuk');
         $this->assertSame(1, array_sum(array_column($bulanIni, 'masuk')));
+        $this->assertSame(range(1, 31), array_map('intval', array_column($bulanIni, 'label')), 'semua tanggal berlabel');
+        $this->assertSame([false, true, false], array_column(array_slice($bulanIni, 0, 3), 'turun'));
+        $this->assertNotContains(true, array_column($tahun, 'turun'));
 
         $bulanLalu = $layanan->pergerakan($this->pusat, 'bulan-lalu');
         $this->assertCount(30, $bulanLalu);
@@ -124,6 +127,8 @@ class GrafikDasborTest extends TestCase
             ->assertOk()
             ->assertSeeInOrder(['<section class="sapaan">', 'Selamat bertugas, Dewi', 'class="kartu-grid"', 'Pergerakan Stok', 'Kondisi Stok', 'id="antrean-persetujuan"'], false)
             ->assertSee('Oktober 2026')
+            ->assertSee('class="grafik-sumbu grafik-keterangan"', false)
+            ->assertSee('<text class="grafik-sumbu grafik-sumbu-turun"', false)
             ->assertSee('<form class="sapaan-cari" role="search" method="GET" action="'.route('admin-utama.stok').'">', false);
     }
 

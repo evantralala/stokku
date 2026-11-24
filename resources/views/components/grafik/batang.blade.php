@@ -1,18 +1,19 @@
 {{--
     Grafik batang SVG tanpa JavaScript, dipakai grafik pergerakan dan penjualan.
-    Prop: data (list ['label', 'judul', 'sumbu' (label tampil di bawah batang), lalu angka per seri]),
+    Prop: data (list ['label', 'judul', 'turun' (label diturunkan satu baris di layar sempit), lalu angka per seri]),
           seri ([kunci => [label, kelas batang]]), ringkas (keterangan untuk pembaca layar), judulTabel,
+          keterangan (judul sumbu bawah, mis. "November 2026"),
           lebar (lebar gambar; 960 untuk grafik selebar halaman supaya tidak terlalu tinggi di laptop).
     Angka yang sama tersedia sebagai tabel tersembunyi untuk pembaca layar.
 --}}
-@props(['data', 'seri', 'ringkas', 'judulTabel' => 'Rincian grafik', 'lebar' => 640])
+@props(['data', 'seri', 'ringkas', 'judulTabel' => 'Rincian grafik', 'keterangan' => null, 'lebar' => 640])
 
 @php
     $tertinggi = max(1, ...array_map(fn ($b) => max(array_map(fn ($k) => $b[$k], array_keys($seri))), $data));
     $langkah = max(1, (int) ceil($tertinggi / 4));
     $langkah = $langkah > 5 ? (int) (ceil($langkah / 5) * 5) : $langkah;
     $puncak = $langkah * 4;
-    [$tinggi, $bawah, $atas] = [250, 36, 12];
+    [$tinggi, $bawah, $atas] = [290, 78, 12];
     $huruf = $lebar > 640 ? 15 : 12;
     $kiri = max(36, 16 + $huruf * mb_strlen(\App\Support\Angka::tampil($puncak)));
     $ruang = ($lebar - $kiri) / max(1, count($data));
@@ -51,10 +52,11 @@
             <rect class="{{ $seri[$k][1] }}" x="{{ round($mulai + $j * ($batang + $jarak), 1) }}" y="{{ $y($b[$k]) }}" width="{{ round($batang, 1) }}"
                   height="{{ round($tinggi - $bawah - $y($b[$k]), 1) }}" rx="{{ $batang > 10 ? 4 : 2 }}"><title>{{ $b['judul'] }}: {{ \App\Support\Angka::tampil($b[$k]) }} {{ mb_strtolower($seri[$k][0]) }}</title></rect>
         @endforeach
-        @if ($b['sumbu'])
-            <text class="grafik-sumbu" x="{{ round($tengah, 1) }}" y="{{ $tinggi - 8 }}" text-anchor="middle">{{ $b['label'] }}</text>
-        @endif
+        <text @class(['grafik-sumbu', 'grafik-sumbu-turun' => $b['turun']]) x="{{ round($tengah, 1) }}" y="{{ $tinggi - $bawah + 26 }}" text-anchor="middle">{{ $b['label'] }}</text>
     @endforeach
+    @if ($keterangan)
+        <text class="grafik-sumbu grafik-keterangan" x="{{ round($kiri + ($lebar - $kiri) / 2, 1) }}" y="{{ $tinggi - 4 }}" text-anchor="middle">{{ $keterangan }}</text>
+    @endif
 </svg>
 
 <div class="tersembunyi">

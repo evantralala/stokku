@@ -42,7 +42,7 @@ class GrafikDasborService
     }
 
     /**
-     * @return list<array{kunci: string, label: string, judul: string, sumbu: bool, masuk: int, keluar: int}>
+     * @return list<array{kunci: string, label: string, judul: string, turun: bool, masuk: int, keluar: int}>
      */
     public function pergerakan(?Cabang $lokasi, string $periode): array
     {
@@ -71,7 +71,7 @@ class GrafikDasborService
 
     /**
      * @param  Cabang|null  $lokasi  null = semua cabang
-     * @return list<array{kunci: string, label: string, judul: string, sumbu: bool, porsi: int}>
+     * @return list<array{kunci: string, label: string, judul: string, turun: bool, porsi: int}>
      */
     public function penjualan(?Cabang $lokasi, string $periode): array
     {
@@ -108,7 +108,10 @@ class GrafikDasborService
         };
     }
 
-    /** Satu isian kosong per hari (label tanggal; sumbu: 1, 5, 10, …) atau per bulan (label nama bulan). */
+    /**
+     * Satu isian kosong per hari (label tanggal) atau per bulan (label nama bulan).
+     * turun: label tanggal genap yang diturunkan satu baris di layar sempit supaya tidak bertumpuk.
+     */
     private function kerangka(Carbon $awal, Carbon $akhir, bool $perHari, array $nol): array
     {
         $hasil = [];
@@ -118,7 +121,7 @@ class GrafikDasborService
                 'kunci' => $t->format($perHari ? 'Y-m-d' : 'Y-m'),
                 'label' => $perHari ? (string) $t->day : $t->translatedFormat('M'),
                 'judul' => $perHari ? $t->translatedFormat('l, j M Y') : $t->translatedFormat('F Y'),
-                'sumbu' => ! $perHari || $t->day === 1 || $t->day % 5 === 0,
+                'turun' => $perHari && $t->day % 2 === 0,
             ] + $nol;
         }
 

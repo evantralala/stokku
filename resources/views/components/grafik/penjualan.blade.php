@@ -47,7 +47,7 @@
         <div class="grafik-badan {{ $kelas }}">
             <x-grafik.batang :data="$data" :seri="['porsi' => ['Porsi', 'batang-porsi']]"
                              :ringkas="'Penjualan '.$layanan::keterangan($periode).': '.$total.' porsi'"
-                             judul-tabel="Porsi terjual" :lebar="$lebar" />
+                             judul-tabel="Porsi terjual" :keterangan="$layanan::keterangan($periode)" :lebar="$lebar" />
         </div>
     @endforeach
 </section>

@@ -32,6 +32,6 @@
     <div class="grafik-badan">
         <x-grafik.batang :data="$data" :seri="['masuk' => ['Masuk', 'batang-masuk'], 'keluar' => ['Keluar', 'batang-keluar']]"
                          :ringkas="'Transaksi '.$layanan::keterangan($periode).': '.$totalMasuk.' masuk, '.$totalKeluar.' keluar'"
-                         judul-tabel="Transaksi stok masuk dan keluar" />
+                         judul-tabel="Transaksi stok masuk dan keluar" :keterangan="$layanan::keterangan($periode)" />
     </div>
 </section>
