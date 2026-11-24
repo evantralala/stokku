@@ -5,7 +5,8 @@
       $lokasi (null bila akun belum terhubung ke cabang aktif), $penjualanHariIni (catatan hari operasional), $hariOperasional,
       $hariDiarsipkan (penjualan hari operasional sudah ikut tutup buku, jadi tidak bisa dicatat lagi),
       $penjualanTerlewat (tanggal sebelumnya yang belum dicatat, paling lama 7 hari), $permintaanMenunggu, $jumlahUsulan,
-      $opnameBerjalan, $jumlahPerLampu, $segeraHabis, $bolehMinta; $jumlah dan $pengguna dari LayoutComposer.
+      $opnameBerjalan, $jumlahPerLampu, $segeraHabis, $bolehMinta, $bolehLibur (hak akses Libur), $liburHariIni;
+      $jumlah dan $pengguna dari LayoutComposer.
 --}}
 @extends('layouts.app')
 
@@ -39,7 +40,7 @@
             $kontrol = app(\App\Services\KontrolSistemService::class);
             $labelHari = $hariOperasional->isToday() ? 'Hari Ini' : $hariOperasional->translatedFormat('l, j M');
             $diarsipkan = ! $penjualanHariIni && $hariDiarsipkan;
-            $selesai = $penjualanHariIni || $diarsipkan;
+            $selesai = $penjualanHariIni || $diarsipkan || $liburHariIni;
         @endphp
 
         @if ($penjualanTerlewat !== [])
@@ -51,20 +52,23 @@
                         <a class="link" href="{{ route('cabang.penjualan.catat', ['tanggal' => $t->toDateString()]) }}" data-popup="panjang">{{ $t->translatedFormat('D, j M') }}</a>{{ $loop->last ? '.' : ',' }}
                     @endforeach
                     Masih bisa dicatat sampai {{ \App\Models\PenjualanHarian::BATAS_MUNDUR_HARI }} hari ke belakang.
+                    @if ($bolehLibur)
+                        <a class="link" href="{{ route('cabang.libur.catat', ['tanggal' => $penjualanTerlewat[array_key_last($penjualanTerlewat)]->toDateString()]) }}" data-popup>Tandai libur</a>
+                    @endif
                 </p>
             </div>
         @endif
 
         @include('dashboard._sapaan', [
             'ruteCari' => \App\View\MenuSidebar::ruteCari($pengguna),
-            'ringkas'  => $lokasi->nama.' · penjualan '.mb_strtolower($labelHari).' '.($porsi !== null ? $porsi.' porsi' : ($diarsipkan ? 'sudah diarsipkan' : 'belum dicatat'))
+            'ringkas'  => $lokasi->nama.' · penjualan '.mb_strtolower($labelHari).' '.($porsi !== null ? $porsi.' porsi' : ($diarsipkan ? 'sudah diarsipkan' : ($liburHariIni ? 'libur' : 'belum dicatat')))
                 .' · '.$merah.' bahan habis, '.$kuning.' menipis.',
         ])
 
         <div class="kartu-grid">
-            <x-kartu-angka ikon="mangkuk" :label="'Penjualan '.$labelHari" :angka="$porsi ?? ($diarsipkan ? 'Arsip' : '—')"
+            <x-kartu-angka ikon="mangkuk" :label="'Penjualan '.$labelHari" :angka="$porsi ?? ($diarsipkan ? 'Arsip' : ($liburHariIni ? 'Libur' : '—'))"
                            :tautan="$penjualanHariIni ? route('cabang.penjualan.lihat', $penjualanHariIni) : route('cabang.penjualan')"
-                           :nada="$selesai ? 'baik' : 'perhatian'" :ket="$porsi !== null ? 'porsi tercatat' : ($diarsipkan ? 'ikut tutup buku' : 'belum dicatat')" />
+                           :nada="$selesai ? 'baik' : 'perhatian'" :ket="$porsi !== null ? 'porsi tercatat' : ($diarsipkan ? 'ikut tutup buku' : ($liburHariIni ? 'tidak ada penjualan' : 'belum dicatat'))" />
             <x-kartu-angka warna="biru" ikon="masuk" label="Kiriman Belum Diterima" :angka="$jumlah['kiriman_belum_dichecklist']"
                            :tautan="$kontrol->boleh($pengguna, 'terima-barang.lihat') ? route('cabang.terima-barang') : null"
                            :nada="$jumlah['kiriman_belum_dichecklist'] > 0 ? 'perhatian' : 'biasa'" ket="perlu dihitung saat tiba" />
@@ -83,12 +87,12 @@
                     <div class="sub">
                         {{ $penjualanHariIni
                             ? 'Sudah dicatat: '.\App\Support\Angka::tampil($penjualanHariIni->total_porsi ?? 0).' porsi'
-                            : ($diarsipkan ? 'Sudah diarsipkan saat tutup buku' : 'Belum Dicatat') }}
+                            : ($diarsipkan ? 'Sudah diarsipkan saat tutup buku' : ($liburHariIni ? 'Libur' : 'Belum Dicatat')) }}
                     </div>
                 </div>
                 @unless ($diarsipkan)
                 <div class="kanan">
-                    <a class="btn {{ $penjualanHariIni ? '' : 'btn-merah' }}"
+                    <a class="btn {{ $penjualanHariIni || $liburHariIni ? '' : 'btn-merah' }}"
                        href="{{ $penjualanHariIni ? route('cabang.penjualan.lihat', $penjualanHariIni) : route('cabang.penjualan.catat') }}"
                        @unless ($penjualanHariIni) data-popup="panjang" @endunless>
                         {{ $penjualanHariIni ? 'Lihat' : 'Catat Sekarang' }}

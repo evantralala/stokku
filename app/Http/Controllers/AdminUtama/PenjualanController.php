@@ -5,6 +5,8 @@ namespace App\Http\Controllers\AdminUtama;
 use App\Http\Controllers\Cabang\PenjualanController as PenjualanCabangController;
 use App\Models\Cabang;
 use App\Models\PenjualanHarian;
+use App\Services\KontrolSistemService;
+use App\Services\LiburService;
 use App\Services\PeriodeBukuService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -23,15 +25,21 @@ class PenjualanController extends PenjualanCabangController
         $lokasi = (int) $request->query('lokasi');
         $lokasi = $pilihanLokasi->has($lokasi) ? $lokasi : null;
 
+        $daftar = PenjualanHarian::query()
+            ->when($lokasi, fn ($q) => $q->diLokasi($lokasi))
+            ->with(['pencatat:id,nama', 'cabang:id,nama'])
+            ->withSum('detail as total_porsi', 'porsi')
+            ->withCount('detail')
+            ->orderByDesc('tanggal')->orderBy('cabang_id')
+            ->paginate(31)
+            ->withQueryString();
+        $user = $request->user();
+
         return view('admin-utama.penjualan.index', [
-            'daftar' => PenjualanHarian::query()
-                ->when($lokasi, fn ($q) => $q->diLokasi($lokasi))
-                ->with(['pencatat:id,nama', 'cabang:id,nama'])
-                ->withSum('detail as total_porsi', 'porsi')
-                ->withCount('detail')
-                ->orderByDesc('tanggal')->orderBy('cabang_id')
-                ->paginate(31)
-                ->withQueryString(),
+            'daftar' => $daftar,
+            'baris'  => app(LiburService::class)->sisipkan($daftar, $lokasi),
+            'ruteLibur' => app(KontrolSistemService::class)->boleh($user, 'libur.catat')
+                ? ($user->isAdminUtama() ? 'admin-utama.libur' : 'pusat.libur') : null,
             'pilihanLokasi' => $pilihanLokasi,
             'lokasi'        => $lokasi,
         ]);

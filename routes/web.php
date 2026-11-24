@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminUtama\BahanBakuController;
+use App\Http\Controllers\LiburController;
 use App\Http\Controllers\AdminUtama\PeriodeBukuController;
 use App\Http\Controllers\AdminUtama\DashboardController as AdminUtamaDashboardController;
 use App\Http\Controllers\AdminUtama\ExcelMasterController;
@@ -130,6 +131,14 @@ Route::middleware(['auth', 'role:admin_utama,admin_pusat', 'akses'])
     ->name('admin-utama.')
     ->group(function () {
         Route::get('/dashboard', AdminUtamaDashboardController::class)->name('dashboard');
+
+        Route::controller(LiburController::class)
+            ->prefix('libur')
+            ->group(function () {
+                Route::get('/catat', 'create')->name('libur.catat');
+                Route::post('/', 'store')->name('libur.simpan');
+                Route::delete('/{libur}', 'destroy')->whereNumber('libur')->name('libur.hapus');
+            });
 
         Route::controller(LaporanController::class)
             ->prefix('laporan')
@@ -299,6 +308,15 @@ Route::middleware(['auth', 'role:admin_pusat', 'akses'])
     ->group(function () {
         Route::get('/dashboard', PusatDashboardController::class)->name('dashboard');
 
+        Route::controller(LiburController::class)
+            ->prefix('libur')
+            ->group(function () {
+                Route::get('/', 'index')->name('libur');
+                Route::get('/catat', 'create')->name('libur.catat');
+                Route::post('/', 'store')->name('libur.simpan');
+                Route::delete('/{libur}', 'destroy')->whereNumber('libur')->name('libur.hapus');
+            });
+
         Route::controller(PusatStokController::class)->group(function () {
             Route::get('/stok', 'index')->name('stok');
             Route::get('/stok/{bahanBaku}', 'riwayat')->whereNumber('bahanBaku')->name('stok.riwayat');
@@ -398,6 +416,14 @@ Route::middleware(['auth', 'role:admin_cabang', 'akses'])
     ->name('cabang.')
     ->group(function () {
         Route::get('/dashboard', CabangDashboardController::class)->name('dashboard');
+
+        Route::controller(LiburController::class)
+            ->prefix('libur')
+            ->group(function () {
+                Route::get('/catat', 'create')->name('libur.catat');
+                Route::post('/', 'store')->name('libur.simpan');
+                Route::delete('/{libur}', 'destroy')->whereNumber('libur')->name('libur.hapus');
+            });
 
         Route::controller(CabangStokController::class)->group(function () {
             Route::get('/stok', 'index')->name('stok');

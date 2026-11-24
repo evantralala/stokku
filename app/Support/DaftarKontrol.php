@@ -74,6 +74,7 @@ final class DaftarKontrol
             'terima-barang' => ['label' => 'Terima Retur', 'rute' => ['terima-barang'], 'aksi' => [self::AKSI_LIHAT, self::AKSI_CATAT], 'kunci' => [self::AKSI_LIHAT, self::AKSI_CATAT]],
             'barang-keluar' => ['label' => 'Barang Rusak', 'rute' => ['barang-keluar'], 'aksi' => [self::AKSI_LIHAT, self::AKSI_CATAT], 'kunci' => [self::AKSI_LIHAT, self::AKSI_CATAT]],
             'opname'        => ['label' => 'Opname', 'rute' => ['opname'], 'aksi' => [self::AKSI_LIHAT, self::AKSI_CATAT], 'kunci' => []],
+            'libur'         => ['label' => 'Libur Cabang', 'rute' => ['libur'], 'aksi' => [self::AKSI_LIHAT, self::AKSI_CATAT], 'kunci' => []],
             ...self::MENU_UTAMA,
         ],
         User::ROLE_ADMIN_CABANG => [
@@ -84,6 +85,7 @@ final class DaftarKontrol
             'permintaan'    => ['label' => 'Permintaan', 'rute' => ['permintaan', 'stok.isi'], 'aksi' => [self::AKSI_LIHAT, self::AKSI_CATAT], 'kunci' => [self::AKSI_LIHAT]],
             'barang-keluar' => ['label' => 'Barang Rusak', 'rute' => ['barang-keluar'], 'aksi' => [self::AKSI_LIHAT, self::AKSI_CATAT], 'kunci' => [self::AKSI_LIHAT, self::AKSI_CATAT]],
             'opname'        => ['label' => 'Opname', 'rute' => ['opname'], 'aksi' => [self::AKSI_LIHAT, self::AKSI_CATAT], 'kunci' => []],
+            'libur'         => ['label' => 'Libur', 'rute' => ['libur'], 'aksi' => [self::AKSI_CATAT], 'kunci' => []],
         ],
     ];
 
@@ -94,8 +96,8 @@ final class DaftarKontrol
     /**
      * Menu Admin Utama yang bisa dibagikan ke Admin Pusat, bawaannya mati. Satu sakelar per menu (disimpan sebagai aksi
      * lihat) yang membuka seluruh halaman dan aksinya, sama seperti Admin Utama. Pengaturan (termasuk hak akses, modul,
-     * periode buku, identitas usaha) tidak ada di sini, jadi selalu khusus Admin Utama. Dashboard dan Kiriman Admin Utama
-     * tidak dibagikan karena Admin Pusat sudah punya halamannya sendiri.
+     * periode buku, identitas usaha) tidak ada di sini, jadi selalu khusus Admin Utama. Dashboard, Kiriman, dan Libur
+     * Admin Utama tidak dibagikan karena Admin Pusat sudah punya halamannya sendiri.
      */
     private const MENU_UTAMA = [
         'utama-persetujuan'   => ['label' => 'Persetujuan', 'rute' => ['persetujuan']] + self::DASAR_UTAMA,

@@ -1,5 +1,6 @@
 {{--
-    Daftar penjualan harian cabang. Variabel dari PenjualanController@index: $daftar, $lokasi,
+    Daftar penjualan harian cabang. Variabel dari PenjualanController@index: $daftar (paginasi), $baris (isi halaman ini
+    ditambah hari libur), $liburHariIni, $bolehLibur (hak akses Libur), $lokasi,
     $sudahHariIni (catatan hari operasional), $hariOperasional (sebelum jam ganti hari = kemarin),
     $hariDiarsipkan (penjualan hari operasional sudah ikut tutup buku).
     Impor Excel membuka popup unggah (PenjualanExcelController); hasilnya sama dengan Catat Hari Ini.
@@ -22,7 +23,13 @@
         <x-ikon nama="keluar" />
         <span>Impor Excel</span>
     </a>
-    @unless ($diarsipkan)
+    @if ($bolehLibur)
+        <a class="btn tombol-ikon-hp" href="{{ route('cabang.libur.catat') }}" data-popup aria-label="Tandai libur">
+            <x-ikon nama="kalender" />
+            <span>Libur</span>
+        </a>
+    @endif
+    @unless ($diarsipkan || $liburHariIni)
         <a class="btn btn-merah" href="{{ $sudahHariIni ? route('cabang.penjualan.lihat', $sudahHariIni) : route('cabang.penjualan.catat') }}"
            @unless ($sudahHariIni) data-popup="panjang" @endunless>
             <x-ikon nama="{{ $sudahHariIni ? 'ceklis' : 'plus' }}" />
@@ -33,12 +40,13 @@
 
 @section('content')
     <div class="kartu-grid kartu-grid-master">
-        <x-kartu-angka ikon="mangkuk" :label="$labelHari" :angka="$sudahHariIni ? 'Sudah' : ($diarsipkan ? 'Arsip' : 'Belum')" :nada="$sudahHariIni || $diarsipkan ? 'baik' : 'perhatian'"
-                       :ket="$sudahHariIni ? 'penjualan sudah dicatat' : ($diarsipkan ? 'ikut tutup buku' : 'catat setelah tutup')" />
+        <x-kartu-angka ikon="mangkuk" :label="$labelHari" :angka="$sudahHariIni ? 'Sudah' : ($diarsipkan ? 'Arsip' : ($liburHariIni ? 'Libur' : 'Belum'))"
+                       :nada="$sudahHariIni || $diarsipkan || $liburHariIni ? 'baik' : 'perhatian'"
+                       :ket="$sudahHariIni ? 'penjualan sudah dicatat' : ($diarsipkan ? 'ikut tutup buku' : ($liburHariIni ? 'tidak ada penjualan' : 'catat setelah tutup'))" />
         <x-kartu-angka ikon="kalender" label="Catatan Penjualan" :angka="$daftar->total()" :ket="'hari tercatat di '.$lokasi->nama" />
     </div>
 
-    @unless ($sudahHariIni || $diarsipkan)
+    @unless ($sudahHariIni || $diarsipkan || $liburHariIni)
         <div class="kilat kilat-info" role="status">
             <x-ikon nama="peringatan" />
             <p>Penjualan {{ $hariOperasional->isToday() ? 'hari ini' : $hariOperasional->translatedFormat('l, j M') }} belum dicatat. Catat setelah tutup.</p>
@@ -57,7 +65,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($daftar as $p)
+                    @forelse ($baris as $p)
+                        @if ($p instanceof \App\Models\PenjualanLibur)
+                            @include('libur._baris', ['libur' => $p, 'tampilCabang' => false, 'kolomSisa' => 2, 'ruteHapus' => $bolehLibur ? 'cabang.libur.hapus' : null])
+                            @continue
+                        @endif
                         <tr>
                             <td class="kartu-judul" data-label="Tanggal">
                                 <a class="tautan-baris nama-barang" href="{{ route('cabang.penjualan.lihat', $p) }}">{{ $p->tanggal->translatedFormat('l, j M') }}</a>

@@ -11,6 +11,8 @@ use App\Models\PenjualanHarian;
 use App\Services\EksporDaftarService;
 use App\Services\PenjualanService;
 use App\Services\PerkiraanStokService;
+use App\Services\KontrolSistemService;
+use App\Services\LiburService;
 use App\Support\HariOperasional;
 use App\Support\Periode;
 use DomainException;
@@ -70,8 +72,13 @@ class PenjualanController extends CabangController
             ->orderByDesc('tanggal')
             ->paginate(31);
 
+        $libur = app(LiburService::class);
+
         return view('cabang.penjualan.index', [
             'daftar'        => $daftar,
+            'baris'         => $libur->sisipkan($daftar, $lokasi->id),
+            'liburHariIni'  => $libur->libur($lokasi, HariOperasional::tanggalTeks()),
+            'bolehLibur'    => app(KontrolSistemService::class)->boleh($request->user(), 'libur.catat'),
             'lokasi'        => $lokasi,
             'sudahHariIni'  => PenjualanHarian::query()->diLokasi($lokasi->id)->whereDate('tanggal', HariOperasional::tanggalTeks())->first(),
             'hariOperasional' => HariOperasional::tanggal(),

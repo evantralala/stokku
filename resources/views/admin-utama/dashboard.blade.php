@@ -117,6 +117,8 @@
                                         <span class="satuan">—</span>
                                     @elseif ($r['porsiHariIni'] !== null)
                                         <span class="badge b-setuju">{{ \App\Support\Angka::tampil($r['porsiHariIni']) }} porsi</span>
+                                    @elseif ($r['liburHariIni'])
+                                        <span class="badge b-pasif">Libur</span>
                                     @else
                                         <span class="badge b-tolak">Belum Dicatat</span>
                                     @endif

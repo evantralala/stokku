@@ -36,6 +36,7 @@ class Cabang extends Model
         'barang_masuk'       => ['cabang_id'],
         'barang_keluar'      => ['cabang_id'],
         'penjualan_harian'   => ['cabang_id'],
+        'penjualan_libur'    => ['cabang_id'],
         'opname'             => ['cabang_id'],
     ];
 

@@ -74,6 +74,7 @@ class MenuSidebar
                 ['route' => 'pusat.barang-masuk', 'label' => 'Barang Masuk', 'pendek' => 'Masuk', 'ikon' => 'masuk', 'jumlah' => null, 'utama' => true],
                 ['route' => 'pusat.terima-barang', 'label' => 'Terima Retur', 'ikon' => 'masuk', 'jumlah' => 'kiriman_belum_dichecklist', 'utama' => false],
                 ['route' => 'pusat.barang-keluar', 'label' => 'Barang Rusak', 'ikon' => 'keluar', 'jumlah' => null, 'utama' => false],
+                ['route' => 'pusat.libur', 'label' => 'Libur Cabang', 'ikon' => 'kalender', 'jumlah' => null, 'utama' => false],
             ],
             'Persediaan' => [
                 ['route' => 'pusat.stok', 'label' => 'Stok', 'pendek' => 'Stok', 'ikon' => 'kotak', 'jumlah' => null, 'utama' => true, 'cari' => true],

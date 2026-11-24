@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `klien_api`;
 DROP TABLE IF EXISTS `menu_kode_luar`;
 DROP TABLE IF EXISTS `supplier`;
 DROP TABLE IF EXISTS `migrations`;
+DROP TABLE IF EXISTS `penjualan_libur`;
 DROP TABLE IF EXISTS `langganan_push`;
 DROP TABLE IF EXISTS `email_laporan`;
 DROP TABLE IF EXISTS `periode_buku`;
@@ -114,7 +115,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (36, '2026_11_10_000001_tambah_foto_pengguna', 1),
 (37, '2026_11_16_000001_tambah_sisa_ditutup_permintaan', 1),
 (38, '2026_11_18_000001_buat_tabel_langganan_push', 1),
-(39, '2026_11_20_000001_ganti_email_pengguna_jadi_username', 1);
+(39, '2026_11_20_000001_ganti_email_pengguna_jadi_username', 1),
+(40, '2026_11_24_000001_buat_tabel_penjualan_libur', 1);
 
 -- --------------------------------------------------------
 -- Tabel `cache`
@@ -475,6 +477,15 @@ alter table `users` add `username` varchar(30) not null after `nama`;
 alter table `users` add unique `users_username_unique`(`username`);
 alter table `users` drop index `users_email_unique`;
 alter table `users` drop `email`;
+
+-- --------------------------------------------------------
+-- Tabel `penjualan_libur`: hari libur cabang (tanpa penjualan, tidak diingatkan)
+-- --------------------------------------------------------
+
+create table `penjualan_libur` (`id` bigint unsigned not null auto_increment primary key, `cabang_id` bigint unsigned not null, `tanggal` datetime not null, `dicatat_oleh` bigint unsigned null, `created_at` datetime null, `updated_at` datetime null) ENGINE=InnoDB default character set utf8mb4 collate 'utf8mb4_unicode_ci';
+alter table `penjualan_libur` add constraint `penjualan_libur_cabang_id_foreign` foreign key (`cabang_id`) references `cabang` (`id`) on delete restrict;
+alter table `penjualan_libur` add constraint `penjualan_libur_dicatat_oleh_foreign` foreign key (`dicatat_oleh`) references `users` (`id`) on delete set null;
+alter table `penjualan_libur` add unique `penjualan_libur_cabang_id_tanggal_unique`(`cabang_id`, `tanggal`);
 
 -- --------------------------------------------------------
 -- Pengaturan bawaan (sama dengan PengaturanSeeder)

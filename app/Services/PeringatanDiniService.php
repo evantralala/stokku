@@ -254,8 +254,11 @@ class PeringatanDiniService
             ->get(['cabang_id', 'tanggal'])
             ->groupBy('cabang_id');
 
-        return $cabang->map(function (Cabang $c) use ($tercatat, $kemarin) {
-            $tanggal = ($tercatat[$c->id] ?? collect())->map(fn ($p) => $p->tanggal->toDateString());
+        $libur = app(LiburService::class)->tanggalLibur($cabang->pluck('id')->all(), $tigaHari, $kemarin);
+
+        return $cabang->map(function (Cabang $c) use ($tercatat, $kemarin, $libur) {
+            $tanggal = ($tercatat[$c->id] ?? collect())->map(fn ($p) => $p->tanggal->toDateString())
+                ->merge(array_keys($libur[$c->id] ?? []));
 
             // Cabang yang baru dibuat hari ini belum punya hari penjualan untuk diperiksa.
             if ($tanggal->contains($kemarin) || $c->created_at?->toDateString() > $kemarin) {

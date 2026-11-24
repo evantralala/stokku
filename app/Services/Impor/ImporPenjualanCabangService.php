@@ -118,11 +118,7 @@ class ImporPenjualanCabangService extends ImporExcel
         }
 
         return collect([HariOperasional::tanggal(), ...$terlewat])
-            ->mapWithKeys(fn (Carbon $t) => [$t->toDateString() => match (true) {
-                $t->isToday()     => 'Hari Ini',
-                $t->isYesterday() => 'Kemarin',
-                default           => $t->translatedFormat('D, j M'),
-            }])
+            ->mapWithKeys(fn (Carbon $t) => [$t->toDateString() => PenjualanService::labelHari($t)])
             ->all();
     }
 

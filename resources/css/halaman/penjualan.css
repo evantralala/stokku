@@ -1,5 +1,8 @@
 /* Form penjualan harian gaya kasir: kartu menu dengan tombol −/+ besar, cari menu, total porsi, perkiraan stok. */
 @layer components {
+    /* Baris hari libur di daftar penjualan: lencana Libur dan tombol Batalkan. */
+    .libur-aksi { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; white-space: nowrap; }
+    .libur-aksi form { margin: 0; }
     .penjualan-kepala { flex-direction: column; align-items: stretch; gap: 10px; }
     .penjualan-total { font-size: 15px; color: var(--color-sumi-2); white-space: nowrap; }
     .penjualan-total strong { font-size: 22px; color: var(--color-sumi); }

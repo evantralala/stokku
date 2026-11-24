@@ -106,7 +106,7 @@ class AksesMenuUtamaTest extends TestCase
         $this->izinkan($this->semuaMenuUtama());
         $pusat = $this->pusat;
 
-        $terkunci = ['admin-utama.dashboard', 'admin-utama.kiriman', 'admin-utama.pengaturan', 'admin-utama.kontrol-sistem', 'admin-utama.riwayat'];
+        $terkunci = ['admin-utama.dashboard', 'admin-utama.kiriman', 'admin-utama.libur', 'admin-utama.pengaturan', 'admin-utama.kontrol-sistem', 'admin-utama.riwayat'];
         $dibuka = 0;
         foreach (Route::getRoutes() as $r) {
             $nama = (string) $r->getName();

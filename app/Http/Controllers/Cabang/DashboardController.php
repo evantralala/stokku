@@ -10,6 +10,7 @@ use App\Models\Permintaan;
 use App\Models\PermintaanDetail;
 use App\Services\KontrolSistemService;
 use App\Services\PantauanStokService;
+use App\Services\LiburService;
 use App\Services\PenjualanService;
 use App\Services\PeriodeBukuService;
 use App\Services\PermintaanService;
@@ -42,6 +43,8 @@ class DashboardController extends Controller
                 ->whereHas('detail', fn ($q) => $q->where('status', PermintaanDetail::STATUS_MENUNGGU))->count(),
             'jumlahUsulan'       => $permintaan->usulan($lokasi)->count(),
             'bolehMinta'         => $kontrol->boleh($request->user(), 'permintaan.catat'),
+            'bolehLibur'         => $kontrol->boleh($request->user(), 'libur.catat'),
+            'liburHariIni'       => app(LiburService::class)->libur($lokasi, HariOperasional::tanggalTeks()),
             'opnameBerjalan'     => Opname::query()->diLokasi($lokasi->id)->belumSelesai()->first(),
             'jumlahPerLampu'     => PantauanStokService::hitungPerLampu($stok),
             'segeraHabis'        => $stok

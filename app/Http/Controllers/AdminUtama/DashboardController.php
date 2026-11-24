@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cabang;
 use App\Models\Kiriman;
 use App\Models\PenjualanHarian;
+use App\Models\PenjualanLibur;
 use App\Services\AntreanPersetujuanService;
 use App\Services\KontrolSistemService;
 use App\Services\PantauanStokService;
@@ -37,6 +38,7 @@ class DashboardController extends Controller
             ->get(['id', 'cabang_id'])
             ->groupBy('cabang_id')
             ->map(fn ($daftar) => $daftar->sum('total_porsi'));
+        $liburHariIni = PenjualanLibur::query()->whereDate('tanggal', $hariIni)->pluck('cabang_id')->flip();
 
         $ringkasan = Cabang::query()
             ->aktif()
@@ -47,6 +49,7 @@ class DashboardController extends Controller
                 'lokasi'       => $l,
                 'lampu'        => PantauanStokService::hitungPerLampu($pantauan->daftar($l)),
                 'porsiHariIni' => $l->isPusat() ? null : ($porsiHariIni[$l->id] ?? null),
+                'liburHariIni' => $liburHariIni->has($l->id),
             ]);
 
         $daftarPeringatan = $kontrol->modulNyala(DaftarKontrol::MODUL_PERINGATAN_DINI) ? $peringatan->daftar() : null;

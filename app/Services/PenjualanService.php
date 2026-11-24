@@ -35,10 +35,20 @@ class PenjualanService
     ) {
     }
 
+    /** Label singkat tanggal di pilihan tanggal: "Hari Ini", "Kemarin", atau mis. "Min, 22 Nov". */
+    public static function labelHari(Carbon $tanggal): string
+    {
+        return match (true) {
+            $tanggal->isToday()     => 'Hari Ini',
+            $tanggal->isYesterday() => 'Kemarin',
+            default                 => $tanggal->translatedFormat('D, j M'),
+        };
+    }
+
     /**
      * Hari sebelum hari operasional yang belum dicatat penjualannya, paling lama PenjualanHarian::BATAS_MUNDUR_HARI
-     * ke belakang (batas cabang boleh mencatat sendiri), tidak sebelum cabang dibuat, dan tidak di periode yang sudah
-     * tutup buku. Urut dari yang paling lama.
+     * ke belakang (batas cabang boleh mencatat sendiri), tidak sebelum cabang dibuat, tidak ditandai libur, dan tidak di
+     * periode yang sudah tutup buku. Urut dari yang paling lama.
      *
      * @return list<Carbon>
      */
@@ -60,9 +70,12 @@ class PenjualanService
             ->whereDate('tanggal', '>=', $awal->toDateString())->whereDate('tanggal', '<=', $akhir->toDateString())
             ->pluck('tanggal')->map(fn ($t) => Carbon::parse($t)->toDateString())->flip();
 
+        $libur = app(LiburService::class)->tanggalLibur([$lokasi->id], $awal->toDateString(), $akhir->toDateString())[$lokasi->id] ?? [];
+
         $hasil = [];
         for ($hari = $akhir->copy(); $hari->gte($awal); $hari->subDay()) {
-            if (! isset($sudah[$hari->toDateString()]) && ! $periode->penjualanTertutup($lokasi->id, $hari->toDateString())) {
+            $t = $hari->toDateString();
+            if (! isset($sudah[$t]) && ! isset($libur[$t]) && ! $periode->penjualanTertutup($lokasi->id, $t)) {
                 $hasil[] = $hari->copy();
             }
         }
@@ -235,6 +248,8 @@ class PenjualanService
             'barang_keluar_id' => $dokumen->id,
             'dicatat_oleh'     => $pencatat?->id,
         ]);
+
+        app(LiburService::class)->hapusKarenaBuka($lokasi->id, $tanggal);
 
         $this->isiPenjualan($penjualan, $dokumen, $pencatat, $porsi);
 

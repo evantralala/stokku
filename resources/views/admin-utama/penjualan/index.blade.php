@@ -1,6 +1,7 @@
 {{--
     Catatan penjualan harian semua cabang (Admin Utama). Variabel dari AdminUtama\PenjualanController@index:
-      $daftar (paginasi), $pilihanLokasi ([id => nama cabang]), $lokasi (id cabang yang disaring, atau null).
+      $daftar (paginasi), $baris (isi halaman ini ditambah hari libur), $pilihanLokasi ([id => nama cabang]),
+      $lokasi (id cabang yang disaring, atau null), $ruteLibur (admin-utama.libur / pusat.libur, null bila tidak boleh).
 --}}
 @extends('layouts.app')
 
@@ -9,6 +10,15 @@
 @endsection
 @section('judul', 'Catatan Penjualan')
 @section('sub', 'Buka catatan untuk melihat atau membetulkan porsi')
+
+@if ($ruteLibur)
+    @section('aksi')
+        <a class="btn" href="{{ route($ruteLibur.'.catat', array_filter(['cabang' => $lokasi])) }}" data-popup>
+            <x-ikon nama="kalender" />
+            Tandai Libur
+        </a>
+    @endsection
+@endif
 
 @section('content')
     @if ($pilihanLokasi->count() > 1)
@@ -33,7 +43,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($daftar as $p)
+                    @forelse ($baris as $p)
+                        @if ($p instanceof \App\Models\PenjualanLibur)
+                            @include('libur._baris', ['libur' => $p, 'tampilCabang' => true, 'kolomSisa' => 2, 'ruteHapus' => $ruteLibur ? $ruteLibur.'.hapus' : null])
+                            @continue
+                        @endif
                         <tr>
                             <td class="kartu-judul" data-label="Tanggal">
                                 <a class="tautan-baris nama-barang" href="{{ route('admin-utama.penjualan.lihat', $p) }}">{{ $p->tanggal->translatedFormat('l, j M Y') }}</a>

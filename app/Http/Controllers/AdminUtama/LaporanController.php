@@ -7,6 +7,7 @@ use App\Models\Cabang;
 use App\Models\Kategori;
 use App\Services\EksporLaporanService;
 use App\Services\LaporanService;
+use App\Services\LiburService;
 use App\Support\BukuExcel;
 use App\Support\Periode;
 use Illuminate\Http\Request;
@@ -130,6 +131,7 @@ class LaporanController extends Controller
             'penjualan' => [
                 'menu'  => $this->laporan->penjualanMenu($lokasi, $periode),
                 'bahan' => $this->laporan->pemakaianBahan($lokasi, $periode, $kategori?->id),
+                'hariLibur' => app(LiburService::class)->jumlah($lokasi, $periode),
             ],
             'kategori' => [
                 'perMenu'  => LaporanService::penjualanPerKategori($this->laporan->penjualanMenu($lokasi, $periode)),

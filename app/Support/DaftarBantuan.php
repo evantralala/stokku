@@ -318,6 +318,7 @@ final class DaftarBantuan
                     'Catat setiap hari setelah tutup. Penjualan yang belum dicatat muncul sebagai peringatan untuk Admin Utama.',
                     'Punya rekap dari kasir? Tekan "Impor Excel", unduh templat (semua menu sudah terisi), isi kolom Porsi, lalu unggah. Cek hasilnya, jawab bila ada "Maksudnya …?", lalu Simpan.',
                     'Impor Excel tanpa kolom Tanggal dicatat untuk hari ini. Bila hari itu sudah dicatat, porsi menu di file mengganti yang lama dan menu lain tetap.',
+                    ['teks' => 'Cabang tutup? Tekan "Libur" dan pilih tanggalnya supaya tidak diingatkan lagi. Bila ternyata buka, cukup catat penjualannya.', 'catat' => 'cabang.libur.catat'],
                 ],
             ],
             'terima-barang' => [

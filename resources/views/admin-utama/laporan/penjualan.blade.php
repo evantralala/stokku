@@ -1,6 +1,6 @@
 {{--
     Penjualan per menu (dikelompokkan per kategori menu, dengan subtotal) dan pemakaian bahan (dikelompokkan per kategori bahan).
-    Variabel dari LaporanController@penjualan: $menu, $bahan, saringan.
+    Variabel dari LaporanController@penjualan: $menu, $bahan, $hariLibur (jumlah hari libur cabang di periode), saringan.
 --}}
 @extends('layouts.app')
 
@@ -28,7 +28,7 @@
         <div class="panel-head">
             <div>
                 <h2>Porsi per Menu</h2>
-                <div class="sub">Total {{ \App\Support\Angka::tampil($totalPorsi) }} porsi</div>
+                <div class="sub">Total {{ \App\Support\Angka::tampil($totalPorsi) }} porsi{{ $hariLibur > 0 ? ' · '.$hariLibur.' hari libur' : '' }}</div>
             </div>
         </div>
         <div class="tabel-bungkus">
