@@ -20,7 +20,10 @@ class PenjualanExcelController extends CabangController
     {
     }
 
-    /** ?penjualan= untuk mengubah catatan yang sudah ada: templat berisi tanggal dan porsi catatan itu. */
+    /**
+     * ?penjualan= untuk mengubah catatan yang sudah ada: templat berisi tanggal dan porsi catatan itu.
+     * Tanpa itu, bila ada hari yang terlewat, popup menampilkan pilihan tanggal (hari ini dan hari yang terlewat).
+     */
     public function unggah(Request $request): View
     {
         $url = $this->url();
@@ -30,22 +33,33 @@ class PenjualanExcelController extends CabangController
             $url['templat'] = route('cabang.penjualan.impor.templat', ['penjualan' => $catatan->id]);
         }
 
-        return $this->tampilUnggah($this->layanan($request)->untukCatatan($catatan), $url);
+        $layanan = $this->layanan($request)->untukCatatan($catatan);
+        $pilihan = $layanan->pilihanTanggal();
+
+        return $this->tampilUnggah($layanan, $url, [
+            'pilihanTanggal' => $pilihan,
+            'tanggal'        => array_key_exists((string) $request->query('tanggal'), $pilihan) ? (string) $request->query('tanggal') : array_key_first($pilihan),
+        ]);
     }
 
     public function templat(Request $request): StreamedResponse
     {
-        return $this->unduhTemplat($this->layanan($request)->untukCatatan($this->catatan($request)));
+        return $this->unduhTemplat($this->layanan($request)->untukCatatan($this->catatan($request))->pakaiTanggal($request->query('tanggal')));
     }
 
     public function pratinjau(ImporPenjualanRequest $request): View|RedirectResponse
     {
-        return $this->tampilPratinjau($request, $this->layanan($request), $this->kunciSesi($request), $this->url());
+        $layanan = $this->layanan($request)->pakaiTanggal($request->input('tanggal'));
+        $request->session()->put($this->kunciTanggal($request), $layanan->tanggalPilihan());
+
+        return $this->tampilPratinjau($request, $layanan, $this->kunciSesi($request), $this->url());
     }
 
     public function simpan(Request $request): RedirectResponse
     {
-        return $this->simpanImpor($request, $this->layanan($request), $this->kunciSesi($request), $this->url()['kembali']);
+        $layanan = $this->layanan($request)->pakaiTanggal($request->session()->pull($this->kunciTanggal($request)));
+
+        return $this->simpanImpor($request, $layanan, $this->kunciSesi($request), $this->url()['kembali']);
     }
 
     private function layanan(Request $request): ImporPenjualanCabangService
@@ -64,6 +78,11 @@ class PenjualanExcelController extends CabangController
     private function kunciSesi(Request $request): string
     {
         return 'penjualan-cabang.'.$this->lokasi($request)->id;
+    }
+
+    private function kunciTanggal(Request $request): string
+    {
+        return 'impor_excel.penjualan-cabang-tanggal.'.$this->lokasi($request)->id;
     }
 
     /** @return array{templat: string, pratinjau: string, simpan: string, kembali: string} */

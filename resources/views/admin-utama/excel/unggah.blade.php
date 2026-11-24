@@ -1,7 +1,8 @@
 {{--
     Unggah file Excel (dibuka sebagai popup dari tombol Impor di daftar). Variabel dari AlurImporExcel::tampilUnggah:
       $judul, $teks ([judul halaman, keterangan singkat, tombol unduh]), $url (templat, pratinjau, simpan, kembali),
-      $pilihanMode ([kunci => [label]], kosong bila tidak ada), $mode (bawaan).
+      $pilihanMode ([kunci => [label]], kosong bila tidak ada), $mode (bawaan),
+      $pilihanTanggal ([Y-m-d => label], kosong bila tidak ada) dan $tanggal (terpilih).
     Penjelasan tiap kolom ada di lembar Petunjuk pada templat, tidak diulang di sini.
 --}}
 @extends('layouts.app')
@@ -17,6 +18,7 @@
             @include('admin-utama.excel._form-unggah', [
                 'ket' => $teks[1], 'templat' => $url['templat'], 'labelTemplat' => $teks[2], 'aksi' => $url['pratinjau'],
                 'labelMode' => 'Cara Simpan', 'terima' => '.xlsx,.xls,.csv', 'teksFile' => 'Pilih File Excel atau CSV',
+                'pilihanTanggal' => $pilihanTanggal ?? [], 'tanggal' => $tanggal ?? null,
             ])
         </div>
     </section>

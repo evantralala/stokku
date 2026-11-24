@@ -11,6 +11,7 @@ use App\Models\PenjualanDetail;
 use App\Models\PenjualanHarian;
 use App\Models\StokMutasi;
 use App\Models\User;
+use App\Support\HariOperasional;
 use App\Support\NomorDokumen;
 use DomainException;
 use Illuminate\Support\Carbon;
@@ -32,6 +33,41 @@ class PenjualanService
         private NotifikasiService $notifikasi,
         private LogPerubahanService $log,
     ) {
+    }
+
+    /**
+     * Hari sebelum hari operasional yang belum dicatat penjualannya, paling lama PenjualanHarian::BATAS_MUNDUR_HARI
+     * ke belakang (batas cabang boleh mencatat sendiri), tidak sebelum cabang dibuat, dan tidak di periode yang sudah
+     * tutup buku. Urut dari yang paling lama.
+     *
+     * @return list<Carbon>
+     */
+    public function tanggalTerlewat(Cabang $lokasi): array
+    {
+        $periode = app(PeriodeBukuService::class);
+        $akhir = HariOperasional::tanggal()->subDay();
+        $awal = now()->startOfDay()->subDays(PenjualanHarian::BATAS_MUNDUR_HARI);
+
+        if ($lokasi->created_at && $lokasi->created_at->copy()->startOfDay()->gt($awal)) {
+            $awal = $lokasi->created_at->copy()->startOfDay();
+        }
+
+        if ($awal->gt($akhir)) {
+            return [];
+        }
+
+        $sudah = PenjualanHarian::query()->diLokasi($lokasi->id)
+            ->whereDate('tanggal', '>=', $awal->toDateString())->whereDate('tanggal', '<=', $akhir->toDateString())
+            ->pluck('tanggal')->map(fn ($t) => Carbon::parse($t)->toDateString())->flip();
+
+        $hasil = [];
+        for ($hari = $akhir->copy(); $hari->gte($awal); $hari->subDay()) {
+            if (! isset($sudah[$hari->toDateString()]) && ! $periode->penjualanTertutup($lokasi->id, $hari->toDateString())) {
+                $hasil[] = $hari->copy();
+            }
+        }
+
+        return array_reverse($hasil);
     }
 
     /**

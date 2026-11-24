@@ -10,6 +10,7 @@ use App\Models\Permintaan;
 use App\Models\PermintaanDetail;
 use App\Services\KontrolSistemService;
 use App\Services\PantauanStokService;
+use App\Services\PenjualanService;
 use App\Services\PeriodeBukuService;
 use App\Services\PermintaanService;
 use App\Support\HariOperasional;
@@ -21,7 +22,7 @@ class DashboardController extends Controller
 {
     private const MAKS_BAHAN = 6;
 
-    public function __invoke(Request $request, PantauanStokService $pantauan, PermintaanService $permintaan, KontrolSistemService $kontrol, PeriodeBukuService $periode): View
+    public function __invoke(Request $request, PantauanStokService $pantauan, PermintaanService $permintaan, KontrolSistemService $kontrol, PeriodeBukuService $periode, PenjualanService $penjualan): View
     {
         $lokasi = $request->user()->cabang;
 
@@ -36,7 +37,7 @@ class DashboardController extends Controller
             'penjualanHariIni'   => $this->penjualanHariIni($lokasi),
             'hariOperasional'    => HariOperasional::tanggal(),
             'hariDiarsipkan'     => $periode->penjualanTertutup($lokasi->id, HariOperasional::tanggalTeks()),
-            'penjualanTerlewat'  => $this->penjualanTerlewat($lokasi, $periode),
+            'penjualanTerlewat'  => $penjualan->tanggalTerlewat($lokasi),
             'permintaanMenunggu' => Permintaan::query()->diLokasi($lokasi->id)->where('status', Permintaan::STATUS_MENUNGGU)
                 ->whereHas('detail', fn ($q) => $q->where('status', PermintaanDetail::STATUS_MENUNGGU))->count(),
             'jumlahUsulan'       => $permintaan->usulan($lokasi)->count(),
@@ -58,38 +59,5 @@ class DashboardController extends Controller
             ->whereDate('tanggal', HariOperasional::tanggalTeks())
             ->withSum('detail as total_porsi', 'porsi')
             ->first();
-    }
-
-    /**
-     * Hari sebelum hari operasional yang belum dicatat penjualannya, paling lama BATAS_MUNDUR_HARI ke belakang
-     * (batas cabang boleh mencatat sendiri), tidak sebelum cabang dibuat, dan tidak di periode yang sudah tutup buku.
-     *
-     * @return list<\Illuminate\Support\Carbon>
-     */
-    private function penjualanTerlewat(Cabang $lokasi, PeriodeBukuService $periode): array
-    {
-        $akhir = HariOperasional::tanggal()->subDay();
-        $awal = now()->startOfDay()->subDays(PenjualanHarian::BATAS_MUNDUR_HARI);
-
-        if ($lokasi->created_at && $lokasi->created_at->copy()->startOfDay()->gt($awal)) {
-            $awal = $lokasi->created_at->copy()->startOfDay();
-        }
-
-        if ($awal->gt($akhir)) {
-            return [];
-        }
-
-        $sudah = PenjualanHarian::query()->diLokasi($lokasi->id)
-            ->whereDate('tanggal', '>=', $awal->toDateString())->whereDate('tanggal', '<=', $akhir->toDateString())
-            ->pluck('tanggal')->map(fn ($t) => \Illuminate\Support\Carbon::parse($t)->toDateString())->flip();
-
-        $hasil = [];
-        for ($hari = $akhir->copy(); $hari->gte($awal); $hari->subDay()) {
-            if (! isset($sudah[$hari->toDateString()]) && ! $periode->penjualanTertutup($lokasi->id, $hari->toDateString())) {
-                $hasil[] = $hari->copy();
-            }
-        }
-
-        return array_reverse($hasil);
     }
 }

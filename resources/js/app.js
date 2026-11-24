@@ -29,6 +29,7 @@ import { pasangPratinjauImpor } from './pratinjau-impor';
 import { pasangCentangSemua } from './centang-semua';
 import { pasangTahanKirimUlang, pasangTandaiTerkirim } from './kirim-sekali';
 import { pasangTempelDaftar } from './tempel-daftar';
+import { pasangTanggalImpor } from './tanggal-impor';
 
 /** Pemasang yang bekerja pada isi tertentu; dipanggil lagi untuk isi popup yang baru dimuat. */
 const pemasangIsi = [
@@ -46,6 +47,7 @@ const pemasangIsi = [
     pasangIsianFoto,
     pasangCentangSemua,
     pasangTempelDaftar,
+    pasangTanggalImpor,
 ];
 
 pasangTahanKirimUlang();

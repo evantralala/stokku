@@ -75,6 +75,24 @@
         outline: 2px solid var(--color-sumi);
         outline-offset: -4px;
     }
+    /* Pilihan tanggal impor penjualan cabang (hari ini dan hari yang terlewat): kotak terpisah, bisa beberapa baris. */
+    .impor-tanggal { margin-bottom: 12px; }
+    .pilih-segmen.pilih-tanggal {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+        gap: 6px;
+        overflow: visible;
+        background: none;
+        box-shadow: none;
+    }
+    .pilih-tanggal > label + label { border-left: 0; }
+    .pilih-tanggal span {
+        padding: 0 8px;
+        border-radius: 10px;
+        background: var(--color-kami-2);
+        box-shadow: inset 0 0 0 1px var(--color-garis);
+        white-space: nowrap;
+    }
     .impor-mode-terpilih { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 8px; }
     .impor-kosong { font-weight: 600; }
 

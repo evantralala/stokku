@@ -2,17 +2,32 @@
     Isi popup unggah impor (dipakai Impor Excel per menu dan Impor Sekaligus): keterangan singkat, tombol templat,
     pilihan cara simpan (bila ada), pilih file, dan tombol cek.
     Parameter: $ket, $templat (alamat), $labelTemplat, $aksi (alamat pratinjau), $pilihanMode ([kunci => [label]]),
-      $mode (bawaan), $labelMode, $terima (atribut accept), $teksFile.
+      $mode (bawaan), $labelMode, $terima (atribut accept), $teksFile,
+      $pilihanTanggal ([Y-m-d => label], boleh kosong) dan $tanggal (terpilih): tanggal templat dan file yang diunggah.
 --}}
+@if (($pilihanTanggal ?? []) !== [])
+    <fieldset class="impor-mode impor-tanggal" data-pilih-tanggal-impor>
+        <legend class="label-isian">Tanggal</legend>
+        <div class="pilih-segmen pilih-tanggal">
+            @foreach ($pilihanTanggal as $kunci => $label)
+                <label>
+                    <input type="radio" name="tanggal" value="{{ $kunci }}" form="form-impor-unggah" @checked(old('tanggal', $tanggal) === $kunci)>
+                    <span>{{ $label }}</span>
+                </label>
+            @endforeach
+        </div>
+    </fieldset>
+@endif
+
 <div class="impor-awal">
     <p class="impor-ket">{{ $ket }}</p>
-    <a class="btn btn-sm" href="{{ $templat }}" download>
+    <a class="btn btn-sm" href="{{ ($pilihanTanggal ?? []) !== [] && $tanggal ? $templat.(str_contains($templat, '?') ? '&' : '?').'tanggal='.$tanggal : $templat }}" download data-templat-tanggal>
         <x-ikon nama="masuk" width="18" height="18" />
         {{ $labelTemplat }}
     </a>
 </div>
 
-<form class="impor-unggah" method="POST" action="{{ $aksi }}" enctype="multipart/form-data" novalidate>
+<form class="impor-unggah" id="form-impor-unggah" method="POST" action="{{ $aksi }}" enctype="multipart/form-data" novalidate>
     @csrf
     @if ($pilihanMode !== [])
         <fieldset class="impor-mode">

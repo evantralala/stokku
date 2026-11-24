@@ -40,6 +40,8 @@ class ImporPenjualanCabangService extends ImporExcel
 
     private ?PenjualanHarian $catatan = null;
 
+    private ?string $tanggal = null;
+
     public function __construct(LogPerubahanService $log, private PenjualanService $penjualan, private PerkiraanStokService $perkiraan, private PeriodeBukuService $periode)
     {
         parent::__construct($log);
@@ -91,9 +93,61 @@ class ImporPenjualanCabangService extends ImporExcel
 
         return [
             'Impor Penjualan',
-            'Isi kolom Porsi. Tanggal kosong = hari ini (sebelum jam '.HariOperasional::jamGanti().' = kemarin).',
+            $this->pilihanTanggal() !== []
+                ? 'Pilih tanggal, unduh templat, lalu isi kolom Porsi.'
+                : 'Isi kolom Porsi. Tanggal kosong = hari ini (sebelum jam '.HariOperasional::jamGanti().' = kemarin).',
             'Unduh Templat',
         ];
+    }
+
+    /**
+     * Tanggal yang bisa dipilih di popup unggah: hari operasional lalu hari yang terlewat (terbaru dulu).
+     * Kosong bila tidak ada hari yang terlewat atau sedang mengubah catatan yang sudah ada.
+     *
+     * @return array<string, string> [Y-m-d => label]
+     */
+    public function pilihanTanggal(): array
+    {
+        if ($this->catatan) {
+            return [];
+        }
+
+        $terlewat = array_reverse($this->penjualan->tanggalTerlewat($this->lokasiDipakai()));
+        if ($terlewat === []) {
+            return [];
+        }
+
+        return collect([HariOperasional::tanggal(), ...$terlewat])
+            ->mapWithKeys(fn (Carbon $t) => [$t->toDateString() => match (true) {
+                $t->isToday()     => 'Hari Ini',
+                $t->isYesterday() => 'Kemarin',
+                default           => $t->translatedFormat('D, j M'),
+            }])
+            ->all();
+    }
+
+    /**
+     * Tanggal pilihan dari popup unggah. Hari operasional atau nilai di luar pilihanTanggal() = tanpa pilihan
+     * (kolom Tanggal di file tetap berlaku seperti biasa).
+     */
+    public function pakaiTanggal(mixed $tanggal): static
+    {
+        $this->tanggal = is_string($tanggal) && $tanggal !== HariOperasional::tanggalTeks()
+            && array_key_exists($tanggal, $this->pilihanTanggal()) ? $tanggal : null;
+
+        return $this;
+    }
+
+    /** Tanggal yang dipilih di popup unggah (null = hari operasional). */
+    public function tanggalPilihan(): ?string
+    {
+        return $this->tanggal;
+    }
+
+    /** Tanggal bawaan: catatan yang diubah, tanggal pilihan, atau hari operasional. */
+    private function tanggalBawaan(): Carbon
+    {
+        return $this->catatan?->tanggal?->copy() ?? ($this->tanggal ? Carbon::parse($this->tanggal) : HariOperasional::tanggal());
     }
 
     /** Kolom sama dengan file Unduh Excel penjualan (Tanggal, Kategori Menu, Menu, Porsi). */
@@ -131,7 +185,7 @@ class ImporPenjualanCabangService extends ImporExcel
 
     public function namaFile(string $jenis): string
     {
-        return BukuExcel::namaBerkas('penjualan', $this->lokasiDipakai()->nama, ($this->catatan?->tanggal ?? HariOperasional::tanggal())->toDateString());
+        return BukuExcel::namaBerkas('penjualan', $this->lokasiDipakai()->nama, $this->tanggalBawaan()->toDateString());
     }
 
     /** Catatan yang akan diubah lewat Excel: templat berisi tanggal dan porsi catatan itu. */
@@ -143,8 +197,9 @@ class ImporPenjualanCabangService extends ImporExcel
     }
 
     /**
-     * Templat = format Unduh Excel penjualan, berisi semua menu aktif per kategori dengan tanggal hari ini dan porsi
-     * contoh (data biasa, bisa langsung diunggah); atau tanggal dan porsi catatan yang sedang diubah (untukCatatan).
+     * Templat = format Unduh Excel penjualan, berisi semua menu aktif per kategori dengan tanggal bawaan (hari ini atau
+     * tanggal pilihan) dan porsi contoh (data biasa, bisa langsung diunggah); atau tanggal dan porsi catatan yang sedang
+     * diubah (untukCatatan).
      */
     public function templat(): Spreadsheet
     {
@@ -155,7 +210,7 @@ class ImporPenjualanCabangService extends ImporExcel
             ? $this->catatan->detail()->pluck('porsi', 'menu_id')->map(fn ($p) => (int) $p)->all()
             : $menu->values()->mapWithKeys(fn (Menu $m, int $i) => [$m->id => ContohTemplat::angka($i, [25, 18, 12, 20, 15, 9, 30, 14, 22])])->all();
 
-        return app(EksporDaftarService::class)->templatPenjualan($this->lokasiDipakai(), $menu, $this->catatan?->tanggal, $porsi);
+        return app(EksporDaftarService::class)->templatPenjualan($this->lokasiDipakai(), $menu, $this->tanggalBawaan(), $porsi);
     }
 
     protected function barisEkspor(): array
@@ -170,7 +225,7 @@ class ImporPenjualanCabangService extends ImporExcel
         $resepPertama = Resep::query()->groupBy('menu_id')->selectRaw('menu_id, MIN(berlaku_sejak) AS tanggal')->pluck('tanggal', 'menu_id')
             ->map(fn ($t) => Carbon::parse($t)->toDateString());
         $namaLokasi = [mb_strtolower($lokasi->kode), mb_strtolower($lokasi->nama)];
-        $hariIni = HariOperasional::tanggalTeks();
+        $hariIni = $this->tanggalBawaan()->toDateString();
         $baris = [];
         $hasil = [];
 
@@ -251,6 +306,9 @@ class ImporPenjualanCabangService extends ImporExcel
 
         if ($tanggalFile->count() > 1) {
             $pesanUmum[] = 'Satu file untuk satu tanggal. File ini berisi '.$tanggalFile->map(fn ($t) => Carbon::parse($t)->format('d/m/Y'))->implode(', ').'.';
+        } elseif ($tanggal !== null && $this->tanggal !== null && $tanggal !== $this->tanggal) {
+            $pesanUmum[] = 'Tanggal di file '.Carbon::parse($tanggal)->format('d/m/Y').', bukan '.Carbon::parse($this->tanggal)->format('d/m/Y')
+                .' yang dipilih. Ubah kolom Tanggal atau pilih tanggal yang sesuai.';
         } elseif ($tanggal !== null) {
             $pesanUmum = [...$pesanUmum, ...$this->pesanTanggal($tanggal)];
         }

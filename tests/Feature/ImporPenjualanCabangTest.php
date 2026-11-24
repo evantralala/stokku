@@ -107,6 +107,42 @@ class ImporPenjualanCabangTest extends TestCase
         $this->actingAs($this->adminUtama)->get(route('cabang.penjualan.impor'))->assertForbidden();
     }
 
+    public function test_pilihan_tanggal_hari_ini_dan_hari_yang_terlewat(): void
+    {
+        $this->cabang->forceFill(['created_at' => now()->subDays(5)])->save();
+        app(PenjualanService::class)->catat($this->adminCabang, $this->cabang, now()->subDays(2)->toDateString(), [$this->shoyu->id => 3]);
+        $kemarin = now()->subDay()->toDateString();
+        $tigaHari = now()->subDays(3)->toDateString();
+
+        $popup = $this->actingAs($this->adminCabang)->get(route('cabang.penjualan.impor'))->assertOk()
+            ->assertSee('Pilih tanggal, unduh templat, lalu isi kolom Porsi.')
+            ->assertSeeInOrder(['Hari Ini', 'Kemarin', now()->subDays(3)->translatedFormat('D, j M'), now()->subDays(5)->translatedFormat('D, j M')])
+            ->assertDontSee(now()->subDays(2)->translatedFormat('D, j M'));
+        $this->assertSame([now()->toDateString(), $kemarin, $tigaHari, now()->subDays(4)->toDateString(), now()->subDays(5)->toDateString()],
+            array_keys($popup->viewData('pilihanTanggal')), 'hari yang sudah dicatat tidak ditawarkan');
+        $this->get(route('cabang.penjualan.impor', ['tanggal' => $tigaHari]))
+            ->assertSee(route('cabang.penjualan.impor.templat', ['tanggal' => $tigaHari]), false)
+            ->assertSee('value="'.$tigaHari.'" form="form-impor-unggah" checked', false);
+
+        $berkas = tempnam(sys_get_temp_dir(), 'pj').'.xlsx';
+        file_put_contents($berkas, $this->get(route('cabang.penjualan.impor.templat', ['tanggal' => $tigaHari]))->assertOk()->streamedContent());
+        $this->assertSame(now()->subDays(3)->format('d/m/Y'), IOFactory::load($berkas)->getSheet(0)->toArray(null, true, true)[5][0], 'templat berisi tanggal pilihan');
+
+        $beda = $this->post(route('cabang.penjualan.impor.pratinjau'), ['file' => $this->csv("Tanggal,Menu,Porsi\n".now()->format('d/m/Y').",Shoyu Ramen,4\n"), 'tanggal' => $tigaHari])->assertOk();
+        $this->assertContains('Tanggal di file '.now()->format('d/m/Y').', bukan '.now()->subDays(3)->format('d/m/Y').' yang dipilih. Ubah kolom Tanggal atau pilih tanggal yang sesuai.',
+            $beda->viewData('baris')->first()['pesan']);
+
+        $pratinjau = $this->post(route('cabang.penjualan.impor.pratinjau'), ['file' => $this->csv("Menu,Porsi\nShoyu Ramen,4\nMiso Ramen,2\n"), 'tanggal' => $tigaHari])->assertOk();
+        $this->assertSame([2 => 'siap', 3 => 'siap'], $this->statusBaris($pratinjau));
+        $this->simpan($pratinjau)->assertRedirect(route('cabang.penjualan'));
+        $this->assertSame(6, (int) PenjualanHarian::query()->whereDate('tanggal', $tigaHari)->withSum('detail', 'porsi')->first()->detail_sum_porsi, 'kolom Tanggal kosong = tanggal pilihan');
+
+        $this->actingAs($this->adminCabang)->get(route('cabang.penjualan.impor'))->assertOk()
+            ->assertDontSee(now()->subDays(3)->translatedFormat('D, j M'));
+        $this->assertNull($this->actingAs($this->adminCabang)->post(route('cabang.penjualan.impor.pratinjau'), ['file' => $this->csv("Menu,Porsi\nShoyu Ramen,1\n"), 'tanggal' => '2020-01-01'])
+            ->assertOk()->viewData('layanan')->tanggalPilihan(), 'tanggal di luar pilihan diabaikan');
+    }
+
     public function test_file_unduh_excel_penjualan_satu_hari_bisa_diunggah_balik(): void
     {
         $this->actingAs($this->adminCabang);

@@ -23,8 +23,11 @@ trait AlurImporExcel
 {
     private const AWALAN_SESI = 'impor_excel.';
 
-    /** @param  array{templat: string, pratinjau: string, simpan: string, kembali: string}  $url */
-    protected function tampilUnggah(ImporExcel $layanan, array $url): View
+    /**
+     * @param  array{templat: string, pratinjau: string, simpan: string, kembali: string}  $url
+     * @param  array{pilihanTanggal?: array<string, string>, tanggal?: ?string}  $tambahan  pilihan tanggal (impor penjualan cabang)
+     */
+    protected function tampilUnggah(ImporExcel $layanan, array $url, array $tambahan = []): View
     {
         return view('admin-utama.excel.unggah', [
             'judul' => $layanan->judul(),
@@ -32,6 +35,8 @@ trait AlurImporExcel
             'url'   => $url,
             'pilihanMode' => $layanan->pilihanMode(),
             'mode'  => $layanan->mode(),
+            'pilihanTanggal' => $tambahan['pilihanTanggal'] ?? [],
+            'tanggal' => $tambahan['tanggal'] ?? null,
         ]);
     }
 
